@@ -1,0 +1,160 @@
+# equals는  규약을 지켜 재정의하자
+
+### 오바라이딩을 재 고려해야 하는 상황
+
+1. 각 인스턴스가 본질적으로 고유 할 때
+2. 클래스의 논리적 동치성을 검사할 일이 없다.
+3. 상위클래스에서 정의한 equals가 하위클래스에도 동일하게 적용된다.
+4. 클래스의 접근제어자가 private나 default 거나(외부에 노출안됨),
+
+   equals 메소드를 호출 할 일이 없다.
+
+**위의 경우에 만족하는 경우가있다면 오바리이딩하는것을 다시 고려해보아야한다.**
+
+### 오버라이딩을 고려해야 하는 상황
+
+**물리적 동치가 아니라, 논리적 동치를 확인하려 할 때  + 상위클래스의 equals로 해결이 안될 때**
+
+### equals 오버라이딩 규약
+
+1. **반사성(Reflexivity):** null이 아닌 모든 참조 값 x에 대해, x.equals(x)는 true이다.
+2. **대칭성(Symmetry):** null이 아닌 모든 참조 값 x,y에 대해, x.equals(y)가 true이면,
+
+   y.equals(x)도 true여야한다.
+
+    ```java
+
+    public class CaseInsensitiveString {
+        private final String s;
+
+        public CaseInsensitiveString(String s) {
+            this.s = Objects.requireNonNull(s);
+        }
+
+        /**
+         * 대칭성 위반 코드
+         * CaseInsensitiveString은 String을 알고있지만,
+         * String은 CaseInsensitiveString을 알지 못한다.
+         */
+        @Override
+        public boolean equals(Object obj) {
+            if (obj instanceof CaseInsensitiveString)
+                return s.equalsIgnoreCase(((CaseInsensitiveString) obj).s);
+            if (obj instanceof String)
+                return s.equalsIgnoreCase((String) obj);
+            return false;
+        }
+    }
+    //CaseInsensitiveString과 String을 비교하려는 생각을 버리자
+
+    ```
+
+3. **추이성(Transitivity):** null이 아닌 모든 참조 값 x,y,z에 대해, x.equals(y)가 true이고,
+
+   y.equals(z)가 true이면 x.equals(z)도 true이다. (**삼단논법)**
+
+    ```java
+    public class Point {
+        private final int x;
+        private final int y;
+
+        public Point(int x, int y) {
+            this.x = x;
+            this.y = y;
+        }
+
+        @Override
+        public boolean equals(Object obj) {
+            if (!(obj instanceof Point))
+                return false;
+            Point p = (Point) obj;
+            return p.x == this.x && p.y == this.y;
+        }
+    }
+
+    enum Color {
+        YELLOW, RED, BLUE
+    }
+
+    class ColorPoint extends Point {
+        private Color color;
+
+        public ColorPoint(int x, int y, Color color) {
+            super(x, y);
+            this.color = color;
+        }
+
+        @Override
+        public boolean equals(Object obj) {
+            if (!(obj instanceof ColorPoint))
+                return false;
+            return super.equals(obj) && ((ColorPoint) obj).color == this.color;
+        }
+    }
+
+    /**
+     *  추이성 위반
+     *  ColorPoint p1 = new ColorPoint(1,2,Color.RED);
+     *  Point p2 = new Point(1,2);
+     *  ColorPoint p3 = new ColorPoint(1,2,Color.BLUE);
+     *  
+     *  p1.equals(p2) --> true
+     *  p2.equals(p3) --> true
+     *  p1.equals(p3) --> false
+     */
+    ```
+
+   **상속을통한 필드의 확장이 일어날 경우, equals를 OOP에맞게, 규약에 맞게 작성할 수 없다.**
+
+    ```java
+    class ColorPoint {
+        private Point point;
+        private Color color;
+
+        public ColorPoint(int x, int y, Color color) {
+            this.point = new Point(x, y);
+            this.color = color;
+        }
+
+        @Override
+        public boolean equals(Object obj) {
+            if (!(obj instanceof ColorPoint))
+                return false;
+            ColorPoint cp = (ColorPoint) obj;
+            return cp.point.equals(this.point) && cp.color == this.color;
+        }
+    }
+    ```
+
+   **상속대신 컴포지션을 활용해서 우회할 수 있다.**
+
+4. **일관성(Consistency**): null이 아닌 모든 참조값 x,y에 대해 x.equals(y)가를 반복해서 호출하면, 항상 true를 리턴하거나 항상 false를 리턴해야한다.
+
+   **불변클래스이든, 가변 클래스이든 신뢰할 수 없는 자원이 판단의 기준에 속해있으면 안된다.**
+
+5. **nonnull**: null이 아닌 모든 참조값 x에 대해, x.equals(null)은 항상 false여야한다.
+
+### equals메소드 구현방법
+
+1. **==연산자를 통해 입력이 자기자신의 참조인지 확인 (자신이면 true 리턴)**
+2. **instanceof 연산자로 입력이 올바른 타입인지 확인**
+
+   instanceof 연산자는 null이들어와도 NPE가 아닌 false로 리턴가능하다.
+
+3. **올바른 타입으로 형변환한다.(다운캐스팅)**
+4. **자신과 대응되는 핵심필드와 모두 일치하는지 하나씩 검사한다.**
+5. **float과 double일경우 Float.compare나 Double.compare를 사용하자**
+
+   부동소수점 까지 비교해야하기 때문이다.
+
+### equals 메소드 구현 팁
+
+1. **만약 null값도 정상 취급해야하는 경우라면, Objects.equals메소드를 사용하여 NPE를 예방하자**
+2. **다를 가능성이 크거나, 비교하는 비용이 싼 필드를 먼저 비교하자**
+3. **equals메소드를 오버라이딩 했다면, 대칭성,추이성,일관성에 대한 단위테스트로 검증해보자**
+4. **equals 메소드를 오버라이딩 했다면, hashcode 메소드도 반드시 오버라이딩하자**
+5. **비교대상(입력) 객체의 타입은 Object로만 받자**
+
+### 꼭 필요한 경우가 아니라면 equals메소드 오버라이딩하지말자.
+
+### 오버라이딩을 하게된다면, 5가지의 규약중 어기는게있는지 확인하기
