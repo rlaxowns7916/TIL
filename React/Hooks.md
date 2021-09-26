@@ -2,6 +2,12 @@
 **리액트 v16.8에서 새로 도입**<br>
 **함수형 컴포넌트에서도 상태관리 가능**
 
+### 주의 할점
+1. 실행순서가 일정하게 유지되게 할 것
+2. if문 같은 조건문안에 hooks를 넣지 말 것(for문 사용가능하나 비추천)
+3. hook안에 hook을 사용하지 말 것
+
+***
 ## useState
 ```jsx
     const [value,setValue] = useState('초기값')
@@ -10,7 +16,7 @@
 ```
 Class형 컴포넌트 같이 State객체를 선언하고 setState를 통해서 한꺼번에 변경이아닌 쪼개서 관리가능
 
-### useEffect
+## useEffect
 **componentDidMount + componentDidUpdate + componentWillUnmount**
 1. 첫 번째 인자는 실행할 작업 정의, 두번 째 인자는 변화를 Checking할 인자
 2. 두 번째 인자 생략시 랜더링 될때마다 실행 
@@ -43,3 +49,160 @@ useEffect(() =>{
 ```
 return 을 통한 cleanUp함수를 정의해주면, 언마운트 될 때, 혹은 업데이트 되기직전에 작업을 수행 할 수 있다.
 마찬가지로 unMount시점에만 작동하게 하고 싶으면 두번째 인자에 빈배열을 넣으면 된다.
+***
+
+## useReducer
+1. **useState보다 더 다양한 컴포넌트 상황에 따라 상태 업데이트 가능**
+2. Reducer는 현재 상태, 업데이트에 필요한 정보를 담은 액션값을 전달받아 새로운 상태를 반환
+
+***const[state,dispatch] = useReducer(reducer,initialState)***
+1. state는 우리가 사용할 상태 
+2. dispatch는 액션을 발생시킬 함수 
+3. useReducer의 dispatch(액션)는 어떠한 값도 사용 가능하다.(event 라도)
+```jsx
+function reducer(state,action){
+    switch(action.type){
+        case 'INCREMENT':
+            return {value : state.value+1}
+        case 'DECREMENT' :
+            return {value : state.value - 1}
+        default:
+            return state
+    }
+}   
+
+const Counter = () =>{
+    const [state,dispatch] = useReducer(reducer,{value:0})
+    return(
+    <div>
+        <p>
+            현재 카운터값은 <b>{state.value}</b>
+        </p>
+        <button onClick ={() => dispatch({type: 'INCREMENT'})}> +1 </button>
+        <button onClick ={() => dispatch({type: 'DECREMENT'})}> -1 </button>
+    </div>    
+)
+}
+```
+
+***
+## useMemo
+1. ***이전에 사용한 값을 재사용 가능하게 함***
+2. ***함수형 컴포넌트에서 사용되는 연산의 최적화***
+3. ***필요없는 랜더링 타이밍에 다시 연산을 하는 것을 막아줌***
+
+***useMemo(callback,[변경을 체크할 값])***
+```jsx
+import React, { useState, useMemo } from 'react';
+
+const getAverage = numbers => {
+  if (numbers.length === 0) return 0;
+  const sum = numbers.reduce((a, b) => a + b);
+  return sum / numbers.length;
+};
+
+const Average = () => {
+  const [list, setList] = useState([]);
+  const [number, setNumber] = useState("");
+
+const onChange = e => {
+    setNumber(e.target.value);
+  };
+  const onInsert = () => {
+    const nextList = list.concat(parseInt(number));
+    setList(nextList);
+    setNumber("");
+  };
+const avg = useMemo(() => getAverage(list), [list]); //리스트가 변경 될때만 연산
+return (
+    <div>
+      <input value={number} onChange={onChange} />
+      <button onClick={onInsert}>등록</button>
+      <ul>
+        {list.map((value, index) => (
+          <li key={index}>{value}</li>
+        ))}
+      </ul>
+      <div>
+        <b>평균값:</b> {avg}
+      </div>
+    </div>
+  );
+};
+
+export default Average;
+```
+***
+## useCallback
+1. **성능 최적화 시점에 주로 사용**
+2. **함수를 필요할 때만 생성 가능**
+3. **값을 재사용하려면 useMemo, 함수를 재사용하려면 useCallback**
+
+**useCallback(생성하고 싶은 함수, [변경을 체크할 값])**
+```jsx
+useCallback(() => {
+  console.log('hello world!'');
+}, [])
+
+
+useMemo(() => {
+  const fn = () => {
+    console.log('hello world!');
+  };
+  return fn;
+}, [])
+```
+***
+### Custom Hooks
+**여러 컴포넌트가 비슷한 기능을 공유 할 때 사용**
+```jsx
+import { useReducer } from 'react';
+ 
+function reducer(state, action) {
+  switch(action.type){
+          case 'INCREMENT':
+              return {value : state.value+1}
+          case 'DECREMENT' :
+              return {value : state.value - 1}
+          default:
+              return state
+      }
+}
+ 
+export default function useInputs(initialForm) {
+  const [state, dispatch] = useReducer(reducer, initialForm);
+  const onClick = (e)=> {
+    dispatch({type:e.target.name});
+  };
+  return [state, onClick];
+}
+```
+
+```jsx
+mport React from 'react';
+import useInputs from './useInputs';
+ 
+const Info = () => {
+  const [state, onClick] = useInputs({
+    value:0
+  });
+  const { name, nickname } = state;
+ 
+  return (
+    <div>
+      <div>
+        <buton name="INCREMENT" onClick={onClick} />
+        <button name="DECREMENT"onClick={onClick} />
+      </div>
+      <div>
+        <div>
+          <b>카운트:</b> {value}
+        </div>
+      </div>
+    </div>
+  );
+};
+ 
+export default Info;
+```
+
