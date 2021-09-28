@@ -106,3 +106,41 @@ or 연산
 > db.users.count()
 1
 ```
+
+### update
+1. **set연산자**
+```javascript
+> db.users.update({name:"kim"},{$set:{country:"korea"}})
+WriteResult({ "nMatched" : 1, "nUpserted" : 0, "nModified" : 1 })
+> db.users.find({name:"kim"})
+{ "_id" : ObjectId("61532d91d2b5f8067ccbbcb4"), "name" : "kim", "country" : "korea" }
+```
+도큐먼트에 새로운 항목을 추가 가능하다.
+
+2. **대체 업데이트**
+```javascript
+> db.users.update({name:"kim"},{age:25})
+WriteResult({ "nMatched" : 1, "nUpserted" : 0, "nModified" : 1 })
+> db.users.find({age:25})
+{ "_id" : ObjectId("61532d91d2b5f8067ccbbcb4"), "age" : 25 }
+```
+$set연산이 아닌, Document 2개가 나란히 인자로 주어지면, 대체된다.
+
+### Delete
+1. **데이터 삭제**
+```javascript
+db.users.remove({}) //Collection의 모든 Document를 지운다.
+WriteResult({ "nRemoved" : 2 })
+```
+
+```javascript
+db.users.remove({name:"kim"}) //조건에 해당하는 Document를 지운다.
+WriteResult({ "nRemoved" : 1 })
+```
+
+2. Collection 삭제
+```javascript
+> db.users.drop()
+true
+```
+Collection과 함께 내부의 Document까지 모두 삭제
