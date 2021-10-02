@@ -57,13 +57,13 @@ Java Source File (.java) —> JAVAC —> Java Byte Code (.class File)
 
 4. PC(Program Counter)
 
-1. Thread마다 생성
-2. 현재 실행할 스택 프레임을 가르키는 포인터
+    1. Thread마다 생성
+    2. 현재 실행할 스택 프레임을 가르키는 포인터
 
 5. Native Method Stack(네이티브 메소드 스택)
 
-1. Thread마다 생성
-2. Native Method 실행을 위해 Stack에 쌓음
+    1. Thread마다 생성
+    2. Native Method 실행을 위해 Stack에 쌓음
 
 ### Execute Engine(실행엔진)
 
