@@ -24,11 +24,11 @@ JVM + JAVA Library로 구성된다.
 
 JAVAC(컴파일러) 등이 포함된다.
 
-[https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=https%3A%2F%2Fblog.kakaocdn.net%2Fdn%2Fc00klf%2FbtqAjMzLyF2%2F6sU1VGp5vqAYIPLsXpakpK%2Fimg.png](https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=https%3A%2F%2Fblog.kakaocdn.net%2Fdn%2Fc00klf%2FbtqAjMzLyF2%2F6sU1VGp5vqAYIPLsXpakpK%2Fimg.png)
+![dd](https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=https%3A%2F%2Fblog.kakaocdn.net%2Fdn%2Fc00klf%2FbtqAjMzLyF2%2F6sU1VGp5vqAYIPLsXpakpK%2Fimg.png)
 
 ### JVM 구조
 
-[https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=http%3A%2F%2Fcfile22.uf.tistory.com%2Fimage%2F9973563D5ACE0315215FF6](https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=http%3A%2F%2Fcfile22.uf.tistory.com%2Fimage%2F9973563D5ACE0315215FF6)
+![ff](https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=http%3A%2F%2Fcfile22.uf.tistory.com%2Fimage%2F9973563D5ACE0315215FF6)
 
 Java Source File (.java) —> JAVAC —> Java Byte Code (.class File)
 
@@ -57,13 +57,13 @@ Java Source File (.java) —> JAVAC —> Java Byte Code (.class File)
 
 4. PC(Program Counter)
 
-1. Thread마다 생성
-2. 현재 실행할 스택 프레임을 가르키는 포인터
+    1. Thread마다 생성
+    2. 현재 실행할 스택 프레임을 가르키는 포인터
 
 5. Native Method Stack(네이티브 메소드 스택)
 
-1. Thread마다 생성
-2. Native Method 실행을 위해 Stack에 쌓음
+    1. Thread마다 생성
+    2. Native Method 실행을 위해 Stack에 쌓음
 
 ### Execute Engine(실행엔진)
 
