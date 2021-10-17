@@ -8,7 +8,7 @@
 ## Dom 구조
 
 ![Dom](https://github.com/ktj1997/TIL/blob/main/web/images/dom.png)
-***마지막(leaf)는 텍스트이다.***
+<br>***마지막(leaf)는 텍스트이다.***
 
 ### JS Dom접근
 ```js
