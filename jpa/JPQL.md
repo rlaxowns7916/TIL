@@ -74,5 +74,17 @@ List<Member> resultList = em.createQuery(jpql,Member.class);
 
 4. ON 절을 이용한 쿼리 (연관관계없는 것도 지정해주면 OuterJoin)
 
+### SubQuery
+1. Jpa는 WHERE,HAVING절에서 서브쿼리를 지원
+2. Hiberante에서는 SELECT절 서브쿼리까지 지원
+3. FROM절은 서브쿼리 미지원 (Join으로 사용하자)
+   - Application에서 조립
+   - 쿼리를 2개로 풀어서 사용 등등 
 
 
+### 타입 표현
+1. 문자: ' ' 안에 넣어주기: 'hello','She''s'
+2. 숫자: 10L, 10D, 10F ...
+3. Boolean: TRUE,FALSE
+4. ENUM: FQCN
+5. 엔티티:
