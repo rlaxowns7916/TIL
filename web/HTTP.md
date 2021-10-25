@@ -4,7 +4,7 @@
 
 ## HTTP 특징
 1. Stateless
-2. Connectionless
+2. Connectionless (1 Connection == 1 File)
 3. 거의 모든형태의 데이터를 주고 받는 것이 가능 
 4. Request <  -- > Response 구조
 5. 캐시 가능 
@@ -34,4 +34,35 @@ HTTP의 메소드는 멱등성을 보장한다.(**POST와 PATCH제외**)
 2. PATCH: 구현에대한 표준 제약이없다.<br>그렇기 때문에 구현방식에 따라서 보장 할수도 보장하지 못할 수도 있다.
 
 
-이름이 생략되면 보통 index.html(apache 계열) || default.html(iis 계열)
+## HTTP 메세지
+[Header]
+- GET / HTTP1.1 (HTTP메소드, HTTP 버전)<br>
+(이름이 생략되면 보통 index.html(apache 계열) || default.html(iis 계열)))
+
+
+- HTTP/1.1 200 OK (상태코드)
+
+
+- content-length (파일 길이) // 네트워크에선 확장자 개념이 없다.<br>
+  텍스트 파일의 경우 생략 가능(EOF) , 바이너리 파일은 필수
+
+
+- content-type (파일 내용)
+
+(헤더와 바디 구분은, 빈줄 2개 \r\n\r\n)
+
+[Body]
+
+## HTTP 에서 파일을 다운로드 하는법
+**기존에는 하나의 Connection에서 하나의 File을 다운로드(GET)**
+
+### 개선 
+- 세션 : 하나의 세션을 열어 여러 파일 다운로드
+
+- TCP keep-alive 
+   - 일정시간동안 연결을 끊지 않음
+   - 새로운 연결을 만들지않고, 기존 연결을 재활용
+   - 한페이지를 다운로드 받는데 하나의 연결을 사용
+   
+- HTTP/1.1
+ - 여러개의 파일을 동시에 요청 (Multiple GET)
