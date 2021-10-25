@@ -87,4 +87,16 @@ List<Member> resultList = em.createQuery(jpql,Member.class);
 2. 숫자: 10L, 10D, 10F ...
 3. Boolean: TRUE,FALSE
 4. ENUM: FQCN
-5. 엔티티:
+5. 엔티티
+
+### JPQL 기본함수
+- CONCAT
+- SUBSTRING
+- TRIM
+- LOWER | UPPER
+- LENGTH
+- LOCATE
+- ABS | SQRT | MOD
+- SIZE,INDEX
+
+**사용자 정의 함수는 dialect에 직접 등록해주어야한다**
