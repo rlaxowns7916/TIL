@@ -100,3 +100,19 @@ List<Member> resultList = em.createQuery(jpql,Member.class);
 - SIZE,INDEX
 
 **사용자 정의 함수는 dialect에 직접 등록해주어야한다**
+
+
+### Named 쿼리
+- 미리 정의해서 이름을 부여해두고 사용하는 JPQL
+- 정적쿼리
+- 어노테이션,XML에 정의
+- 어플리케이션 로딩 시점에 초기화 후 재사용
+- **어플리케이션 로딩 시점에 쿼리를 검증** (문법 오류 감지)
+- SpringDataJpa에 @Query에노테이션이 NamedQuery의 일종
+```jpaql
+@NamedQuery(
+    name = "Member.findByUsername",
+    query = "SELECT m FROM Member m where m.username = :username"
+)
+
+```
