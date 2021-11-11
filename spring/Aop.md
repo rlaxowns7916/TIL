@@ -30,7 +30,46 @@
   - SpringAop가 사용하는 방식
   - ProxyBean을 만들고, 이 ProxyBean이 Aop가 적용됨
 
+
+# Spring Aop
+
 ### 의존성
 ```groovy
 implementation 'org.springframework.boot:spring-boot-starter-aop'
 ```
+
+## Advice의 종류
+- @Around : JoinPoint의 앞과 뒤에서 실행되는 Advice
+- @Before: JoinPoint의 앞에서 실행되는 Advice
+- @After: JoinPoint의 결과 (성공,에러)에 상관없이 실행되는 Advice
+- @AfterReturning: JoinPoint의 실행결과가 성공적일 때 실행되는 Advice
+- @AfterThrowing: JoinPoint의 실행결과가 에러를 던질 때 실행되는 Advice
+***
+
+## PointCut
+
+### 명시 가능 PointCut
+- execution: Advice를 적용할 메소드를 지정할 때 사용
+  - **execution(\[수식어] 리턴타입 \[클래스이름].이름(파라미터)))**
+    - 수식어: public, private 등 (Optional)
+    - 리턴타입: 메소드의 리턴타입
+    - 클래스티름: FQCN (Optional)
+    - 이름: 메소드의 이름을 지정
+    - 파라미터: 메소드의 파라미터 지정
+    - \"*" : 모든 값을 의미
+    - \"..": 0개이상을 의미
+    ```
+    execution(public Integer com.example.study.*.*(*))
+     - com.exmample.study 패키지에 속해있고, 파라미터가 1개인 모든 메서드
+     - 
+    execution(* com.example..*.find*(..))
+    - com.example 패키지 및 하위 패키지에 속해있고, 이름이 find로 시작하는 파라미터가 0개 이상인 모든 메서드 
+    - 
+    execution(* com.example.study..*Controller.*(..))
+    - com.example.study 패키지 및 하위 패키지에 속해있고, 이름이 Controller르 끝나는 클래스의 파라미터가 0개 이상인 모든 메서드
+    ```
+- within: 특정타입에 속하는 메소드를 JoinPoint로 지정 할 때 사용
+- bean: Spring Bean을 이용하여 JoinPoint 지정
+ 
+
+
