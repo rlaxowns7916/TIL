@@ -78,9 +78,10 @@
     4. ConcurrentSweep: StopTheWorld 없이 접근 할수 없는 객체를 제거
 **StopTheWorld를 최대한 줄이고자 함**
 
-### 5. G1GC
+### 5. G1GC(-XX:G1HeapRegionSize=n)
 - Java9+의 Default GC
 - 현존 GC중 stop-the-world의 시간이 제일 짧음
 - CMS GC를 개선한 GC
 - Heap을 **Region**이라는 부분으로 나눠서 메모리 관리
 - Region단위로 탐색하고 **각각의 Region에서 GC가 발생한다.**
+- RegionsSize: **startingHeapSize/2048** (1~32MB 사이의 값 위치)
