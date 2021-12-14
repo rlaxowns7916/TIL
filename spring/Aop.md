@@ -8,9 +8,16 @@
 ## Aop 구현체
 - SpringAop
   - 프록시 기반 Aop
-  - SpringBean에만 적용가능  
-- AspectJ
-  -  
+    - SpringBean에만 적용가능  
+      - 기존 Bean이 ProxyBean으로 교체
+    - DynamicProxy (런타임 시점에 프록시를 만드는 기법)를 사용해서 구현
+      - Java가 제공하는 기본 방법은 인터페이스 기반 프록시 생성기법
+      - CGlib은 클래스 기반도 지원 
+  - 에노테이션 기반 Aop
+- AspectJ 
+
+### Spring Aop vs AspectJ
+![스크린샷, 2021-12-14 12-19-52](https://user-images.githubusercontent.com/57896918/145927167-5b350b9e-5aa3-4d2a-b08c-4a6761ff6aca.png)
 
 ## Aop 주요 용어
  - **Aspect** : CrossCutting Concern을 모듈 화 한 것 (Advice + Target)
