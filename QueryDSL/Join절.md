@@ -51,6 +51,8 @@ List<Tuple> result = queryFactory
 ## 4. FecthJoin
 - **연관된 엔티티를 한번에 가져오는 기능**
 - **JPQL에서 성능최적화를 위한 기능**
+- **한개의 Many관계에만 설정 가능**
+- **GlobalBatchSize설정을 통해서 FetchJoin을 걸지못하는 1:N관계를 최적화 할 것**
 
 ```java
 Member findMember = queryFactory
