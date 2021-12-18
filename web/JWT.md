@@ -1,9 +1,14 @@
 # JWT(JsonWebToken) 토큰
-
 - **Json포맷을 이용하여, 사용자에 대한 속성을 저장하는 Claim 기반의 WebToken**
 - 토큰 자체의 정보를 사용한다.
 - 주로 회원인증이나 정보전달에 사용된다.
 - HttpHeader에 Authrization : Bearer ${JWT_TOKEN} 형식으로 사용된다.
+
+## 왜 사용하는가?
+- 토큰자체에 정보를 포함하기 때문에 별도의 저장소가 필요하지않다.
+- 확장에 용이 (인증서버와 데이터베이스에 의존(x))
+- REST서비스로 제공 가능
+- Stateless하다.
 
 ## JWT의 구조
 
