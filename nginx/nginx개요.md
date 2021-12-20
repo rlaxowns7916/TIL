@@ -19,22 +19,12 @@
 - 정적파일을 제공하는 웹서버로서의 역할
 - 리버스 프록시로서의 역할
 
-## 설치 
+## 설치
 ```shell
-# /etc/apt/soruces.lists.d 경로에 nginx.list파일 생성
-sudo touch /etc/apt/sources.list.d/nginx.list
-deb http://nginx.org/packages/ubuntu/ bionic nginx
-deb-src http://nginx.org/packages/ubuntu/ bionic nginx
-
-
-# 인증 키 등록
-wget http://nginx.org/keys/nginx_signing.key
-sudo apt-key add nginx_signing.key
-
-# 설치
 sudo apt-get install nginx
-
-#시작
+```
+## 시작
+```
 sudo /etc/init.d/nginx start
 ```
 
