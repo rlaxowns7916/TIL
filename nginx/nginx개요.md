@@ -1,10 +1,10 @@
 # Nginx
 - 동시접속에 특화된 WebServer
-- Apache 보다 동작이 단순 (Apache는 요청당 Process OR Thread 할당)
+- Apache 보다 동작이 단순 (Apache는 요청당 Process 할당 - C10K문제)
 - Apache보다 확장모듈이 부족
 - OSI 7 Layer에서 ApplicationLayer 아래의 Level에서 동작
 - 비동기 이벤트 드리븐 구조로 동작하여 고정된 프로세스만 생성 하고 동시성 탁월
-  (Apache는 Request당 스레드 혹은 프로세스 생성)
+  - **nginx에서의 이벤트: 커넥션 형성, 커넥션 제거, 요청처리**
 - **WebServer**의 역할과 **ReverseProxy(LoadBalancing)** 역할을 주로한다.
 
 ## Nginx의 구조
@@ -13,11 +13,17 @@
 - Master Process는 설정 파일을 읽는 역할
 - 유효성 검사 및 모든 요청에 대한 처리는 WorkerProcess가 담당
 - WorkerProcess 사이에 요청을 효율적으로 분배하기 위해서 **OS의존적**인 메커니즘 사용
+  - os가 이벤트를 큐에 담아놓고 워커프로세스가 빼가면서 처리 
 - WorkerProcess의 개수는 설정파일에 정의, 사용가능한 CPU 코어에 맞게 조정된다.
+- 설정 동적 리로드 가능
+  - 동적 리로드 시, 새로운 설정에 맞는 워커 프로세스를 생성 한 후 ,기존 워커프로세스들의 작업이 끝나면
+  기존 워커프로세스들은 종료
 
 ## Nginx의 역할
 - 정적파일을 제공하는 웹서버로서의 역할
 - 리버스 프록시로서의 역할
+- SSL 터미네이션: Client와는 HTTPS, 내부 서버와는 HTTP
+  - 뒤의 was가 복호화과정을 담당하지 않음으로하여, 부하줄여줌  
 
 ## 설치
 ```shell

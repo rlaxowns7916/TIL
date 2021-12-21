@@ -74,3 +74,35 @@ HTTP의 메소드는 멱등성을 보장한다.(**POST와 PATCH제외**)
    
 - HTTP/1.1
  - 여러개의 파일을 동시에 요청 (Multiple GET)
+
+
+## 버전
+### HTTP 1.0
+- 헤더가 생김
+- 여러가지 파일 타입을 전송가능 (헤더의 Content-Type)
+
+### HTTP 1.1
+- Persistent Connection (지정한 시간동안 Connection을 닫지 않음)
+- Pipelining (한번에 여러개의 요청을 같이보내고 순서에맞춰 응답여러개를 받음)
+  - HeadOfLine: 첫번째 순서의 요청이 오래걸리면 그 뒤의 것들이 실행되지못함
+  - Header구조의 중복
+
+### HTTP 2
+**표준의 대체가 아닌 확장**
+- Binary Framing Layer
+  - Frame단위로 분할, 및 Binary Format
+  - 파싱, 전송속도의 상승
+  - 오류 발생 가능성 저하
+  - 프레임으로 쪼개져서 가기 떄문에 HOL문제의 해결
+- Stream Prioritization
+  - 리소스간 우선순위를 설정
+- ServerPush
+  - ex) a.html에 b.css, c.js가 있으면, a.html만보내주면 다시 또 요청할테니 미리 다 보내주는 것 
+- Header Compression: 헤더의 크기를 줄여서 페이지 로드 시간 감소
+
+### HTTP 3
+**GOOGLE이 개발한 QUIC 이용
+
+- UDP로 변경
+- 보안강화
+- IP가 아닌 Connection ID로 통신을 하여 IP가 바뀌어도 기존 연결을 유지할 수 있음
