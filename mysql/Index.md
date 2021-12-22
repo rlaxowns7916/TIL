@@ -43,6 +43,7 @@
 - 물리적으로 데이터를 정렬하지 않은 상태이다.
 - 테이블 당 여러개가 존재한다.
 - ClusteredIndex보다 검색은 느리지만, 삽입,수정,삭제는 빠르다.
+- NonClusterdKey는 정렬되지않는다. (포인터 형식)
 
 
 
@@ -52,3 +53,4 @@
 3. order by에 주로 사용되는 Column
 4. Join On 조건에 주로 사용되는 Column
 5. ForeignKey (1 : N)에 주로 사용 되는 Column
+6. **Cardinality**가 높은곳 (겹치는게 적어야한다. )
