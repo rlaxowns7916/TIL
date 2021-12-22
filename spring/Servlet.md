@@ -30,3 +30,6 @@
 - FrontController패턴으로 구현 (요청을 받는 하나의 서블릿이 앞단에 위치)
 - 들어오는 모든 요청 Handling 및 Handler 매핑 (일일이 web.xml에 설정해주지 않아도된다.)
 - 공통작업 처리
+
+
+![dispatcherServlet](https://user-images.githubusercontent.com/57896918/147087215-820ecfbc-82d9-4fe3-8ba0-641fbd4b047e.png)
