@@ -53,6 +53,9 @@
 - 메세지전송, 도메인 영속화 등의 작업을 담당.
 - DomainLayer에서 선언한 인터페이스의 구현체
 
+![layerdArhitecture](https://user-images.githubusercontent.com/57896918/154838795-5b2cc65d-7aeb-4d81-a181-01773c970c67.png)
+
+
 ## Aggregate (집합)
 - 객체들의 집합
 - AggregateRoot와 여러개의 VO(ValueObject)로 구성되는 경우가많다.
