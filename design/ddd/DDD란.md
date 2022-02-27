@@ -37,6 +37,7 @@
 - 소프트웨어가 수행할 작업을 정의
 - 도메인에게 작업을 위임
 - 작업을 조정하기만 하기때문에, 도메인의 상태를 가지면 안된다.
+- 도메인 로직이 ApplicationLayer에 나타나면 안된다.
 
 ### 3. Domain Layer (Entity,Service,Command,Factory,Executor...)
 - 업무개념, 업무표현등을 담당하는 핵심 Layer
