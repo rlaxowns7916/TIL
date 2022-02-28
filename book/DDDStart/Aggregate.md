@@ -9,7 +9,10 @@
 #### Aggregate를 묶을 때 주의할 점
 1. A -> B 관계라고 A와 B가 같은 Aggregate라고 볼 수 없다.
 2. Aggregate에 속한 객체들은 대부분 같은 생명주기를 공유한다.
+  - Aggregate 분리 시에, 생명주기를 고려해서 분리 할 것.
 3. Aggregate에는 소수 (1~2)의 Entity만 존재하는게 대부분이다.
+  - VO도 테이블에 매핑 될 수 있다. 
+  - 테이블에 매핑되는 벨류라고 다 Entity에 해당하는건 아니다.
 
 ## Aggregate Root
 - **Domain 로직을 주로 구현한다.**
