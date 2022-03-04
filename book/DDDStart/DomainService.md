@@ -2,7 +2,7 @@
 - 한 Aggregate에서 기능이 불가능한 경우, DomainService에서 구현한다.
 - 다른 Domain요소와 같은 패키지에 위치한다.
   - 외부 기술에 의존하고 있다면 Interface로 뺀 다음, 구현체를 Infrastrcutre에서 구현한다. 
-
+  - Infrastructure Layer에 위치하는 DomainService 구현체는 외부시스템과의 연동, Domain Model간의 변환을 처리한다.
 ### 예제
 1. 상품 Aggregate: 구매하는 상품의 가격이 필요하고, 상품에 따라 배송비를 추가해야 한다.
 2. 주문 Aggregate: 상품별로 구매 개수가 필요하다.
