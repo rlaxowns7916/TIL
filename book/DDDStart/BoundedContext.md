@@ -11,6 +11,9 @@
 - 하나의 Domain에 여러개의 BoundedContext가 존재 할 수 도 있다.
 - 한개의 BoundedContext가 최소 한개의 Aggregate를 갖는다.
 
+![asdfasdfasdf](https://user-images.githubusercontent.com/57896918/156742026-6c4eb1b3-8872-4216-9728-a536ca5d5e70.png)
+
+
 ## BoundexContext의 구현
 
 - Domain Model만을 포함하는 것이 아닌, PresentationLayer, ApplicationLayer, Infrastructure Layer도 포함한다.
@@ -37,3 +40,10 @@
 - 개별 BondedContext에 집중하여, 큰 그림을 보지 못할 때가 많다.
 - 전체 Bussiness를 조망 할 수 있는 지도
 - BoundedContext와 주요 Aggregate를 이용하여 표현한다.
+
+![ContextMap - 복사본](https://user-images.githubusercontent.com/57896918/156741141-6675c4d6-fddf-4511-a51a-0e37753a4be9.png)
+
+- ACL(AntiCorruptionLayer): 외부 Domain을 내부 Domain으로 변환시킴으로, 외부 Domain이 내부 Domain으로 침범하는 것을 막는다.
+- OHS(OpenHostService)    : REST API, gRPC, Socket 등 서비스를 제공하는 것
+- PL (PublishedLaguage)   : OHS를 어떠한 형식으로 제공 할 것인가 (XML,JSON ...)
+- CF (Conformist)         : DownStream이 맹목적으로 Upstream의 Model을 순응하고 따르는 것
