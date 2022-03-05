@@ -49,17 +49,21 @@
     - 각 데이터가 바로 데이터를 조작 하지 못하게 제한해야함
     - Event Consumer가 해당 Event를 DB에 들어온 순서대로 적재하고, 필요 데이터를 변경
 - 클라우드로 구동되는 Message 중심 분산시스템에 적합
+- 데이터 저장소에 직접 접근하지 않기 때문에, 동시성에 대한 충돌문제도 예방가능하다.
 - 언제든이 Event를 재실행(Replay)해 상태를 다시 구현할 수 있다.
-- 데이터 저장을 위한 여러 Transaction의 경쟁은 성능 저하를 유발한다.
+- 데이터 저장을 위한 여러 Transaction의 경쟁은 성능 저하를 유발하지만, EventSourcing에서는 발생하지않는다.
+- 도메인 모델과 DB테이블의 불일치 문제를 해결 할 수 있다.
 
 ## 진행과정
 1. DomainModel 이 Command(CUD) 명령을 검증한다.
 2. Event를 발생시킨다.
-3. Event 저장소에 저장시킨다.
+  - Event의 발행은 트랜잭션에 묶이지 않는다.
+3. Event 저장소에 저장시킨다. (직렬화 하여 저장하고, 역직렬화하여 사용한다.)
 4. EventHandler가 Event 저장소에 저장된 Event를 재현하여 상태를 수정한다.
-5. 
 ![eventSourcing](https://user-images.githubusercontent.com/57896918/156883209-93405af3-7f02-41dd-bc25-7a9c305ee98f.png)
 
+## 이벤트 소싱의 낙관적 잠금 (비선점 잠금)
+- 낙관적 잠금을 사용하여 DB 동시업데이트의 가능성을 제한한다.
 
 
 ## 스냅샷
