@@ -10,9 +10,10 @@
         - 이기종간 데이터 동기화는 이벤트 기반으로 구현 가능하다.
     - QueryModel - MyBatis, QueryDSL ...
     - CommandModel - JPA ...
+    - 
+![CQRS](https://user-images.githubusercontent.com/57896918/156883227-cc557ed6-1e92-4176-9371-05e64ed8b2e2.png)
 
 ## 웹과 CQRS
-
 - 대부분의 Application은 조회요청이 훨씬 많다.
 - CQRS는 결국 캐시와 유사한 기능을 한다.
     - 조회화면에 적합한 데이터 형태를 빠르게 가져오는 것이기 때문이다.
@@ -44,7 +45,6 @@
 - 버전 관리 시스템
 
 ## 사용하는 이유
-
 - MSA 에서는 각 서비스마다 각자의 데이터를 가지게 되므로, 데이터 정합성 보장이 힘듬
     - 각 데이터가 바로 데이터를 조작 하지 못하게 제한해야함
     - Event Consumer가 해당 Event를 DB에 들어온 순서대로 적재하고, 필요 데이터를 변경
@@ -57,6 +57,10 @@
 2. Event를 발생시킨다.
 3. Event 저장소에 저장시킨다.
 4. EventHandler가 Event 저장소에 저장된 Event를 재현하여 상태를 수정한다.
+5. 
+![eventSourcing](https://user-images.githubusercontent.com/57896918/156883209-93405af3-7f02-41dd-bc25-7a9c305ee98f.png)
+
+
 
 ## 스냅샷
 - Event가 많이 쌓였을 때, 항상 초기버전부터 이벤트를 Replay하는 것은 성능상으로 좋지않다.
