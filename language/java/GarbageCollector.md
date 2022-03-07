@@ -34,7 +34,7 @@
 ***
 ## Stop The World
 **메모리가 관리되는 동안 JavaApplication 이 멈추는 현상**
-- GC를 제외한 모든 스레드가 멈춘다.
+- GC를 실행하는 스레드를 제외한 모든 스레드가 멈춘다.
 - StopTheWorld 발생 시간을 줄이기 위해 JVM 튜닝을 한다.
 ***
 ## 일반적인 GC 구조
@@ -42,6 +42,19 @@
 - YoungGeneration과 OldGeneration으로 나뉜다.
 - 원래는 YoungGeneration + OldGeneration + PermanenetGeneration이었지만
   8버전 부터, PermenantGeneration이 삭제되었다.
+
+***
+
+### Minor GC
+- YoungGeneration(Eden, Survivor 포함) 에서 발생하는 GC
+- Eden영역이 가득 차 있을 때 발생한다.
+- MinorGC도 StopTheWorld를 발생시킨다.
+### Major GC
+- Old Generation에서 발생하는 GC
+### Full GC
+- YoungGeneartion과 OldGeneration을 포함한 모든 Heap을 비운다.
+
+***
 
 ### YoungGeneration
 - Eden영역 1개와 Survivor영역 2개로 나뉜다.
@@ -65,7 +78,7 @@
 ## Old Generation
 - **Young Generation보다 크기가 크며, GC가 적게발생하지만 시간이 오래걸린다.**
 - **Young Generation의 Survivor에서 살아남은 객체가 위치하게 된다.**
-- **Old Generation에서 발생하는 GC를 Major GC라고한다.**
+- **Old Generation에서 발생하는 GC를 **Major GC**라고한다.**
 
 ***
 
@@ -75,10 +88,10 @@
 - Mark&Sweep&Compact 알고리즘 사용 
 - 실무에선 거의 사용 (x)
 
-### 2. Parallel GC (-XX:+UseParallelGC)
+### 2. Parallel GC (-XX:+UsePa*rallelGC)
 - Java8의 Default GC
 - YoungGeneartion을 멀티 스레드 방식 (Old Generation은 아님)
-- SerialGC에 비해서 상대적으로 StopTheWorld가 짧다.
+- SerialGC에 비해서 상대적으로 StopTheWorld가 짧다.*
 
 ### 3. Parallel Old GC(-XX:+UseParallelOldGC / -XX:ParallelGCThreads=n)
 - Parallel Old GC는 Old Generation에도 멀티 스레드 적용

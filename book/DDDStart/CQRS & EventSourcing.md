@@ -1,16 +1,19 @@
 # CQRS
-
 - 복잡한 도메인에 필요하다.
     - 단인Model일 경우, 조회기능의 로딩 속도 향상을 위해 Model이 복잡해진다.
     - 복잡한 도메인일 수록, 변경과 상태조회의 차이로 인해 Model이 불필요하게 복잡해진다.
-- 단일 Model 사용시 복잡도를 줄이기 위한 방법
+    - 도메인 안에서도 모든 기능에 적용 하는 것이 아니다. (부분적으로 적용해도된다.)
+-단일 Model 사용시 복잡도를 줄이기 위한 방법
 - 단일 Model을 상태정보 조회와, 수정을 담당하는 Model로 분리 하는 것.
 - CQRS 적용 시, 각 Model에 맞는 구현 기술을 선택 할 수 있다.
     - 서로 다른 DB를 사용 할 수 도 있다.
         - 이기종간 데이터 동기화는 이벤트 기반으로 구현 가능하다.
     - QueryModel - MyBatis, QueryDSL ...
     - CommandModel - JPA ...
-    - 
+- 읽기 전용 Model의 경우 비정규화가 상당히 진행된 모델이다.
+  - DB에서 한번에 가져오는 걸 목표로 해야한다.(Join 연산 지향)
+  - JSON 포멧 그대로 NoSQL에 박기도한다.
+
 ![CQRS](https://user-images.githubusercontent.com/57896918/156883227-cc557ed6-1e92-4176-9371-05e64ed8b2e2.png)
 
 ## 웹과 CQRS
@@ -60,6 +63,15 @@
   - Event의 발행은 트랜잭션에 묶이지 않는다.
 3. Event 저장소에 저장시킨다. (직렬화 하여 저장하고, 역직렬화하여 사용한다.)
 4. EventHandler가 Event 저장소에 저장된 Event를 재현하여 상태를 수정한다.
+
+### B마트 CQRS 구현 
+https://www.youtube.com/watch?v=fg5xbs59Lro&t=1526s
+1. ELK에 이벤트 로깅
+2. Redis를 버퍼로 사용하여, 이벤트를 저장
+3. 스케줄러를 활용하여, 버퍼에 있는 내용을 모두 꺼낸다.
+4. 조회 Model에 대한 Bulk 연산을 수행한다.
+
+
 ![eventSourcing](https://user-images.githubusercontent.com/57896918/156883209-93405af3-7f02-41dd-bc25-7a9c305ee98f.png)
 
 ## 이벤트 소싱의 낙관적 잠금 (비선점 잠금)
