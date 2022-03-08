@@ -18,6 +18,9 @@
 1. 클라이언트가 각 서비스마다 discovery기능을 구현해야하는 종속성이 생긴다.
 2. 클라이언트와 ServiceDiscovery사이에 의존성이 생긴다.
 
+![ClientSide](https://user-images.githubusercontent.com/57896918/157213562-0d05ae55-0422-4782-89d7-91735c3ec81c.png)
+
+
 ### 2. 서버 사이드 디스커버리
 - 호출되는 서비스 앞에 LoadBalancer를 둔다.
 - LoadBalancer가 Service Discovery를 조회하여 가용 인스턴스를 찾고, 선택해서 요청을 라우팅
@@ -30,6 +33,8 @@
 #### 단점
 1. 배포환경에 LoadBalancer가 포함되어야한다.
 2. ServiceDiscovery가 죽어버리면 전체시스템이 중단된다.
+
+![ServerSide](https://user-images.githubusercontent.com/57896918/157213578-78aa1d0d-5d6f-4bb5-aac1-74a8a89af96b.png)
 
 
 ## Netflix OSS Eureka 
@@ -72,7 +77,6 @@ public class ServiceDiscoveryApplication {
 }
 
 ```
-
 ### EurekaClient
 #### application.yml
 ```yaml
@@ -97,3 +101,5 @@ public class UserApplication {
 }
 
 ```
+![EurekaServer](https://user-images.githubusercontent.com/57896918/157214132-df4827da-e2d3-40c7-9922-75f20d88a21e.png)
+
