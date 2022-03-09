@@ -104,5 +104,6 @@ HTTP의 메소드는 멱등성을 보장한다.(**POST와 PATCH제외**)
 **GOOGLE이 개발한 QUIC 이용
 
 - UDP로 변경
-- 보안강화
+- 보안강화 (TLS 적용)
 - IP가 아닌 Connection ID로 통신을 하여 IP가 바뀌어도 기존 연결을 유지할 수 있음
+- 멀티플렉싱으로 TCP의 한계인 HOL을 극복
