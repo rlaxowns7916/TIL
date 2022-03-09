@@ -42,8 +42,7 @@
     - Request | Response 에 대한 변형 가능
 
 ### 구조
-
-
+![SCG](https://user-images.githubusercontent.com/57896918/157435078-3cec24bc-722f-4632-9e46-2a722436aa63.png)
 
 - GatewayHandlerMapping : 경로가 일치하는지 판단
 - GatewayWebHandler : 요청과 관련된 필터 체인을 통해 요청을 전달
