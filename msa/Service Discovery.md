@@ -103,3 +103,28 @@ public class UserApplication {
 ```
 ![EurekaServer](https://user-images.githubusercontent.com/57896918/157214132-df4827da-e2d3-40c7-9922-75f20d88a21e.png)
 
+
+## RandomPort 지정하기
+- 수동으로 포트를 관리하는 것은 MSA에서 너무 귀찮다.
+- application.yml설정을 통해서 RandomPort를 지정해주면된다.
+
+```yaml
+server:
+  port: 0 #Sprng RandomPort
+```
+
+### RandomPort 문제점
+![0Value](https://user-images.githubusercontent.com/57896918/157397793-4cc5ad09-2e28-4e24-b02b-f5164d04d51c.png)
+여러개의 인스턴스를 띄워도 제대로 동작하지 않는 것을 볼 수 있다.
+
+- Eureka는 EurekaClient명을 
+  `${spring.cloud.client.hostname}:${spring.application.name}:${spring.application.instance_id:${server.port}}}` 로 만든다.
+  - application.yml에 server.port가 0으로 하드코딩 되어있기 때문에 발생한 것이다.
+- `${spring.cloud.client.hostname}:${spring.application.name}:${spring.application.instance_id:${random.value}}`로 바꾸자.
+
+### RandomPort 문제해결
+
+![randomValue](https://user-images.githubusercontent.com/57896918/157399396-934435bc-141c-468b-82f0-fc97ce251cbc.png)
+
+
+
