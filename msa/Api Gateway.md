@@ -111,6 +111,37 @@ public class PostGatewayFilterFactory extends AbstractGatewayFilterFactory<PostG
 
 }
 ```
+### default filter
+- 전역으로 설정되는 필터이다.
+- 기본적으로 맨 앞에 위치하는 필터이다.
+- 순서에 대한 변경은 가능하다.
+#### yaml 설정
+```yaml
+spring:
+  application:
+    name: gateway-service
+  cloud:
+    gateway:
+      default-filters:
+        - name: GlobalFilter
+          args:
+            message: GlobalFilter
+            preFilter: true
+            postFilter: true
+      routes:
+        - id: user-service
+          uri: lb://USER-SERVICE
+          predicates:
+            - Path=/user/**
+          filters:
+            - name: LoggingFilter
+              args:
+                message: LoggerFilter
+                preLogger: true
+                postLogger: true
+```
+#### 결과
+![결과](https://user-images.githubusercontent.com/57896918/157694985-4d157a85-5a00-408d-bcb8-800e9fd61229.png)
 
 ### Service-Discovery 를 통한 LoadBalancing
 #### yaml 설정
