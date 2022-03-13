@@ -89,11 +89,11 @@ HTTP의 메소드는 멱등성을 보장한다.(**POST와 PATCH제외**)
 
 ### HTTP 2
 **표준의 대체가 아닌 확장**
-- Binary Framing Layer
+- Multiplexed Stream
   - Frame단위로 분할, 및 Binary Format
   - 파싱, 전송속도의 상승
   - 오류 발생 가능성 저하
-  - 프레임으로 쪼개져서 가기 떄문에 HOL문제의 해결
+  - 프레임으로 쪼개져서 병렬으로 가기 떄문에 HOL문제의 해결
 - Stream Prioritization
   - 리소스간 우선순위를 설정
 - ServerPush

@@ -1,6 +1,6 @@
 # Redis
 - 영속성을 지원하는 In-Memory 저장소이다.
-  - String, List, Hash, Set, SortedSet의 자료구조를 지원한다. 
+  - String, List, Hash, Set, SortedSet의 자료구조를 지원한다.
 - 읽기 성능 증대를 위한 Replication을 지원한다.
 - 쓰기 성능 증대를 위한 Sharding을 지원한다.
 - ANSI C로 작성되어 있다. (ANSI C Compiler가 있는 곳에서는 동작가능)
@@ -11,6 +11,7 @@
 ### 공통점
 - 캐시 기능을 제공한다.
 - In-Memory 이다.
+- 세션, 캐시 등 기한이 있지만 빠른성능을 요구하는 역할로 사용된다.
 
 ### 차이점
 - MemCached는 LRU알고리즘을 사용, Redis는 6가지의 알고리즘이 존재한다.

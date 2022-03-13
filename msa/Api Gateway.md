@@ -63,9 +63,9 @@ import java.beans.BeanProperty;
 
 @Component
 @Component
-public class PreGatewayFilterFactory extends AbstractGatewayFilterFactory<PreGatewayFilterFactory.Config> {
+public class PreGatewayFilter extends AbstractGatewayFilterFactory<PreGatewayFilterFactory.Config> {
 
-   public PreGatewayFilterFactory() {
+   public PreGatewayFilter() {
       super(Config.class);
    }
 
@@ -88,9 +88,9 @@ public class PreGatewayFilterFactory extends AbstractGatewayFilterFactory<PreGat
 #### 2. PostFilter
 ```java
 @Component
-public class PostGatewayFilterFactory extends AbstractGatewayFilterFactory<PostGatewayFilterFactory.Config> {
+public class PostGatewayFilter extends AbstractGatewayFilterFactory<PostGatewayFilterFactory.Config> {
 
-   public PostGatewayFilterFactory() {
+   public PostGatewayFilter() {
       super(Config.class);
    }
 
