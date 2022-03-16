@@ -3,6 +3,7 @@
 - JPA 일반적인 JOIN은 프록시이기 떄문에, 그때 그때 쿼리가 날라감 
 - SELECT만 영속화 되기때문에 JPQL일반 Join으로는 N+1문제가 해결되지 않는다. (쿼리는 Join을 사용하지만, 영속화(X))
 - JPA는 메소드 이름을보고 JPQL을 생성 (JpaRepository상속 후 메소드 사용시)
+    - ManyToOne에서도 발생한다. (1개(x) ManyToOne에 해당하는 객체를 List로 가져올 떄)
 - JPQL은 글로벌 페치전략을 신경쓰지 않고 SQL생성 (Eager, Lazy 상관없이 둘다 발생)
 
 # Fetch Join
