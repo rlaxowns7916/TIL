@@ -51,3 +51,6 @@
 - JPA를 쉽게 사용하기 위해서 한단계 더 추상화 한 것이다.
 - JPA라는 인터페이스에 의존하므로, 세부 구현체에 대해서는 알지 못한다.
     
+
+## 계층도
+![SpringDataJpa PSA](https://user-images.githubusercontent.com/57896918/158820591-088dc7a8-be16-4a42-a537-98bd7de0f6c8.png)
