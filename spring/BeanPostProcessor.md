@@ -12,7 +12,7 @@ public interface BeanPostProcessor {
 }
 ```
 
-## 처리과정 (+ LifeCycleCallback)
+### 처리과정 (+ LifeCycleCallback)
 1. Bean 대상이되는 객체를 생성한다.
 2. BeanPostProcessor에 전달한다.
 3. postProcessBeforeInitialization를 실행한다.
@@ -20,6 +20,9 @@ public interface BeanPostProcessor {
 5. postProcessAfterInitialization를 실행한다.
 6. 저장소에 전달한다.
 7. 컨테이너 종료 후 소멸 Callback (@PreDestroy)를 실행한다.
+
+
+![빈 생명주기](https://user-images.githubusercontent.com/57896918/158820479-dde3ecaa-e37d-4212-b9a7-d218e3cd989f.png)
 
 
 
