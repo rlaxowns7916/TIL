@@ -1,4 +1,8 @@
 # JPA (Java Persistence API)
+- Java ORM의 표준 명세
+- java.persistence 하위 패키지에 존재한다.
+- 명세이기 떄문에 구현을 갖고있지 않으며, Interface, Enum등이 대부분이다.
+   - 대표적으로 EntityManager가 JPA의 인터페이스이다.
 
 ## JPA 등장 배경
 1. **SQL 의존적개발**
@@ -40,5 +44,10 @@
     3. 패러다임의 불일치 문제 해결 (상속, 객체탐색 그래프, 연관관계 ...)
     4. 성능
     5. 자바 표준
-    
+
+## SpringDataJPA
+- JPA를 사용한다.
+- Repository개념을 사용한다.
+- JPA를 쉽게 사용하기 위해서 한단계 더 추상화 한 것이다.
+- JPA라는 인터페이스에 의존하므로, 세부 구현체에 대해서는 알지 못한다.
     
