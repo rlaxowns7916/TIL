@@ -39,40 +39,9 @@ class ProxyFactoryTest() {
 
 ```java
 package org.springframework.aop;
-
-/**
- * Core Spring pointcut abstraction.
- *
- * <p>A pointcut is composed of a {@link ClassFilter} and a {@link MethodMatcher}.
- * Both these basic terms and a Pointcut itself can be combined to build up combinations
- * (e.g. through {@link org.springframework.aop.support.ComposablePointcut}).
- *
- * @author Rod Johnson
- * @see ClassFilter
- * @see MethodMatcher
- * @see org.springframework.aop.support.Pointcuts
- * @see org.springframework.aop.support.ClassFilters
- * @see org.springframework.aop.support.MethodMatchers
- */
 public interface Pointcut {
-
-    /**
-     * Return the ClassFilter for this pointcut.
-     * @return the ClassFilter (never {@code null})
-     */
     ClassFilter getClassFilter();
-
-    /**
-     * Return the MethodMatcher for this pointcut.
-     * @return the MethodMatcher (never {@code null})
-     */
     MethodMatcher getMethodMatcher();
-
-
-    /**
-     * Canonical Pointcut instance that always matches.
-     */
-    Pointcut TRUE = TruePointcut.INSTANCE;
 }
 ```
 
@@ -89,17 +58,6 @@ package org.aopalliance.intercept;
 
 @FunctionalInterface
 public interface MethodInterceptor extends Interceptor {
-
-    /**
-     * Implement this method to perform extra treatments before and
-     * after the invocation. Polite implementations would certainly
-     * like to invoke {@link Joinpoint#proceed()}.
-     * @param invocation the method invocation joinpoint
-     * @return the result of the call to {@link Joinpoint#proceed()};
-     * might be intercepted by the interceptor
-     * @throws Throwable if the interceptors or the target object
-     * throws an exception
-     */
     @Nullable
     Object invoke(@Nonnull MethodInvocation invocation) throws Throwable;
 
@@ -136,41 +94,16 @@ import org.springframework.lang.Nullable;
 public class DefaultPointcutAdvisor extends AbstractGenericPointcutAdvisor implements Serializable {
 
 	private Pointcut pointcut = Pointcut.TRUE;
-
-
-	/**
-	 * Create an empty DefaultPointcutAdvisor.
-	 * <p>Advice must be set before use using setter methods.
-	 * Pointcut will normally be set also, but defaults to {@code Pointcut.TRUE}.
-	 */
+    
 	public DefaultPointcutAdvisor() {
 	}
-
-	/**
-	 * Create a DefaultPointcutAdvisor that matches all methods.
-	 * <p>{@code Pointcut.TRUE} will be used as Pointcut.
-	 * @param advice the Advice to use
-	 */
 	public DefaultPointcutAdvisor(Advice advice) {
 		this(Pointcut.TRUE, advice);
 	}
-
-	/**
-	 * Create a DefaultPointcutAdvisor, specifying Pointcut and Advice.
-	 * @param pointcut the Pointcut targeting the Advice
-	 * @param advice the Advice to run when Pointcut matches
-	 */
 	public DefaultPointcutAdvisor(Pointcut pointcut, Advice advice) {
 		this.pointcut = pointcut;
 		setAdvice(advice);
 	}
-
-
-	/**
-	 * Specify the pointcut targeting the advice.
-	 * <p>Default is {@code Pointcut.TRUE}.
-	 * @see #setAdvice
-	 */
 	public void setPointcut(@Nullable Pointcut pointcut) {
 		this.pointcut = (pointcut != null ? pointcut : Pointcut.TRUE);
 	}
