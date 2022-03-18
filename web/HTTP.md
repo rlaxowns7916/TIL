@@ -4,10 +4,16 @@
 
 ## HTTP 특징
 1. Stateless
-2. Connectionless (1 Connection == 1 File)
-3. 거의 모든형태의 데이터를 주고 받는 것이 가능 
-4. Request <  -- > Response 구조
-5. 캐시 가능 
+    - 확장성 측면에서 유리하다. (장점)
+    - Client에서 추가적인 데이터 전송이 필요하다 (단점)
+2. Client <- > Server구조 
+3. Connectionless (1 Connection == 1 File)
+4. 거의 모든형태의 데이터를 주고 받는 것이 가능
+    - JSON,XML
+    - Image,File
+    - HTML,TEXT
+5. Request <  -- > Response 구조
+6. 캐시 가능 
 
 
 ## Http Method
@@ -41,47 +47,47 @@ HTTP의 메소드는 멱등성을 보장한다.(**POST와 PATCH제외**)
 1. POST: 두 번 호출 시, 같은 결제가 중복해서 발생한다. (그 때마다 다른 Response를 주게 될 것)
 2. PATCH: 구현에대한 표준 제약이없다.<br>그렇기 때문에 구현방식에 따라서 보장 할수도 보장하지 못할 수도 있다.
 
+## StartLine
+- Request에서의 첫번째 영역
+- HttpMetod, RequestTarget, HttpVersion으로 구성되어 있다.
+```text
+GET /search HTTP/1.1
+```
+## StatusLine
+- Response에서의 첫번째 영역
+- HttpVersion, StatusCode, StatusText로 구성되어 있다.
+```text
+HTTP/1.1 404 Not Found
+```
 
-## HTTP 메세지
-[Header]
-- GET / HTTP1.1 (HTTP메소드, HTTP 버전)<br>
-(이름이 생략되면 보통 index.html(apache 계열) || default.html(iis 계열)))
+## HTTP Header 
+- Http전송에 필요한 부가정보를 포함한다.
+### HTTP Header 종류
+1. Content-Type: 전송하는 Body의 형태
+2. Content-Length: 
+3. Connection: 연결상태 
+4. Content-Language: 사용자와 잘어울리는 실제 언어
+5. Date: 날짜
+6. Host: 요청을 받는 측 (Server)에 대한 호스트 및 포트 번호
+7. User-Agent: 클라이언트 소프트웨어 (브라우저,OS 등)의 정보<br>
 
 
-- HTTP/1.1 200 OK (상태코드)
+등등이 있다.
 
-
-- content-length (파일 길이) // 네트워크에선 확장자 개념이 없다.<br>
-  텍스트 파일의 경우 생략 가능(EOF) , 바이너리 파일은 필수
-
-
-- content-type (파일 내용)
-
-(헤더와 바디 구분은, 빈줄 2개 \r\n\r\n)
-
-[Body]
-
-## HTTP 에서 파일을 다운로드 하는법
-**기존에는 하나의 Connection에서 하나의 File을 다운로드(GET)**
-
-### 개선 
-- 세션 : 하나의 세션을 열어 여러 파일 다운로드
-
-- TCP keep-alive 
-   - 일정시간동안 연결을 끊지 않음
-   - 새로운 연결을 만들지않고, 기존 연결을 재활용
-   - 한페이지를 다운로드 받는데 하나의 연결을 사용
-   
-- HTTP/1.1
- - 여러개의 파일을 동시에 요청 (Multiple GET)
-
+## HTTP  Body
+- 응답 및 요청에 해당하는 본문 
 
 ## 버전
+### HTTP 0.9
+- GET메소드만 지원
+- Header가 존재하지 않음
+
 ### HTTP 1.0
 - 헤더가 생김
 - 여러가지 파일 타입을 전송가능 (헤더의 Content-Type)
 
 ### HTTP 1.1
+- TCP 기반
 - Persistent Connection (지정한 시간동안 Connection을 닫지 않음)
 - Pipelining (한번에 여러개의 요청을 같이보내고 순서에맞춰 응답여러개를 받음)
   - HeadOfLine: 첫번째 순서의 요청이 오래걸리면 그 뒤의 것들이 실행되지못함
@@ -89,6 +95,7 @@ HTTP의 메소드는 멱등성을 보장한다.(**POST와 PATCH제외**)
 
 ### HTTP 2
 **표준의 대체가 아닌 확장**
+- TCP 기반
 - Multiplexed Stream
   - Frame단위로 분할, 및 Binary Format
   - 파싱, 전송속도의 상승
@@ -101,7 +108,7 @@ HTTP의 메소드는 멱등성을 보장한다.(**POST와 PATCH제외**)
 - Header Compression: 헤더의 크기를 줄여서 페이지 로드 시간 감소
 
 ### HTTP 3
-**GOOGLE이 개발한 QUIC 이용
+**GOOGLE이 개발한 QUIC 이용**
 
 - UDP로 변경
 - 보안강화 (TLS 적용)

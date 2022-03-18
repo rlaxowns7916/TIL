@@ -18,16 +18,17 @@
 
 
 ## ServletContainer
+- TomCat
 - Servlet을 담는 상자(Servlet의 생명주기를 관리)
 - MultiThreading 관리
 - 보안관리
-- 웹서버와의 통신기능 제공
+- 웹서버와의 통신기능 제공 (소켓 생성 및 listen(), accept() 등 제공)
 - **URL에 따른 올바른 서블릿에 요청을 매핑해주고, 생성된 결과를 올바른 곳에 전달 해주는 역할**
 
 
 ## DispatcherServlet
 - SpringMVC에서 사용
-- FrontController패턴으로 구현 (요청을 받는 하나의 서블릿이 앞단에 위치)
+- FrontController패턴으로 구현 (모든 요청을 받는 하나의 서블릿이 앞단에 위치)
 - 들어오는 모든 요청 Handling 및 Handler 매핑 (일일이 web.xml에 설정해주지 않아도된다.)
 - 공통작업 처리
 

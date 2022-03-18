@@ -7,43 +7,72 @@
 
 ## Aop 구현체
 - SpringAop
-  - 프록시 기반 Aop
-    - SpringBean에만 적용가능  
-      - 기존 Bean이 ProxyBean으로 교체
+  - 프록시 기반 Aop 
+    - 원본 코드, 바이트코드를 조작하지 않기 때문에, Method에만 가능하다.
+  - AspectJ를 차용하고, 부분적으로 제공한다.
+    - @Aspect 에노테이션을 자동으로 읽어, PointCut과 Advice를 자동으로 Advisor로 등록한다.
+  - SpringBean에만 적용가능
     - DynamicProxy (런타임 시점에 프록시를 만드는 기법)를 사용해서 구현
       - Java가 제공하는 기본 방법은 인터페이스 기반 프록시 생성기법
-      - CGlib은 클래스 기반도 지원 
-  - 에노테이션 기반 Aop
+      - CGlib은 클래스 기반도 지원
 - AspectJ 
+  - 실제코드에 조작이 일어나기 때문에, Method 뿐만 아니라, 생성자, 필드 등에 AOP 적용이 가능하다. 
+  - 컴파일 시점 AOP
+    - 부가적인 컴파일러 설정이 필요하다.
+    - Java파일을 Class파일로 변경 하는 시점에 바이트코드 조작을 통해서 Weaving
+  - 런타임 시점 AOP
+    - Class파일에는 나타나지 않으나, JVM메모리 상에 Weaving
+    - ClassLoader가 Class 정보를 Method 영역에 올릴 때 Weaving
+    - ClassLoader에 대한 설정이 필요하다.
 
 ### Spring Aop vs AspectJ
 ![스크린샷, 2021-12-14 12-19-52](https://user-images.githubusercontent.com/57896918/145927167-5b350b9e-5aa3-4d2a-b08c-4a6761ff6aca.png)
 
-## Aop 주요 용어
- - **Aspect** : CrossCutting Concern을 모듈 화 한 것 (Advice + Target)
- - **Target** : Aspect를 실제로 적용 하는 곳(Method, Class ...)
- - **Advice** : 실질적인 부가기능을 담은 구현체 
- - **JoinPoint** : Advice가 적용될 위치 --> 끼어드는 지점 
- - **PointCut** : JoinPoint를 상세화 한것 (표현식으로 주로 지정)
- - **Weaving** : 중심로직에 영향을 끼치지 않으면서 PointCut에 Advice를 삽입하는 것을 말함함
-***
-
-## Aop 적용 시점
-- 컴파일 시점
-  - Java파일을 Class파일로 변경 하는 시점에 바이트코드 조작을 통해서 Weaving
-- 로드 시점
-  - Class파일에는 나타나지 않으나, JVM메모리 상에 Weaving 
-- 런타임 시점
-  - SpringAop가 사용하는 방식
-  - ProxyBean을 만들고, 이 ProxyBean이 Aop가 적용됨
-
-
 # Spring Aop
+- AspectJ의 문법을 차용한다.
+- AspectJ의 문법만 사용할 뿐 사용하는 것이 아니다.
+- Proxy 기반으로 동작한다.
+- SpringBean에만 동작한다.
 
 ### 의존성
 ```groovy
 implementation 'org.springframework.boot:spring-boot-starter-aop'
 ```
+## Aop 주요 용어
+- **Aspect** : CrossCutting Concern을 모듈 화 한 것 ((Advice + Target)이 여러개 존재 할 수 있다.)
+- **Target** : Aspect를 실제로 적용 하는 곳(Method, Class ...)
+- **Advice** : 실질적인 부가기능을 담은 구현체
+- **JoinPoint** : Advice가 적용될 위치 --> 끼어드는 지점 (AOP가 적용될 수 있는 모든 지점)
+- **PointCut** : JoinPoint를 상세화 한것 (표현식으로 주로 지정)
+- **Weaving** : 중심로직에 영향을 끼치지 않으면서 PointCut에 Advice를 삽입하는 것을 말함함
+***
+
+
+## @Aspect
+- @Aspect Class안에 여러개의 Advice + PointCut 로직이 존재 할 수 있다.
+- BeanFactoryAspectJAdvisorsBuilder 에서 PointCut,Advice,Advisor를 생성하고 보관한다.
+  - 이후에는 BeanPostProcessor에서 AdvisorBean과 @AspectAdvisor를 조회하고 로직에 따라서 ProxyBean이 생성되고 등록된다.
+- @Aspect 내부의 메소드는 하나의 Advisor로 동작하게된다.
+```java
+@Aspect
+public class LogAspect{
+  /**
+   * PointCut역할
+   */
+    @Around("execution(* sample.app..*(..))")
+    /**
+     * Advice 역할
+     */
+    public Object execute(ProceedingJoinPoint pjp){
+        //BeforeAdvice
+        Object result = pjp.proceed();
+        //AfterAdvice
+        return result;
+    }
+}
+```
+
+
 
 ## Advice의 종류
 - @Around : JoinPoint의 앞과 뒤에서 실행되는 Advice
