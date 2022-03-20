@@ -23,6 +23,12 @@
   - CacheProvider를 구현하는  Third-Party라이브러리를 통해서 구현가능하다.
 - Heap영역에 존재한다.(DB보다 빠른 이유)
 
+## CacheConcurrencyStrategy
+![CacheConcurrencyStarategy](https://user-images.githubusercontent.com/57896918/159160348-89d8333c-4852-40c3-85f5-2aefd3c473a5.png)
+
+## CacheMode
+![캐시모드](https://user-images.githubusercontent.com/57896918/159160366-63327cd2-3620-4ded-a14a-dbb9aac05620.png)
+
 
 ## 2차 캐시 구현체
 ### 1. HashTable
