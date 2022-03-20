@@ -9,11 +9,15 @@
 - 흐름을 제어한다.
 - 혼잡을 제어한다.
 
+## TCP Header
+![TCP Header](https://user-images.githubusercontent.com/57896918/159167310-845174f6-cf7a-47cc-86cf-b8cc2be6246c.png)
+
 ## 연결지향
 
 ### 3Way-HandShake
 - TCP에서 연결을 맺는 과정이다.
 
+![3way-handshake](https://user-images.githubusercontent.com/57896918/159167298-8b71e1f5-6357-4236-bb0c-a47529d4556b.png)
 
 ### 가상회선
 - 3Way-HandShake를 통해서 생성된 논리적인 연결이다.
@@ -22,6 +26,10 @@
 
 ### 4Way-HandShake
 - TCP에서 연결을 끊는 과정이다.
+
+![4WayHandshake](https://user-images.githubusercontent.com/57896918/159167315-ea91ef90-6b6f-4962-9178-4b2623dcdd82.png)
+
+
 
 ## 오류제어
 - 오류가 발생하면 재전송을 통해서 신뢰성 있는 통신을 보장한다.
@@ -72,3 +80,7 @@
 - 속도가 빠르다.
 - 실시간 스트리밍등에 주로 사용된다.
 - 헤더가 TCP에 비해 간소화 되어 있다.
+
+## UDP Header
+![UDP Header](https://user-images.githubusercontent.com/57896918/159167336-e49ca39d-79fc-480f-a5d8-f96cb93a087f.png)
+
