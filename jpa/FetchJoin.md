@@ -7,6 +7,7 @@
     - Repository의 findById(단건조회)는 em.find()를 사용한다.
   - 식별자를 통한 검색이 아닌, findBy()의 경우 메소드 네이밍으로 JPQL을 생성하기 떄문에 N+1이 발생한다.
 - JPQL은 글로벌 페치전략을 신경쓰지 않고 SQL생성 (Eager, Lazy 상관없이 둘다 발생)
+- 메모리와의 Trade-off 이다.
 
 # Fetch Join
 - **JPQL에서 성능 최적화를 위해서 제공하는 기능**
@@ -19,8 +20,9 @@
 SELECT m FROM Member m join fetch m.team
 ```
 
-**JOIN되는 ROW의 갯수와 똑같이 나온다 (SQL과 유사)**
-
+- **JOIN되는 ROW의 갯수와 똑같이 나온다 (SQL과 유사)**
+  - 결국 내부적으로 SQL Inner Join을 사용하기 떄문이다.
+  - distinct를 통해서 중복을 제거해야한다.
 ## DISTNICT
 **SQL DISTINCT에 추가적인 기능**
 

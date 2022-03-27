@@ -1,8 +1,14 @@
 # Index
 **RDBMS에서 검색속도를 높이기위한 기술**
-- Index파일을 만들어서 따로 저장 (추가 공간 필요)
+- Index파일을 만들어서 따로 저장 
+  - 추가공간이 필요하다. (DB 용량의 약 10%) 
+  - 데이터와 데이터의 위치를 저장한다.
 - Table FullScan이아니라, 인덱스파일을 보고 빠르게 검색
 - CUD시의 성능저하가 발생한다.
+  - CREATE - 데이터에 맞는 Index 생성
+  - DELETE - Index를 사용하지 않는다는 작업을 수행한다.
+    - Index에는 Delete 개념이 없다.
+  - UPDATE - Index를 사용하지 않는다는 작업을 수행 후, 새로운 Index를 매핑한다.
 - 제약조건이 없으면 생성되지 않는다. (PrimaryKey or Unique)
 - 선택성(Selectivity)가 중요하다
   - 중복이 많아서는 안된다.                                                  
@@ -51,13 +57,14 @@
   - 테이블에 이미 ClusteredIndex가 있으면 PK가 NonClusteredIndex가된다.
 
 ### 2. NonClustered Index
-- 물리적으로 데이터를 정렬하지 않은 상태이다. (key값만 정렬되어 있다.)
+- Key값만 정렬되어 있고, Data는 정렬되어 있지 않다.
 - 테이블 당 여러개가 존재한다.
+  - 최대 249개 생성이 가능하다.
 - ClusteredIndex보다 검색은 느리지만, 삽입,수정,삭제는 빠르다.
+  - SEARCH : Index 검색 후 실제 데이터위치를 확인하여 접근하기 떄문이다.
+  - CUD: 실제 Data를 정렬하지 않기 때문이다.
 - NonClusterdKey는 정렬되지않는다. (포인터 형식)
 - leaf에 실제 데이터의 주소가 저장된다. 
-
-
 
 ## 인덱스를 사용해야 할 지점
 1. where절에 주로 사용돠는 Column

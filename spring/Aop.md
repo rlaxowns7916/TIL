@@ -135,12 +135,13 @@ public class LogAspect {
 ### 명시 가능 PointCut
 
 - execution: Advice를 적용할 메소드를 지정할 때 사용
-    - **execution(\[수식어] 리턴타입 \[클래스이름].이름(파라미터)))**
+    - **execution(\[수식어] 리턴타입 \[FQCN].메소드이름(파라미터) \[예외]))**
         - 수식어: public, private 등 (Optional)
         - 리턴타입: 메소드의 리턴타입
         - 클래스이름: FQCN (Optional)
         - 이름: 메소드의 이름을 지정
         - 파라미터: 메소드의 파라미터 지정
+        - 예외(Optional)
         - \"*" : 모든 값을 의미
         - \"..": 0개이상을 의미
       ```
