@@ -39,6 +39,10 @@
 - 연구목적으로 사용되는 Class (Reserved)
 - 실제 사용되는 경우는 없다.
 
+![IP Class](https://user-images.githubusercontent.com/57896918/160407150-3e29a844-c563-4723-aebb-787ce9259222.png)
+
+
+
 ## 문제점
 - 영역을 나누어서 효율적으로 관리할 수 있었으나, 각 Class마다 Host개수의 차이가 너무컸다.
 - Host영역이 과도하게 남는 경우가 발생하였다.
