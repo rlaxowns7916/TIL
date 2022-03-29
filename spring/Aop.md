@@ -143,7 +143,8 @@ public class LogAspect {
         - 파라미터: 메소드의 파라미터 지정
         - 예외(Optional)
         - \"*" : 모든 값을 의미
-        - \"..": 0개이상을 의미
+        - \".": 정확하게 하나를 의미 (파라미터는 1개, 패키지는 정확하게 해당위치)
+        - \"..": 0개이상을 의미 (파라미터는 0~N, 패키지는 해당 패키지 + 하위패키지)
       ```
       execution(public Integer com.example.study.*.*(*))
        - com.exmample.study 패키지에 속해있고, 파라미터가 1개인 모든 메서드
