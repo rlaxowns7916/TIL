@@ -155,7 +155,18 @@ public class LogAspect {
       execution(* com.example.study..*Controller.*(..))
       - com.example.study 패키지 및 하위 패키지에 속해있고, 이름이 Controller르 끝나는 클래스의 파라미터가 0개 이상인 모든 메서드
       ```
-- within: 특정타입에 속하는 메소드를 JoinPoint로 지정 할 때 사용
+- within: 특정타입 (패키지 하위 클래스 및 클래스)에 속하는 메소드를 JoinPoint로 지정 할 때 사용
+  - 특정 클래스에 정확하게 일치하는 것이다.
+  - 특정 클래스에 속하는 모든 메소드 모두가 PointCut이다.
+```java
+@Pointcut("within(com.example.app.*)") //com.exmaple.app 패캐지의 모든 메소드가 PointCut
+@PointCut("within(com.example.app..*") //com.exmaple.app 패캐지 및 하위패키지의 모든 메소드가 PointCut
+@PointCut("within(com.example.app.SomeService") //com.exmaple.app.SomeService의 모든 메소드가 PointCut
+```
+- target: 특정 타입과 부모 타입에 속하는 모든 메소드를 JoinPoint로 지정한다.
+```java
+
+```
 - bean: Spring Bean을 이용하여 JoinPoint 지정
 
 #### @Pointcut 분리하기
@@ -184,3 +195,9 @@ public class LogAspect {
 
 ```
 
+## 주의해야 할점
+- PointCut은 최대한 범위를 줄여야한다.
+- Spring AOP는 런타임에 프록시를 통해서 구성된다.
+  - 우선 프록시를 생성해야 AOP 적용여부를 판단 할 수 있다는 의미이다.
+- final이 붙어있다면 프록시 생성이 불가능한 에러가 발생한다.
+  - 실제 적용되는 범위만으로 제한하여, 이러한 문제를 예방해야 한다.
