@@ -8,3 +8,4 @@
   - 서브넷은 앞에서부터 1의 개수이고, 네트워크 영역이다.
   - 나머지 0의 개수는 Host 영역 이다.
 
+![CIDR](https://user-images.githubusercontent.com/57896918/160597364-d9b69939-c71b-4b73-9eb6-43a249696542.png)
