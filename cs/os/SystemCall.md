@@ -1,4 +1,5 @@
 # 시스템 콜(SystemCall)
+- UserMode에서 KernelMode의 기능에 접근 가능하게 한다.
 ```text
 시스템 호출(system call)은 운영 체제의 커널이 제공하는 서비스에 대해, 
 응용 프로그램의 요청에 따라 커널에 접근하기 위한 인터페이스이다. 
