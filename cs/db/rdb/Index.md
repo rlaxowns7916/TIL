@@ -14,9 +14,13 @@
   - 중복이 많아서는 안된다.                                                  
 
 ## 인덱스 알고리즘
+- HashTable은 O(1)인데 왜 B+Tree, B-Tree를 사용하는가?
+  - 단일 접근은 HashTable이 빠르다.
+  - 부등호 쿼리 (범위)에서는 HashTable은 정렬이되어있지 않기 떄문에 더 오래걸린다.
 
 ### 1. B+ Tree
 - B-Tree의 확장모델
+  - 당연히 정렬되어있다.
 - IndexNode와 LeafNode로 구성
   - BranchNode에 데이터를 저장하지 않기 때문에, 더 많은 포인터 저장 가능 (전체적인 depth가 낮아짐) 
 - LeafNode에 데이터가 저장됨 (다른 노드들에 데이터가 저장안되기 떄문에 메모리 효율성)
@@ -26,6 +30,7 @@
 
 #### cf) B-tree
 - BinaryTree의 확장
+  - 당연히 정렬되어있다.
 - RootNode, BranchNode, LeafNode로 구성된다.
   - BranchNode와 LeaftNode에 데이터 저장 가능 
   - BranchNode에 데이터를 저장하기 때문에 B+Tree에 비해 Depth가 깊어질 수 있으나,
