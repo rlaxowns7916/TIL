@@ -19,11 +19,28 @@
 - 구현이 어렵다.
 - 빠른 응답이 가능하다.
 
+| 알고리즘                         | Network 당 Host 수                                                                                                     |
+|------------------------------|----------------------------------------------------------------------------------------------------------------------|
+| SRT (ShortestRemainingFirst) | ReadyQueue에 도착한대로 CPU를 할당한다.                                                                                         | 
+| RR (RoundRobin)              | 시간할당량(TimeSlice) 안에 작업을 마치지 못하면 다시 ReadyQueue로 보낸다. <br/> 시간할당량의 크기가 크면 FCFS와 유사해진다. <br/> 시간할당량의 크기가 작으면 오버헤드가 커진다. |
+| MultiLevel-Queue             | 프로세스를 그룹으로 나눌 수 있을 경우, 그룹마다 Ready 큐를 배치하는 것이다.                                                                       |
+| Multi level Feedback Queue   | MultiLevelQueue의 방법에서, Ready Queue를 옮겨다닐수 있는 방법이다.                                                                   |
+
+
 ### NonPreemptive Scheduling
 - 자원을 강제로 뺏을 수 없다.
 - 작업이 실행중 이라면, 끝날 때 까지 계속 지속된다. (자발적으로 CPU 자원을 Release 한다.)
 - 구현이 쉽다.
 - 공정하다
+
+| 알고리즘                            | Network 당 Host 수                                                           |
+|---------------------------------|----------------------------------------------------------------------------|
+| FCFS(FirstComeFirstServe)       | ReadyQueue에 도착한대로 CPU를 할당한다.                                               | 
+| SJF (ShortJobFirst)             | ReadyQueue에 대기중인 프로세스 중에서, 실행 시간이 가장 짧은 프로세스에게 할당해준다.<br/>평균 대기시간을 최소화 한다. |
+| HRN (HighestResponse-Ratio Next) | 서비스를 받을 시간과 대기중인 시간으로 결정되는 우선순위로 결정한다 <br/> 우선순위 = (대기시간 + 서비스시간) / 서비스시간  |
+| Priority                        | 우선순위에 따라 CPU를 할당해준다.<br/> Aging 기법 (무기한 방치를 예방한다.)                         |
+
+
 
 ## LogTerm vs MidTerm vs ShorTerm
 
