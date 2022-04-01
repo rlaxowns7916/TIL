@@ -4,6 +4,8 @@
 - PDU로 Segment를 사용한다.
 - 연결 지향형이다.
   - 3Way-HandShake를 통한 통신 연결을 하고, 4way-HandShake로 연결을 해제한다.
+- Byte Stream
+   - 연속적인 Byte 열을 보낸다.
 - 데이터의 순차적인 전송을 보장한다.
 - 오류를 제어한다.
 - 흐름을 제어한다.
