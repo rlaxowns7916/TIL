@@ -40,6 +40,7 @@
 ### 2. Avoidance (회피)
 - 요청이 들어왔을 떄, 자원을 할당해 주었다고 가정하고 DeadLock 발생 유무를 체크한다.
 - DeadLock 발생 가능성이 있다면 자원이 있어도 할당 해주지 않는다.
+- 은행원 알고리즘 (Banker's Algorithm)
 
 ### 3. Detection (탐지)
 - DeadLock 발생을 감지하고 회복시킨다.
