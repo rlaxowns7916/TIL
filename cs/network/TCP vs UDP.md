@@ -47,12 +47,17 @@
 - NAK을 수신한 송신측은 재전송한다.
 - 타임아웃이 발생하면 일정기간을 두고 재전송한다.
 - ACK 혹은 NAK를 받을 때 까지 데이터를 전송하지 않기 떄문에 전송효율이 떨어진다.
+- 
+![stop   wait](https://user-images.githubusercontent.com/57896918/163091486-c7b440c8-48e5-459c-adc2-8ce1894aa3b8.png)
 
 ### 2. Go Back N ARQ
 - 전송된 프레임이 손상되거나 유실될 경우, 마지막으로 ACK를 받은 프레임 이후로 모두 다시 재전송하는 기법이다.
 - NAK 수신
 - TimeOut
 - 송신측의 프레임 유실 (수신측에서 프레임 1, 3을 받을 경우 3을 폐기하고 NAK2를 전송한다.)
+
+![GBN](https://user-images.githubusercontent.com/57896918/163091500-11209de5-ad97-49f8-ace4-6429e0e8708c.png)
+
 
 ### 3. Selective Repeat ARQ
 - GoBackN의 단점을 개선한 것이다.
@@ -61,7 +66,7 @@
   - 별도의 버퍼를 필요로 한다.
   - 폐기를 하지 않기때문에 재정렬을 수행할 버퍼가 필요한 것이다.
 
-
+![SR](https://user-images.githubusercontent.com/57896918/163091673-f3eb544f-39f3-4f3d-b0e6-f8df0a0213b1.png)
 
 ## 흐름제어
 - 송신 측의 송신속도를 제어한다.
