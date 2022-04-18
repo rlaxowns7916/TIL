@@ -19,12 +19,11 @@
 - 예비요청 통과시 본요청 발송
 - 매번 예비요청을 던지는걸 막기위해 캐시적용이 가능하다.
 
-### 2. Simple Requestz
+### 2. Simple Request
 **동작 과정**
 - Access-Control-Allow-Origin Header를 통해서 검증
 - Client요청에 Server는 Access-Control-Allow-Origin을 응답으로 내려준다.
 - 브라우저는 Server가 내려준 값을 통해서  CORS위반인지 아닌지를 검사한다.
-- CustomHeader 사용가능
 
 **동작 조건**
 - 요청은 GET,HEAD,POST 중 하나여야한다.
