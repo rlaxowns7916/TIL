@@ -1,8 +1,13 @@
 # Reflection
 
+### 사용처
+1. Intellij 자동완성 (IDE)
+2. Spring의 DI, AOP 등등
+3. 직렬화 라이브러리
+
 ### **JVM에서 실행되는 어플리케이션을 동적으로 검사하거나 수정할 수 있는 기능**
 - 리플랙션은 주로 Class<T>의 접근으로 이루어진다.
-- Class<T>는 ClassLoader가 클래스를 로딩한 후 Class<T> 클래스를 heap 영역에 올린다.
+- Class<T>는 ClassLoader가 클래스를 로딩한 후 Class<T> 클래스를 method 영역에 올린다.
 - 동적으로 접근해서 Runtime오류가 발생하기 때문에 에러에 취약하다.
 ### Class<T>에 접근하는 방법
 
