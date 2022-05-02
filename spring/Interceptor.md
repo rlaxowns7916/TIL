@@ -2,8 +2,8 @@
 
 - **Controller로 들어오는 HttpRequest와 응답하는 HttpResponse를 가로채는 역할**
 - **Filter < -- > Servlet < -- > Interceptor < -- > Aop < -- > Controller**
-- **Request와 Response를 가로채서 추가 작업을 할 수 있다.**
-
+- **Servlet 단위로 실행된다.**
+- **ServletRequest와 ServletResponse를 가로채서 추가 작업을 할 수 있다.**
 
 ## Interceptor 사용법
 ### 1. HandlerInterceptor 인터페이스 구현
@@ -27,7 +27,7 @@ public class PracticeInterceptor implements HandlerInterceptor {
 }
 
 ```
-- preHandle: Controller 호출 이전에 작동 (false면 Controller로 가지않고, true면 Controller 실행)
+- preHandle: Controller 호출 이전에 작동 (false면 작업 중지, true면 다음 단계 실행)
 - postHandle: Controller 호출 이후에 작동
 - afterCompletion: 전체요청이 끝난 후 
 

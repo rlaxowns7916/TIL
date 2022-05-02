@@ -1,11 +1,13 @@
 # Filter
+- **CrossCuttingConcern을 해결하기 위한 방법이다.**
 - **스프링의 독자적인 기능이 아닌, Servlet에 정의된 기능**
 - **필터 체인을 통해 연속적인 기능 제공 가능**
+  - 체인의 마지막에는 클라이언트가 실제 요청한 자원이 위치한다.
 - **DispatcherServlet의 앞단에서 동작**
 - **리소스 체크 및 변경을 수행 가능하다.**
 - **일반적으로 인코딩, CORS, XSS, LOG, 인증, 권한 등 을 구현**
-
-**스프링의 도움을 얻기 힘듬, 주로 넘어오는 리소스 그자체에 대한 판단 및 처리가 가능할 때 사용하는 듯**
+- **ServletRequest / ServletResponse에 대한 조작이 가능하다.**
+- **Servlet 단위로 실행된다.**
 
 ## Filter 구현 및 등록
 
@@ -17,9 +19,13 @@ public class PracticeFilter implements Filter {
 		
 	}
 
+    /**
+     * doFilter 메소드로 다음 필터에 Request,Response를 넘겨준다.
+     * ServletRequest와 ServletResponse를 직접 넘겨주기 떄문에 조작이 가능하다.
+     */
 	@Override
 	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
-		
+		chain.doFilter(request,response);
 	}
 
 	@Override
@@ -86,3 +92,11 @@ public class PracticeFilter implements Filter {
 - ***\@Component 추가시 Filter가 추가되지만 URLPattern이 먹지 않는다.***
 - ***SpringBean을 통해서 사용할 일이 있으면, \@WebFilter 사용하지 말자***
 
+### 3. Filter에는 SpringBean을 사용 할 수 없다?
+- 스펙상으로는 Spring Container의 기능이 아닌 Servlet의 기능
+- DelegatingFilterProxy를 사용하여 SpringBean을 주입받을 수 있다.
+
+#### DelegatingFilterProxy
+- Filter 구현체를 SpringBean으로 등록한다.
+- 구현체를 갖는 Proxy(Delegating FilterProxy)를 Filter에 등록한다.
+- 실제 요청이 올 때, 구현체에게 요청을 위임한다.
