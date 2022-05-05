@@ -16,6 +16,9 @@
   - 보조 Hash함수를 사용한다.
 - Thread-Safe하지 않다.
 - 지속적으로 개선되고 있다.
+- Synchronized 키워드를 붙인 Wrapping한 HashMap도 존재한다.
+  - Collection 수준의 Lock을 얻는다 (get, put)
+  - 하나의 쓰레드가 Lock을 얻으면 다른 쓰레드는 사용 할 수 없다. (Collection 수준의 Lock)
 
 # ConcurrentHashMap
 - HashMap이 Thread-Safe 한 것이다.

@@ -8,6 +8,12 @@
 - PrivateNetwork에 소속된 하드웨어 끼리는 PrivateIP로 통신한다.
 - 사설망에서 사용되는 IP (PrivateIP)는 사설망에서만 유효하며, 공용망에서는 사용이 불가능하다.
 
+## PublicNetwork란?
+- 일반적인 공용 인터넷 환경
+- Public Network에서 제공되는 Ip를 Public Ip라고 한다.
+  - ISP(InternetServiceProvider)가 제공한다.
+- 중복 없이 관리된다.
+
 ## NAT 사용의 장점
 1. IP 주소 절약
     - 하나의 PublicIP로 여러대의 Host가(PrivateIP를 사용하는) 인터넷에 접속 할 수 있다.
