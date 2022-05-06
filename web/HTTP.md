@@ -95,6 +95,7 @@ HTTP/1.1 404 Not Found
 
 ### HTTP 2
 **표준의 대체가 아닌 확장**
+- 2015년에 만들어졌다.
 - TCP 기반
 - Multiplexed Stream
   - Frame단위로 분할, 및 Binary Format
