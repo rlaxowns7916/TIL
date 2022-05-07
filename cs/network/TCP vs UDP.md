@@ -30,6 +30,8 @@
 - TCP에서 연결을 끊는 과정이다.
 - ACK와 동시에 FIN을 보내지 않는 이유는 아직 전송하지 않은 패킷들을 전송 한 후 FIN을 보내기 위함이다.
 
+![4way handshake](https://user-images.githubusercontent.com/57896918/167259506-05d908f8-4b1d-43ac-8adf-2c0073e33b53.png)
+
 
 
 ## 오류제어
