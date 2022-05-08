@@ -110,9 +110,15 @@ HTTP/1.1 404 Not Found
 - Header Compression: 헤더의 크기를 줄여서 페이지 로드 시간 감소
 
 ### HTTP 3
-**GOOGLE이 개발한 QUIC 이용**
+**GOOGLE이 개발한 QUIC(Quick Udp Internet Connection) 이용**
 
 - UDP로 변경
+  - UDP로 속도 향상 (TCP에 비해서 Latency를 줄임)
+    - 이론적으로 RTT(RoundTripTime)가 0 이다. (vs TCP 평균 4.5 RTT)
+    - TCP의 Connection 수립, SSL 암호화등의 작업이 필요없기 때문이다.
+  - 새로운 응용계층 프로토콜 개발 시 빠르게 배치 가능 
+- 신뢰성 있는 통신을 제공한다.
+  - TCP와 유사하게 ACK과 TimeOut을 통해서 확인한다.
 - 보안강화 (TLS 적용)
 - IP가 아닌 Connection ID로 통신을 하여 IP가 바뀌어도 기존 연결을 유지할 수 있음
 - 멀티플렉싱으로 TCP의 한계인 HOL을 극복
