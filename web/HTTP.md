@@ -65,7 +65,7 @@ HTTP/1.1 404 Not Found
 - Http전송에 필요한 부가정보를 포함한다.
 ### HTTP Header 종류
 1. Content-Type: 전송하는 Body의 형태
-2. Content-Length: 
+2. Content-Length: Request 혹은 Repponse 본문 데이터의 Byte 수
 3. Connection: 연결상태 
 4. Content-Language: 사용자와 잘어울리는 실제 언어
 5. Date: 날짜
@@ -89,7 +89,11 @@ HTTP/1.1 404 Not Found
 
 ### HTTP 1.1
 - TCP 기반
-- Persistent Connection (지정한 시간동안 Connection을 닫지 않음)
+- Persistent Connection (Keep-Alive)
+  - 특정 시간 동안 Connection을 유지한다.
+  - 이미 연결되어있는 TCP Connection을 재사용한다.
+  - 오히려 성능 저하를 일으키는 경우도 있다.
+  - **대량접속을 받는 서버라면 오히려 성능에 영향을 미친다.**
 - Pipelining (한번에 여러개의 요청을 같이보내고 순서에맞춰 응답여러개를 받음)
   - HeadOfLine: 첫번째 순서의 요청이 오래걸리면 그 뒤의 것들이 실행되지못함
   - Header구조의 중복
@@ -103,6 +107,7 @@ HTTP/1.1 404 Not Found
   - 파싱, 전송속도의 상승
   - 오류 발생 가능성 저하
   - 프레임으로 쪼개져서 병렬으로 가기 떄문에 HOL문제의 해결
+  - Binary Frame으로 전송 후 수신측에서 재조립
 - Stream Prioritization
   - 리소스간 우선순위를 설정
 - ServerPush
