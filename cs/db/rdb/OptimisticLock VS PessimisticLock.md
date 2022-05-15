@@ -15,6 +15,7 @@
 ## Pessimistic Lock (비관적 락)
 - **동시성문제가 발생 할 것이라고 가정한다.**
 - Database 수준에서의 Lock
+  - Row 수준의 Lock이다. 
   - SharedLock (쓰기 잠금) 이나 ExclusiveLock(읽기/쓰기 잠금)을 설정한다.
 - 데이터의 무결성 보장수준이 매우 높다.
 - 동시성이 떨어진다는 단점이 있다.

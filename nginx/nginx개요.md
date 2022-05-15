@@ -5,9 +5,10 @@
 - **WebServer**의 역할과 **ReverseProxy(LoadBalancing)** 역할을 주로한다.
 - C10K를 해결했다.
 
-## C10kCurrent 10 thousand clients)란?
+## C10k (Current 10 thousand clients)란?
 - 1만개의 커넥션를 동시에 처리하는 문제이다.
-- 하드웨어 성능에는 문제가없어도, 클라이언트수가 많아지면 서버가 정상작동하지 않는다.
+- 하드웨어 성능에는 문제가없어도, I/O 처리 문제 때문에 클라이언트수가 많아지면 서버가 정상작동하지 않는다.
+- Thread Per Connection이 더라도, 동시에 처리할 수 있는 Connectiond의 개수는 물리적인 Core수에 종속된다.
 
 1. Client 접속 당 프로세스를 생성하면, OS 파일 디스크립터나, 프로세스 수가 최대치가 된다.
 2. Process 당 소비하는 메모리의 크기는 작지만, 이것이 모여서 거대해진다.
@@ -26,13 +27,18 @@
 - Thread Pool로 문제를 보완하려 하지만, 그 이상 요청이들어오면 추가로 Thread를 생성한다.
 
 ## Nginx의 구조
-- EventDrivenModel 
+- EventDrivenModel & NonBlocking I/O
+  - 이벤트 구독방식으로 병렬처리를 수행한다. 
   - 여러 Connection을 EventHandler에서 처리해서, 먼저 처리되는 것 부터 로직이 실행되도록한다.
   - 다수의 Connection을 효과적으로 처리한다.
-- 1개의 Thread가 여러개의 Request를 담당한다.
+- 하나의 MasterProcess와 고정된 수의 WorkerProcess가 존재한다.
 - Event의 효율적인 분배를 위해서 **OS의존적**인 메커니즘 사용
   - os가 이벤트를 큐에 담아놓고 워커프로세스가 빼가면서 처리
   - 시간이 오래걸릴 것 같은 작업은 ThradPool에 위임한다.
+- 기존 웹서버와는 다르게 **Connection마다 Thread나 Process를 할당해주지 않는다.**
+  - ContextSwithching 비용이 감소한다.
+  - Event가 발생할 때마다 구독방식으로 처리한다.
+    - 쉬지않고 일할 수 있다.
 
 ### Event
 - Connection 생성
@@ -47,7 +53,10 @@
   - 동적 리로드 시, 새로운 설정에 맞는 워커 프로세스를 생성 한 후 기존 워커프로세스들의 작업이 끝나면 기존 워커프로세스들은 종료
 
 ### Worker Process
-- N개의 Connection을 담당한다.
+- Single Thread로 동작한다.
+  - N개의 Connection을 담당한다.
+  - Connection을 맺었다고 Request가 끊임없이 오는 것이 아니기 떄문에 가능한 것이다.
+  - ContextSwitching을 하지않기 떄문에 빠르다.
 - 유효성 검사 및, 요청에 대한 처리를 담당한다.
 - 보통 CPU Core 개수만큼
 
