@@ -16,6 +16,9 @@
   - 보조 Hash함수를 사용한다.
 - Thread-Safe하지 않다.
 - 지속적으로 개선되고 있다.
+- 버킷의 길이에 따라서, 충돌시에 LinkedList나 Tree로 변형한다.
+  - 데이터 add를 통해서 개수가 8개가 되면 Tree
+  - 데이터 remove를 통해서 개수가 6개가 되면 LinkedList
 - Synchronized 키워드를 붙인 Wrapping한 HashMap도 존재한다.
   - Collection 수준의 Lock을 얻는다 (get, put)
   - 하나의 쓰레드가 Lock을 얻으면 다른 쓰레드는 사용 할 수 없다. (Collection 수준의 Lock)
