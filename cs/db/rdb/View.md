@@ -7,8 +7,6 @@
 - View를 통해서 Insert,Select,Update,Delete가 가능하다.
   - **주로 Select를 위해서 사용된다.**
 - View를 이용하여 View를 정의 할 수 있다.
-- ALTER 명령어가 없다.
-  - 수정하려면 DELETE 후 CREATE 해야 한다.
 
 ## View의 장점
 - 보안에 유리하다.
