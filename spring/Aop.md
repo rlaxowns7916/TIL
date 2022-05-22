@@ -16,15 +16,15 @@
     - AspectJ를 차용하고, 부분적으로 제공한다.
         - @Aspect 에노테이션을 자동으로 읽어, PointCut과 Advice를 자동으로 Advisor로 등록한다.
     - SpringBean에만 적용가능
-        - DynamicProxy (런타임 시점에 프록시를 만드는 기법)를 사용해서 구현
+        - DynamicProxy (Runtime Weaving)를 사용해서 구현
             - Java가 제공하는 기본 방법은 인터페이스 기반 프록시 생성기법
             - CGlib은 클래스 기반도 지원
 - AspectJ
     - 실제코드에 조작이 일어나기 때문에, Method 뿐만 아니라, 생성자, 필드 등에 AOP 적용이 가능하다.
-    - 컴파일 시점 AOP
+    - CompileTime Weaving
         - 부가적인 컴파일러 설정이 필요하다.
         - Java파일을 Class파일로 변경 하는 시점에 바이트코드 조작을 통해서 Weaving
-    - 런타임 시점 AOP
+    - LoadTime Weaving
         - Class파일에는 나타나지 않으나, JVM메모리 상에 Weaving
         - ClassLoader가 Class 정보를 Method 영역에 올릴 때 Weaving
         - ClassLoader에 대한 설정이 필요하다.
