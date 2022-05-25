@@ -97,6 +97,8 @@ public class PracticeFilter implements Filter {
 - DelegatingFilterProxy를 사용하여 SpringBean을 주입받을 수 있다.
 
 #### DelegatingFilterProxy
-- Filter 구현체를 SpringBean으로 등록한다.
-- 구현체를 갖는 Proxy(Delegating FilterProxy)를 Filter에 등록한다.
-- 실제 요청이 올 때, 구현체에게 요청을 위임한다.
+- ServletContainerFilter 이다.
+- Servlet Container와 Spring Container(Web.xml, Applicaiton Context) 사이의 Link를 담당한다.
+1. Filter 구현체를 SpringBean으로 등록한다.
+2. 구현체를 갖는 Proxy(Delegating FilterProxy)를 Filter에 등록한다.
+3. 실제 요청이 올 때, 구현체에게 요청을 위임한다.
