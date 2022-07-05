@@ -6,6 +6,7 @@
 1. 실행순서가 일정하게 유지되게 할 것
 2. if문 같은 조건문안에 hooks를 넣지 말 것(for문 사용가능하나 비추천)
 3. hook안에 hook을 사용하지 말 것
+4. 컴포넌트 안에서만 호출 할 것
 
 ***
 ## useState
@@ -14,8 +15,9 @@
     const [count,setCount] = useState('초기값')
 // 첫번째 인자 : 값, 두번째 인자: Setter
 ```
-Class형 컴포넌트 같이 State객체를 선언하고 setState를 통해서 한꺼번에 변경이아닌 쪼개서 관리가능
-
+- Class형 컴포넌트 같이 State객체를 선언하고 setState를 통해서 한꺼번에 변경이아닌 쪼개서 관리가능
+- 상태변경 함수 (setState)를 호출한 컴포넌트 부터 다시 리랜더링이 되는 것이다.
+  - 이전의 것과 비교해서 변경된점을 감지하고 변경된 부분을 리랜더링한다.
 ## useEffect
 **componentDidMount + componentDidUpdate + componentWillUnmount**
 1. 첫 번째 인자는 실행할 작업 정의, 두번 째 인자는 변화를 Checking할 인자

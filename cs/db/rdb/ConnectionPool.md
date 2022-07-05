@@ -6,6 +6,15 @@
 - SpringBoot의 경우 **Hikari CP**를 default Connection Pool Library로 사용한다.
   - Spring 2.0 부터 이다.
   - 빠르고 가볍다.
+## 커넥션을 맺는 과정
+1. DB드라이버를 통해서 Connection을 조회한다.
+2. TCP/IP를 통해서 Connection을 맺으며, 이 과정에서 3-Way Handshake와 같은 동작이 발생한다.
+3. 인증 후 DB 내부에 세션을 생성한다.
+4. DB는 Connection이 완료되었다는 응답을 보낸다.
+5. DB드라이버는 Connection객체를 생성하여 어플리케이션에게 응답을 보낸다.
+
+**무겁고 느리다**
+
 
 ## ConnectionPool의 이점
 - 빠른 응답이 가능하다.
