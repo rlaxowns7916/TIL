@@ -1,6 +1,6 @@
 # Hooks
-**리액트 v16.8에서 새로 도입**<br>
-**함수형 컴포넌트에서도 상태관리 가능**
+- **리액트 v16.8에서 새로 도입**<br>
+- **함수형 컴포넌트에서도 상태관리 가능**
 
 ### 주의 할점
 1. 실행순서가 일정하게 유지되게 할 것
@@ -15,9 +15,30 @@
     const [count,setCount] = useState('초기값')
 // 첫번째 인자 : 값, 두번째 인자: Setter
 ```
+- 컴포넌트 instance별 독립적인 state를 가지게 된다.
 - Class형 컴포넌트 같이 State객체를 선언하고 setState를 통해서 한꺼번에 변경이아닌 쪼개서 관리가능
+  - 객체로 state를 관리한다면, prevState를 사용하자.
+  - 이전 state를 스프레드 연산자로 넘겨 줄 수도 있지만, useState는 즉각적으로 변경되는 것이 아니기 때문에, 부정확 할 수 있다.
+  - prevState는 항상 최신을 보장한다.
+  - ```jsx
+    const titleChangeHandler = (event) => {
+      /**
+        * ArrowFunction으로 넘어감을 명심할 것
+        */
+        setUserInput((prevState) =>{
+        return {
+          ...prevState,
+          title:event.target.value
+        }   
+      })
+    }
+    ```
 - 상태변경 함수 (setState)를 호출한 컴포넌트 부터 다시 리랜더링이 되는 것이다.
   - 이전의 것과 비교해서 변경된점을 감지하고 변경된 부분을 리랜더링한다.
+- setState를 통해서 양방향 바인딩이 가능하다.
+  - Form으로 작업할 때 아주 유리하다.
+  - 입력을 통해서 state를 변화시킬 수 있다.
+  - state를 input태그에 넘겨줌으로써, state로 input을 변경시킬 수 있다.
 ## useEffect
 **componentDidMount + componentDidUpdate + componentWillUnmount**
 1. 첫 번째 인자는 실행할 작업 정의, 두번 째 인자는 변화를 Checking할 인자
