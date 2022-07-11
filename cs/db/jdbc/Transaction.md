@@ -75,7 +75,7 @@ class Example {
                      * ConnectionPool에 반환을 하는 것으로, 
                      * 설정이 적용 된 채로 살아 있기 때문에,
                      * AutoCommit을 다시 설정해주어야 한다.
-                     * 
+                     *
                      * 만약 Connection을 그때 그때 새롭게 만든다면
                      * 상관없다.
                      */
@@ -104,6 +104,58 @@ class Example {
         /**
          * Transacton은 계속 유지되어야 하기 때문에,
          * finally에서 Connection을 Close하지 않는다.
+         */
+    }
+}
+```
+
+- 비즈니스 로직이 JDBC 기술에 너무 의존적이다.
+    - 다른 기술로 교채시에 서비스로직이 변경할 부분이 많다.
+- 중복되는 작업이 잦다.
+    - 트랜잭션 시작
+    - try-catch
+    - SQL Exception
+
+## 트랜잭션 추상화 (Spring)
+
+- PlatformTransactionManager라는 공통 인터페이스를 가진다.
+    - DataSourceTransactionManager, JpaTransactionManager 등 각각의 구현체가 인터페이스를 구현한다.
+- 서비스로직이 DI를 통해서 해당 인터페이스에 의존하므로, 특정 기술의 종속성에서 벗어날 수 있다.
+
+## PlatformTransactionManager
+
+- 내부적으로 **TransactionSynchronizationManager**를 사용한다.
+  - 트랜잭션은 같은 Connection에서 실행되어야 한다.
+  - ThreadLocal을 사용하여, 멀티쓰레드 환경에서 안전하게 커넥션을 동기화 시켜준다.
+- DAO에서 TransactionManager가 관리하는 Connection을 얻기위해서는 **DataSourceUtils** 를 사용해야한다.
+  - DataSource.getConnection(): ThreadLocal에서 관리되는 Connection을 얻는다.
+  - DataSource.releaseConnection(): 트랜잭션이 종료되었다면 Connection을 종료한다. (무조건 종료아님)
+
+1. DataSource를 통해서 Connection을 생성한다.
+2. 생성한 Connection을 TransactionSynchronizationManger에 보관한다.
+3. TransactionSynchronizationManager에서 Connection을 꺼내어 사용한다.
+4. 트랜잭션이 종료되면, 보관했던 Connection을 종료한다.
+
+```java
+
+@RequiredArgsConstructor
+class Example {
+    private final PlatformTransactionManager transactionManager;
+
+    public static void main(String[] args) {
+        /**
+         * 트랜잭션 시작
+         */
+        TransactionStatus status = transactionManager.getTransaction(new DefaultTransactionDefinition());
+        try {
+            bizLoginc();
+            transactionManager.commit(status); //성공시 커밋
+        } catch (Exception e) {
+            transactionManager.rollback(status);
+            throw new IllegalStateException(e);
+        }
+        /**
+         * Connection 릴리즈 또한 TransactionManager가 처리해준다.
          */
     }
 }
