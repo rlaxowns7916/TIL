@@ -160,3 +160,19 @@ class Example {
     }
 }
 ```
+
+## TransactionTemplate - Spring이 제공하는 트랜잭션 지원 클래스
+```java
+public class TransactionTemplate{
+    private PlatformTrnsactionManager transactionManager;
+
+  /**
+   * 응답값이 있을 때 execute
+   * 응답값이 없을 때 executeWithoutResult
+   */
+    public<T> execute(TransactionCallback<T> action){..};
+    void executeWithoutResult(Consumer<TransactionStatus> action){..}
+}
+```
+- 트랜잭션 시작, Commit, Rollback 을 알아서 처리해주기 떄문에, 중복코드를 줄일 수 있다.
+- UncheckedException발생시 Rollback, CheckedException발생 시 Commit 이 정책이다.
