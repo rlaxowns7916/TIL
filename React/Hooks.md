@@ -1,6 +1,7 @@
 # Hooks
 - **리액트 v16.8에서 새로 도입**<br>
 - **함수형 컴포넌트에서도 상태관리 가능**
+- prefix로 use가 붙은 것들을 Hook이라고 본다.
 
 ### 주의 할점
 1. 실행순서가 일정하게 유지되게 할 것
@@ -41,6 +42,10 @@
   - state를 input태그에 넘겨줌으로써, state로 input을 변경시킬 수 있다.
 ## useEffect
 **componentDidMount + componentDidUpdate + componentWillUnmount**
+- SideEffect를 일으킨다.
+- 부수효과라고한다.
+- 변화에 따른 이벤트를 다른 곳에 전파한다.
+
 1. 첫 번째 인자는 실행할 작업 정의, 두번 째 인자는 변화를 Checking할 인자
 2. 두 번째 인자 생략시 랜더링 될때마다 실행 
 ### ComponentDidMount 역할 대체
@@ -49,8 +54,9 @@ useEffect(() =>{
     console.log("state 변화 시 할 일 정의")
 },[])
 ```
-useEffect의 두번째 인자는 변경을 감지할 state가 들어 갈 곳<br>
-빈 배열을 입력 할 시 최초 랜더링 시에만 사용(ComponentDidMount)
+- useEffect의 두번째 인자는 변경을 감지할 state가 들어 갈 곳
+- 빈 배열을 입력 할 시 최초 랜더링 시에만 사용(ComponentDidMount)
+- 인자를 생략할 시에, 모든 랜더링에 반응한다.
 
 ### componentDidUpdate 역할 대체
 ```jsx
