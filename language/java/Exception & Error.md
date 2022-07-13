@@ -26,20 +26,15 @@
   - RuntimeException을 제외한 Exception의 하위 클래스들이다.
 - Exception 클래스는 CheckedException의 범주에 속한다.
   - Exception을 상속받으면 CheckedException이다.
-
-### 장점
-- 컴파일 시점에 확인이 가능하기 때문에, 개발자의 실수를 예방할 수 있다.
-
-### 단점
-- 하나하나 다 잡아줘야하기 때문에 번거롭다.
-  - 사소한 예외까지 다 처리해주어야 하기 때문이다.
-
+  
 ## UnCheckedException
 - RuntimeException을 상속
 - 컴파일러가 예외를 체크하지 않는다.
   - 예외처리를 하지 않아도됨
   - throws를 생략해도 자동으로 던져진다.
 - NullPointerException,ClassCastException...
+
+
 
 ## 예외 처리를 하지 못했을 때
 1. Java Main Thread
