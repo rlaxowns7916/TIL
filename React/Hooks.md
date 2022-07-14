@@ -2,6 +2,8 @@
 - **리액트 v16.8에서 새로 도입**<br>
 - **함수형 컴포넌트에서도 상태관리 가능**
 - prefix로 use가 붙은 것들을 Hook이라고 본다.
+  - 선언의 위치에 따라서 호출의 순서가 바뀔 수 있다.
+  - 똑같은 dependency를 Listen 하고 있더라도, 선언한 순서에 따라서 sideEffect의 발생 순서가 달라진다.
 
 ### 주의 할점
 1. 실행순서가 일정하게 유지되게 할 것
@@ -40,44 +42,69 @@
   - Form으로 작업할 때 아주 유리하다.
   - 입력을 통해서 state를 변화시킬 수 있다.
   - state를 input태그에 넘겨줌으로써, state로 input을 변경시킬 수 있다.
+
+### useState Lazy Initialization 
+- ArrowFunction을 통해서 setState를 호출하는 것이다.
+- 복잡한 연산을 할 때 사용하는 것이 좋다.
+  - 최초실행시점에만 초기화 함수가 실행되며, 리 랜더링 시에 함수의 호출은 무시된다.
+  - ```jsx
+      /**
+        * 최초 랜더링 시점에만 localStorage에서 불러오는
+        * 초기화 로직을  실행시키는 것으로 충분하다.
+        * localStorage에 접근하는 것도 비용이들기 때문이다.
+        */
+      const [count, setCount] = useState(() =>
+      Number.parseInt(window.localStorage.getItem(cacheKey)),
+      )
+    ```
+  - setState에 따른 리랜더링도 정상적으로 동작한다.
+
 ## useEffect
 **componentDidMount + componentDidUpdate + componentWillUnmount**
 - SideEffect를 일으킨다.
-- 부수효과라고한다.
-- 변화에 따른 이벤트를 다른 곳에 전파한다.
+  - 부수효과라고한다.
+  - 변화에 따른 이벤트를 다른 곳에 전파한다.
+- Render가 발생한 이후에 Effect가 발생한다.
 
 1. 첫 번째 인자는 실행할 작업 정의, 두번 째 인자는 변화를 Checking할 인자
 2. 두 번째 인자 생략시 랜더링 될때마다 실행 
+3. 자식부터 useEffect가 발생 한 후, 부모의 useEffect가 발생한다.
 ### ComponentDidMount 역할 대체
 ```jsx
+/**
+ * 빈 배열을 입력 할 시 최초 랜더링 시에만 사용(ComponentDidMount)
+ */
 useEffect(() =>{
     console.log("state 변화 시 할 일 정의")
 },[])
 ```
-- useEffect의 두번째 인자는 변경을 감지할 state가 들어 갈 곳
-- 빈 배열을 입력 할 시 최초 랜더링 시에만 사용(ComponentDidMount)
-- 인자를 생략할 시에, 모든 랜더링에 반응한다.
 
 ### componentDidUpdate 역할 대체
 ```jsx
+/**
+ * 기존의 ComponentDidUpdate의경우 prevProps,prevState를 인자로 받아 변경을 비교하였으나,
+ * 두번째 인자에 변경을 감지할 state를 넣어주기 떄문에 체크할 필요없이 변경 시 수행할 작업만 명시하면된다.
+ */
 useEffect(() =>{
     console.log(count)
 },[count])
 ```
-기존의 ComponentDidUpdate의경우 prevProps,prevState를 인자로 받아 변경을 비교하였으나,
-두번째 인자에 변경을 감지할 state를 넣어주기 떄문에 체크할 필요없이 변경 시 수행할 작업만 명시하면된다.
 
 ### componentWillUnmount 대체
 ```jsx
- useEffect(() =>{
+/**
+  * return 을 통한 cleanUp함수를 정의해주면, 언마운트 될 때, 혹은 업데이트 되기직전에 작업을 수행 할 수 있다.
+  * 마찬가지로 unMount시점에만 작동하게 하고 싶으면 두번째 인자에 빈배열을 넣으면 된다. 
+  */ 
+useEffect(() =>{
     console.log(useEffect)
     return () =>{
         console.log("cleanUp")
     }
 })
 ```
-return 을 통한 cleanUp함수를 정의해주면, 언마운트 될 때, 혹은 업데이트 되기직전에 작업을 수행 할 수 있다.
-마찬가지로 unMount시점에만 작동하게 하고 싶으면 두번째 인자에 빈배열을 넣으면 된다.
+- 부모부터 CleanUp 한 후 자식이 CleanUp 된다.
+
 ***
 
 ## useReducer
@@ -170,7 +197,7 @@ export default Average;
 **useCallback(생성하고 싶은 함수, [변경을 체크할 값])**
 ```jsx
 useCallback(() => {
-  console.log('hello world!'');
+  console.log('hello world!');
 }, [])
 
 
@@ -183,55 +210,35 @@ useMemo(() => {
 ```
 ***
 ### Custom Hooks
-**여러 컴포넌트가 비슷한 기능을 공유 할 때 사용**
+- **여러 컴포넌트가 비슷한 기능을 공유 할 때 사용**
+- 중복을 방지하는 방법이다.
 ```jsx
-import { useReducer } from 'react';
- 
-function reducer(state, action) {
-  switch(action.type){
-          case 'INCREMENT':
-              return {value : state.value+1}
-          case 'DECREMENT' :
-              return {value : state.value - 1}
-          default:
-              return state
-      }
-}
- 
-export default function useInputs(initialForm) {
-  const [state, dispatch] = useReducer(reducer, initialForm);
-  const onClick = (e)=> {
-    dispatch({type:e.target.name});
-  };
-  return [state, onClick];
-}
-```
+const App = () => {
+  const useCustom = (value) => {
+    const [item, setItem] = useState(value);
 
-```jsx
-mport React from 'react';
-import useInputs from './useInputs';
- 
-const Info = () => {
-  const [state, onClick] = useInputs({
-    value:0
-  });
-  const { name, nickname } = state;
- 
+    useEffect(() => {
+      console.log("Chagne");
+    }, [item]);
+
+    return [item, setItem];
+  };
+
+  const [input, setInput] = useCustom("");
+
+  const onChangeInput = (e) => {
+    setInput(e.target.value);
+  };
+
   return (
-    <div>
-      <div>
-        <buton name="INCREMENT" onClick={onClick} />
-        <button name="DECREMENT"onClick={onClick} />
-      </div>
-      <div>
-        <div>
-          <b>카운트:</b> {value}
-        </div>
-      </div>
+    <div className="App">
+      <h1>Hello CodeSandbox</h1>
+      <h2>Start editing to see some magic happen!</h2>
+      <input value={input} onChange={onChangeInput} />
     </div>
   );
 };
- 
-export default Info;
+
+export default App;
 ```
 
