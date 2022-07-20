@@ -97,11 +97,14 @@ export default ExpenseForm;
 
 ```
 
-## state 끌어올리기
+## state 끌어올리기 (lifting)
 - child에서 parent로 데이터를 전달하는 방식이다.
 - sibling관계에서는 성립할 수 없다.
   - sibling의 공통부모까지 데이터를 끌어올린 후 부모가 sibling에게 데이터를 넘겨주어야한다.
 - 부모의 state변경 함수를 props로 받고, child가 해당 함수를 사용함으로써, 데이터를 변경 할 수 있다.
+- 과도한 drilling은 문제를 야기 할 수 있다.
+  - depth가 깊어진다.
+  - 어느 Child에서나 데이터 변경이 가능하다.
 
 ### Parent
 ```jsx
