@@ -8,6 +8,7 @@
 - key:value형식으로 전달된다.
   - props.{key} 를 통해서 접근 할 수 있다.'
 - props의 변경은 Compoentn의 리랜더링을 발생시킨다.
+- children도 props의 일부이다.
 
 ## props 예시
 

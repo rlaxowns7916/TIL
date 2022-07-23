@@ -1,26 +1,31 @@
 ## Partition
+- 물리적인 표현이다.
 - Queue(FIFO) 구조이다.
     - 오래된 순서대로 Consumer가 Message를 가져간다.
     - Consumer가 Consume하여도, 데이터는 삭제되지 않는다.
         - 옵션에 따라 삭제시점을 정할 수 있다.
         - 다른 ConsumerGroup의 Consumer가 재사용 할 수 있다.
-- CommitLog이다.
-    - Event들이 추가된다.
-    - offset이라는 것으로 Message에 접근 가능하다.
-        - offset은 계속해서 증가한다.
-        - Consumer Group끼리는 다른 Offset을 갖는다.
-    - Producer와 Consumer의 Offset 차이를 Consumer Lag라고 부른다.
-        - Consumer Lag는 성능을 모니터링 하는 중요 지표이다.
 - 병렬처리를 위해서 다수의 Partition을 사용한다.
-- **Segement**라는 실제 Message가 저장되는 물리 File로 구성된다.
-    - 지정된 크기가 커지거나(default 1GB), 오래되면(default 168 시간) 새로운 파일이 생성되고 추가된다.
-- partition끼리는 서로 독립적이다.
+- Topic내의 partition끼리는 서로 독립적이다.
     - offset 조차도 독립적이다.
 - partition에 저장된 파일들은 Immutable하다.
 - 고가용성을 위해서 복제(Replica) 한다.
     - 여러 Broker에 분산된다.
 - ConsumerGroup내의 하나의 Consumer에 의해서만 사용된다.
 - 여러개의 Consumer를 담당 할 수 없다.
+
+### Segment
+- Record를 저장하는 실제 물리 File이다.
+- 지정된 크기가 커지거나(default 1GB), 오래되면(default 7일) 새로운 파일이 생성되고 추가된다.
+- Active Segment(마지막)에 Write가 이루어진다.
+
+### Commit Log
+- Partition은 CommitLog 형식이다.
+- 추가만 가능하고 변경이 불가능한 DataStructure
+- Event들이 추가만된다.
+- offset이라는 것으로 Message에 접근 가능하다.
+  - offset은 계속해서 증가한다.
+  - Consumer Group끼리는 다른 Offset을 갖는다.
 
 ### Partition의 추가와 삭제
 - 추가만 가능하고, 삭제는 불가능하다.

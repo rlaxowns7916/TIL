@@ -4,13 +4,14 @@
     const [count,setCount] = useState('초기값')
 // 첫번째 인자 : 값, 두번째 인자: Setter
 ```
+- 단순한 state의 값 변경은 ReRendering을 발생시키지 않는다.
 - 컴포넌트 instance별 독립적인 state를 가지게 된다.
 - Class형 컴포넌트 같이 State객체를 선언하고 setState를 통해서 한꺼번에 변경이아닌 쪼개서 관리가능
     - 객체로 state를 관리한다면, prevState를 사용하자.
     - 이전 state를 스프레드 연산자로 넘겨 줄 수도 있지만, useState는 즉각적으로 변경되는 것이 아니기 때문에, 부정확 할 수 있다.
     - prevState는 항상 최신을 보장한다.
     - ```jsx
-    const titleChangeHandler = (event) => {
+       const titleChangeHandler = (event) => {
       /**
         * ArrowFunction으로 넘어감을 명심할 것
         */
@@ -18,10 +19,10 @@
         return {
           ...prevState,
           title:event.target.value
-        }   
-      })
-    }
-    ```
+          }   
+        })
+       }
+      ```
 - 상태변경 함수 (setState)를 호출한 컴포넌트 부터 다시 리랜더링이 되는 것이다.
     - 이전의 것과 비교해서 변경된점을 감지하고 변경된 부분을 리랜더링한다.
 - setState를 통해서 양방향 바인딩이 가능하다.
