@@ -6,6 +6,7 @@
         - unclean.leader.election.enable=true: 유실을 감수하고 복제가 안된 Follwer Partition을 Leader Partition으로 승급시킨다.
         - unclean.leader.election.enable=false: 유실을 감수하지 않는다. **해당 Broker가 복구 될 때 까지 중단**
     - 정합성과 속도사이에서 결정하면 된다.
+- ISR은 Leader Partition이 떠 있는 **Broker** 에서 관리한다.
 
 ### Leader Partition 의 이상감지
 - Leader는 Follower들에게 일정 주기로 Replication요청을 보내도록 요구한다.
@@ -22,8 +23,8 @@
 - min.insync.replicas 설정 값에 따라서 결정된다.
     - LeaderPartition과 근접한 FollowerPartition들의 유실되지 않을 **LOG-END-OFFSET**을 HighWaterMark라고 한다.
     - ```text
-      min.insync.replicas = 3
-    
+      min.insync.replicas = 3 // write를 성공하기 위한 최소 복제본의 수
+      
       Leader:     0,1,2,3,4,5
       Follower1:  0,1,2,3
       Follower2:  0,1,2

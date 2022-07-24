@@ -3,7 +3,8 @@
     - Message
     - Event
     - Message
-    - Data .
+    - Data 
+- 기본적으로 ByteArray로 저장되며 Producer와 Consumer가 각각 직렬화/역직렬화를 수행한다. 
 
 ## 구성 요소
 ### Timestamp
@@ -15,6 +16,7 @@
 - Broker에 적재될 때 Record에 지정되며, 0부터 시작하여 1씩 증가한다.
 - Consumer가 Offset 기반으로 처리했던 데이터와 처리해야 할 데이터를 구분한다.
   - Consumer Group 마다 독립적인 Offset을 가진다.
+  - __consumer_offsets 이라는 토픽에 저장된다.
 
 ### Headers
 - key/value 데이터를 추가 할 수 있다.
@@ -23,7 +25,10 @@
 ### Key
 - Record 분류를 위해서 사용한다.
 - Record를 Partition에 분류하기 위한 용도이다.
-- null이면 RoundRobin, 값이 존재하면 Hash를 통해서 분류된다.
+- null이면 
+  - 2.4 이전은 RoundRobin
+  - 2.4 이후는 Sticky정책으로 동작
+    - 랜덤으로 하나의 Partition을 선택하고, 해당 Batch가 닫힐 떄까지 하나의 Partition에 Record를 저장
 
 ### Value
 - 실제 저장 할 Data

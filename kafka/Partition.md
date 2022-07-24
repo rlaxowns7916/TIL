@@ -42,6 +42,7 @@
 ### Replication (Partition Replication)
 - 고가용성을 위한 방법이다.
 - Broker의 숫자보다 많이 설정 할 수 없다.
+- Follower가 Leader에게 데이터를 가져오기를 요청 (Fetch Request) 한다.
 - 미리 원본(Leader) 을 복사한 복제본(Follower)을 준비하여, 장애가 발생했을 때를 미리 대비한다.
 - Replication Factor 옵션은 n(원본 + 복제본) 이다.
     - replication1 : 원본 1개
@@ -59,3 +60,15 @@
 - 0번 Broker부터 시잫가여, Round-Robin 방식으로 Leader Partition이 생성된다.
 - KafkaClient는 Leader Partition과 통신을 주고 받음으로, 특정 서버에 Traffic이 몰리는 것이 아닌,
   여러 Broker가 통신을 분담하게 된다.
+
+### HotSpot 방지 (Leader Partition 이 특정 Broker에 몰리는 것)
+- Leader Parition이 특정 Broker에 몰리면 해당 Broker만 Read/Wrtie를 수행하므로 비효율 적이다.
+- Leader Partition을 동등하게 Broker들이 나눠가져야 효율이 좋다.
+
+#### 옵션
+- auto.leader.rebalance.enable (default: enable) 
+  - 불균형이 있을 시 자동으로 LeaderPatition을 분배한다.
+- leader.imbalance.check.interval.seconds (default: 300s)
+  - 불균형이 있는지 Check하는 Interval Time이다.
+- leader.imbalance.per.broker.percentage(default: 10)
+  - 다른 Broker들보다 LeaderParition을 얼마나 가져가는지를 판단하는 퍼센트이다.
