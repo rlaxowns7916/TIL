@@ -3,6 +3,7 @@
 - SideEffect를 일으킨다.
     - 부수효과라고한다.
     - 변화에 따른 이벤트를 다른 곳에 전파한다.
+    - 데이터 fetch / subscribe / Dom 수정
 - Render가 발생한 이후에 Effect가 발생한다.
 
 1. 첫 번째 인자는 실행할 작업 정의, 두번 째 인자는 변화를 Checking할 인자

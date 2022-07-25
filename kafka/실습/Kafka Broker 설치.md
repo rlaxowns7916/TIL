@@ -1,4 +1,4 @@
-# 2. 실습용 카프카 브로커 설치
+# 카프카 브로커 설치
 - AWS 기준 t2.micro가 적당
   - KafkaBroker, ZooKeeper 설치
   - KafkaBroker: Port 9092
@@ -80,6 +80,7 @@ export KAFKA_HEAP_OPTS="-Xmx400m -Xms400m"
 ## 위치: Kafka 설치 폴더
 $ bash bin/kafka-server-start.sh -daemon config/server.properties
 ```
+- ZooKeeper를 먼저 실행해야 한다.
 - config옵션은 메인 메소드에 전달된다.
 
 ***

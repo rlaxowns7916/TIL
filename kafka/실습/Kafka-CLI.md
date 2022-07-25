@@ -1,7 +1,22 @@
-# 3. Kafka CLI
+# Kafka CLI
 - Kafka를 운영할 때 제일 많이 사용하는 툴이다.
 - 실제 Kafka Broker가 설치된 서버에서도 가능하고, 접근이 열려있다면 원격에서도 가능하다.
 - topic 관련 설정에는 필수옵션과 선택옵션이 있다. (선택 옵션 일시에는 default가 정해진다.)
+  - 옵션에 대해서 세부적으로 살펴볼 필요가 있다.
+  - 기본옵션이 환경에 맞지 않을경우 옵션을 설정해주어야 하기 때문이다.  
+
+## server.properties
+- kafka에 대한 기본설정을 담는 파일이다.
+- /config 폴더 하위에 존재한다.
+
+```shell
+$ bin/kafka-server-start.sh config/server.properties
+```
+
+### Kafka 정상 실행 확인
+```shell
+$ bin/kafka-broker-api-version.sh --bootstrap-server [KafkaBroker 실행 IP:PORT]
+```
 
 ## kafka-topics.sh
 - topic 관련된 명령을 실행 할 수 있다.
@@ -13,9 +28,9 @@
 
 ### Topic 생성하기
 ```shell
-$ bin/kafka-toipics.shj \
+$ bin/kafka-toipics.sh\
 --create \
---bootstrap-server [KafkaBroker 설치 IP:PORT] \
+--bootstrap-server [KafkaBroker 실행 IP:PORT] \
 --topic [토픽 이름] 
 ```
 
@@ -40,14 +55,14 @@ $ bin/kafka-toipics.shj \
 #### Topic 리스트 조회하기
 ```shell
 $ bin/kafka-topics.sh \
---bootstrap-server [KafkaBroker 설치 IP:PORT] \
+--bootstrap-server [KafkaBroker 실행 IP:PORT] \
 --list
 ```
 
 #### Topic 상세정보 조회하기
 ```shell
 $ bin/kafka-topics.sh \
---bootstrap-server [KafkaBroker 설치 IP:PORT] \
+--bootstrap-server [KafkaBroker 실행 IP:PORT] \
 --describe --topic [Topic 이름]
 ```
 ```text
@@ -59,14 +74,14 @@ Topic: hello.kafka      TopicId: XncBEseKQ_OJrP3UMxwQkQ PartitionCount: 1       
 ### Topic 옵션 수정
 - kafka-topics.sh로 파티션 개수 옵션을 수정한다.
   - ```shell
-      $ bin/kafka-toprics.sh --bootstrap-server [KafkaBroker 설치 IP:PORT] \
+      $ bin/kafka-toprics.sh --bootstrap-server [KafkaBroker 실행 IP:PORT] \
         --topic [topic 이름] \
         --alter \
         --partitions [파티션 개수]
     ```
 - kafka-configs.sh로 토픽 retention 기간을 수정한다.
   - ```shell
-     $ bin/kafka-configs.sh --bootstrap-server [KafkaBroker 설치 IP:PORT] \
+     $ bin/kafka-configs.sh --bootstrap-server [KafkaBroker 실행 IP:PORT] \
        --entity-type topics \
        --entity-name [topic 이름] \
        --alter --add-config retention.ms=[Retention 시간(ms)]
@@ -85,12 +100,12 @@ Topic: hello.kafka      TopicId: XncBEseKQ_OJrP3UMxwQkQ PartitionCount: 1       
 - kafka-console-producer.sh 를 사용한다.
   - 키를 생략한버전
     - ```shell
-        $ bin/kafka-console-producer.sh --bootstrap-server [KafkaBroker 설치 IP:PORT] \
+        $ bin/kafka-console-producer.sh --bootstrap-server [KafkaBroker 실행 IP:PORT] \
           --topic [topic 이름]
       ```
   - 키를 추가한 버전
     - ```shell
-        $ bin/kafka-console-producer.sh --bootstrap-server [KafkaBroker 설치 IP:PORT] \
+        $ bin/kafka-console-producer.sh --bootstrap-server [KafkaBroker 실행 IP:PORT] \
           --topic [topic 이름] \
           --property parse.key=true \
           --property key.separator=":"
@@ -104,12 +119,12 @@ Topic: hello.kafka      TopicId: XncBEseKQ_OJrP3UMxwQkQ PartitionCount: 1       
 - Kafka Broker에 저장된 Topic을 확인할 수 있다.
 - 기본 보기
   - ```shell
-    $ bin/kafka-console-consumer.sh --bootstrap-server [Kafka 설치 IP:PORT] \
+    $ bin/kafka-console-consumer.sh --bootstrap-server [KafkaBroker 실행 IP:PORT] \
       --topic [topic 이름] \
       --from-beginning # 처음부터
 - Key와 Value 함께 보기
   - ```shell
-      $ bin/kafka-console-consumer.sh --bootstrap-server [Kafka 설치 IP:PORT] \
+      $ bin/kafka-console-consumer.sh --bootstrap-server [KafkaBroker 실행 IP:PORT] \
         --topic [topic 이름] \
         --property print.key = true \
         --property key.separator = ":" \
