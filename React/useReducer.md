@@ -1,6 +1,7 @@
 # useReducer
-1. **useState보다 더 다양한 컴포넌트 상황에 따라 상태 업데이트 가능**
+1. **useState를 여러번 사용하지 않아도 되고, 더 다양한 컴포넌트 상황에 따라 상태 업데이트 가능**
 2. Reducer는 현재 상태, 업데이트에 필요한 정보를 담은 액션값을 전달받아 새로운 상태를 반환
+3. Reducer를 통해 로직을 분리했기 때문에, 다른 곳에서도 재사용이 가능하다.
 
 ***const[state,dispatch] = useReducer(reducer,initialState)***
 1. state는 우리가 사용할 상태
@@ -19,7 +20,7 @@ function reducer(state,action){
 }   
 
 const Counter = () =>{
-    const [state,dispatch] = useReducer(reducer,{value:0})
+    const [state,dispatch] = useReducer(reducer,{value:0}) // 첫 번쨰 인자로 함수, 두 번째 인자로 initialState
     return(
     <div>
         <p>
