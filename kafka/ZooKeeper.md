@@ -14,6 +14,8 @@
   - 홀수로 구성한다. 
   - ZooKeeper Emsemble 이라고 부른다.
   - Leader와 Follower로 나뉜다.
+- KafkaCluster과 1:N 관계를 유지 할 수 있다.
+  - Zookeeper Emsemble은 여러개의 KafkaCluster를 관리 할 수 있다.
         
     
 ## 정족수 기반 (Quorum 알고리즘)

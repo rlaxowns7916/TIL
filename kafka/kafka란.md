@@ -27,8 +27,6 @@
 4. RealTimeEventStreaming Prodcessing (이상감지 등)
 5. DB동기화 (MSA 기반의 분리된 DB 동기화)
 
-
-
 ### 특징 
 1. 중앙집중화 되어있다.
     - Source Application과 Target Application의 사이에 Kafka가 위치한다.
@@ -81,6 +79,8 @@ Apache Kafka는 이러한 [DataPipeLine] 구축에 효과적이다.
 - 데이터의 양을 예측할 수 없는 빅 데이터의 특성에 맞게, 많은 양이 들어오면 Broker를 늘리는 Scale-Out이 가능하다.
 - 데이터의 양이 줄어든다면 Broker의 개수를 줄이는 Scale-In이 가능하다.
 - Kafka의 Scale-Out, Scale-In은 무중단 운영을 지원한다.
+- Kafka EcoSystem을 갖고있기 떄문에, 다양한 곳에 사용이 가능하다.
+  - Connect, Streams ...
 
 ### 영속성
 - 데이터를 메모리에 저장하지 않고, 파일 시스템(Disk)에 저장한다.
@@ -94,6 +94,9 @@ Apache Kafka는 이러한 [DataPipeLine] 구축에 효과적이다.
   - 최소 옵션이 3이다.
 - Cluster에서 Replication을 통해서 고 가용성을 가지게 된다.
 - On-Premise, Cloud환경 모두 지원한다.
+
+### 신뢰성
+- acks, idempotence 등의 개념을 도입함으로 하여, Message의 전달을 보증 할 수 있게 되었다.
 ***
 
 ## Kafka 생태계

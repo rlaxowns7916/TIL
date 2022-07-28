@@ -39,3 +39,13 @@
 - Consumer가 Consume했다고 사라지지 않는다.
   - 옵션에 따라서 달라진다.
 - Log Segment 단위로 삭제된다.
+
+## Retention Policy
+
+### 1. Delete
+- 특정 기간이 지나거나, 세그먼트가 특정 크기에 도달하면 Retention이 발생하고 삭제한다.
+
+### 2. Compact
+- Key 값을 기준으로 Group By 하고, 최신의 데이터만 남기고 이전 데이터들은 삭제한다. 
+
+### 3. Delete + Compact

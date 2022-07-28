@@ -40,6 +40,7 @@
 - Leader Parition을 적절하게 분배하는 것이 성능에 좋다.
 
 ### Replication (Partition Replication)
+- Topic 단위로 설정된다.
 - 고가용성을 위한 방법이다.
 - Broker의 숫자보다 많이 설정 할 수 없다.
 - Follower가 Leader에게 데이터를 가져오기를 요청 (Fetch Request) 한다.
@@ -57,13 +58,15 @@
 - 균등하게 분포되어있어야지 효율성이 올라간다.
 
 ### Partition이 배치되는 방법
-- 0번 Broker부터 시잫가여, Round-Robin 방식으로 Leader Partition이 생성된다.
+- 0번 Broker부터 시작하여, Round-Robin 방식으로 Leader Partition이 생성된다.
 - KafkaClient는 Leader Partition과 통신을 주고 받음으로, 특정 서버에 Traffic이 몰리는 것이 아닌,
   여러 Broker가 통신을 분담하게 된다.
 
 ### HotSpot 방지 (Leader Partition 이 특정 Broker에 몰리는 것)
 - Leader Parition이 특정 Broker에 몰리면 해당 Broker만 Read/Wrtie를 수행하므로 비효율 적이다.
 - Leader Partition을 동등하게 Broker들이 나눠가져야 효율이 좋다.
+- CLI로 제공한다.
+  - kafka-reassign-partitions.sh
 
 #### 옵션
 - auto.leader.rebalance.enable (default: enable) 
