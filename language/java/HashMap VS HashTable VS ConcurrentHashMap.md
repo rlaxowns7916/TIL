@@ -22,6 +22,8 @@
 - Synchronized 키워드를 붙인 Wrapping한 HashMap도 존재한다.
   - Collection 수준의 Lock을 얻는다 (get, put)
   - 하나의 쓰레드가 Lock을 얻으면 다른 쓰레드는 사용 할 수 없다. (Collection 수준의 Lock)
+  - 
+![hashMap](https://user-images.githubusercontent.com/57896918/182023545-eab601e0-8d82-4eed-bb7b-d9145fd5abdd.png)
 
 # ConcurrentHashMap
 - HashMap이 Thread-Safe 한 것이다.
@@ -33,6 +35,8 @@
 - 버전에 따른 구현방법의 차이가 있다.
   - Java7: HashMap과 유사한 방식
   - Java8: RedBlack Tree를 이용한 구현
+  - 
+![ConcurrentHashMap](https://user-images.githubusercontent.com/57896918/182023536-f3d6b881-c13b-4f1e-959b-af4e24ca2c77.png)
 
 
 ## 결론
