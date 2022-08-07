@@ -47,7 +47,7 @@ implementation 'org.springframework.boot:spring-boot-starter-aop'
 ## Aop 주요 용어
 
 - **Aspect** : CrossCutting Concern을 모듈 화 한 것 ((Advice + Target)이 여러개 존재 할 수 있다.)
-- **Target** : Aspect를 실제로 적용 하는 곳(Method, Class ...)
+- **Target** : Aspect를 실제로 적용 하는 곳(부가기능을 부여 할 곳)
 - **Advice** : 실질적인 부가기능을 담은 구현체
 - **JoinPoint** : Advice가 적용될 위치 --> 끼어드는 지점 (AOP가 적용될 수 있는 모든 지점)
 - **PointCut** : JoinPoint를 상세화 한것 (표현식으로 주로 지정)
@@ -67,11 +67,11 @@ implementation 'org.springframework.boot:spring-boot-starter-aop'
 @Aspect
 public class LogAspect {
     /**
-     * PointCut역할
+     * PointCut역할 ("execution (~)")
      */
     @Around("execution(* sample.app..*(..))")
     /**
-     * Advice 역할
+     * Advice 역할 (Aroung + 로직)
      */
     public Object execute(ProceedingJoinPoint pjp) {
         //BeforeAdvice

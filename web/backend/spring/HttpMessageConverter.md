@@ -74,4 +74,4 @@ public interface HttpMessageConverter<T> {
 ## 언제 사용되는가?
 - @ResponseBody 혹은 @RestController 일 때
   - JSON 혹은 XML 방식을 사용 할 때
-- ViewResolver 대신 HttpMessageConverter를 사용하게 된다.
+  - ViewResolver 대신 HttpMessageConverter를 사용하게 된다.

@@ -13,11 +13,12 @@ class TransactionService{
     private final TransactionRepository transactionRepository;
     
     public void out(){
-        print("Start");
+        System.out.println("Start");
         this.in();
+        System.out.println("End");
     }
     
-    public static in(){
+    public void in(){
         for(int i=0;i<10;i++){
             transactionRepository.save(new Transaction(i));
             if(i == 10)
