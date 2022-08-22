@@ -4,6 +4,9 @@
   - id를 확인하고 쉽게 Import 할 수 있다.
 - Library Panel, Json등 다양하게 생성 가능하다.
 
+## NodeExporter DashBaord Example
+<img width="1639" alt="dashBoard" src="https://user-images.githubusercontent.com/57896918/185949198-183926fd-f4f9-40df-990c-2a03f32c1ede.png">
+
 ## 설정
 
 ### Tags
