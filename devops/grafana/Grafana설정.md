@@ -6,6 +6,10 @@
 - 시계열 데이터가 저장된 위치
     - 일정 시간 간격으로 배치된 데이터를 의미한다.
 - 연결된 DataSource로 부터 Metric을 획득한다.
+- 다양한 DataSource가 존재한다.
+
+<img width="1496" alt="dataSource" src="https://user-images.githubusercontent.com/57896918/185949447-110c8815-8331-46e9-ab45-2d47762fa0d4.png">
+
 
 ## Organization 이란?
 - 대시보드, 데이터소스 및 설정을 독립적으로 관리하기 위함이다.
