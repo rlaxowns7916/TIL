@@ -35,11 +35,12 @@
 ## Variable 
 - 여러개의 변수를 선언할 수 있다.
 - 변수에 맞는 Query를 매칭할 수 있다.
+![variable](https://user-images.githubusercontent.com/57896918/186190537-31e21682-9af2-4223-8077-7a87cc30807d.png)
 
 ## Annotation
 - 그래프에 포인트를 표시 하는 것이다.
 - 이벤트 설명, 및 이벤트 태그를 볼 수 있다.
+![annotation](https://user-images.githubusercontent.com/57896918/186190479-1e0092f0-01d3-425b-9ffb-95f94c83b860.png)
 
 ## Query
 - 해당 데이터 소스에 맞는 질의
-- 
