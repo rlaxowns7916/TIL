@@ -16,19 +16,19 @@ public @interface MyAnnotation {
 ### Annotation 선언에 포함 할 수 있는 Annotation
 
 1. @Inherit
-
-   Annotation끼리도 상속이 가능하다.
-
-   SubClass들도 SuperClass가 갖는 Annotation을 상속하게 한다.
+- Annotation끼리도 상속이 가능하다.
+- SubClass들도 SuperClass가 갖는 Annotation을 상속하게 한다.
 
 
 2. @Retention
-
-에노테이션의 유지시점을 결정 (소스코드,클래스파일,런타임)
+- 에노테이션의 유지시점을 결정 
+  - 소스코드,클래스파일,런타임
+- 주로 런타임을 선택한다.
+  - Reflection을 통한 참조목적
 
 3. @Target
-
-에노테이션의 적용대상 결정(필드,메소드,클래스 등등)
+- 에노테이션의 적용대상 결정
+  - 필드,메소드,클래스 등등
 
 ```java
 @Inherited

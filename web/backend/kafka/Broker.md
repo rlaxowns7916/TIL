@@ -30,7 +30,7 @@
     - 기본적으로 생성되는 Topic이다.
 - Consumer Group의 상태를 체크고, Rebalance(재 매칭)를 수행한다..
     - Consumer과 Partition의 정상적인 매칭을 만들어준다.
-    - ex) 보통 Consumer과 Partition은 1:1 관계이지만, Consumer 에러시에 Consumer가 Partition과 1:N 관계가 될 수도 있다.
+    - ex) 보통 Consumer과 Partition은 1:1 관계이지만, Consumer 에러시에 정상인 Consumer가 Partition과 1:N 관계가 될 수도 있다.
 
 ### 4. 데이터 저장
 - config/server.properties의 log.dir에 명시된 디렉토리에 데이터를 저장한다.
