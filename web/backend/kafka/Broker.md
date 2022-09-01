@@ -18,12 +18,17 @@
 - Broker가 Cluster에서 이탈하는 경우, 해당 Broker에 존재하는 Leader Partition을 재분배한다.
 
 ### 2. 데이터 삭제
-- Log Segmenet 단위로 데이터를 삭제한다.
-- 옵션에 따라서 삭제되는 기준을 변경 할 수 있다.
-- 디스크의 크기를 고려해야한다.
+- DELETE와 COMPACT로 나뉜다.
+- DELETE
+  - Log Segmenet 단위로 데이터를 삭제한다.
+    - 파일 단위이기 때문에, 개별 Record 단위의 삭제는 불가능하다.
+  - 옵션에 따라서 삭제되는 기준을 변경 할 수 있다.
+  - 디스크의 크기를 고려해야한다.
     - retention.ms(minutes,hours: 세그먼트를 보유할 최대기간 (deafult 7일)
     - retention.byres: 파티션 당 로그 적재 byte 값 (default -1 (지정하지 않음))
     - log.retention.check.interval.ms: 세그먼트가 삭제 영역에 들어왔는지 확인하는 간격 (default 5분)
+- COMPACT
+  - Key별로 가장 최근의 Key만 남기고 나머지는 삭제한다.
 ### 3. 코디네이터
 - Consumer가 Commit 한 Offset을 저장하는 역할이다. (Consumer가 Topic의 어느 지점 까지 읽었는지 명시 해주는 것)
 - _consumer_offsets라는 Topic에 자동으로 저장된다.
@@ -43,7 +48,8 @@
     - 옵션에 따라서 다음 Segment파일로 넘어갈 수 있다.
         - Segment 파일 크기가 옵션값을 넘어 갔을 때 (기본값 1G)
         - Segment 파일이 생성된지 특정 기간을 넘겼을 때 (기본값 7일)
-
+- 데이터 저장에 대한 Validation을 수행하지 않는다.
+  - Producer와 Consumer에서 Validation 로직을 수행해야 한다.
 
 ### On-Premise 권장 설치사항
 - Memory: 32GB 

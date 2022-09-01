@@ -11,6 +11,7 @@
 - partition에 저장된 파일들은 Immutable하다.
 - 고가용성을 위해서 복제(Replica) 한다.
     - 여러 Broker에 분산된다.
+    - Broker의 개수보다 많은 복제를 하는 것은 불가능하다.
 - ConsumerGroup내의 하나의 Consumer에 의해서만 사용된다.
 - 여러개의 Consumer를 담당 할 수 없다.
 
@@ -40,7 +41,6 @@
 - Leader Parition을 적절하게 분배하는 것이 성능에 좋다.
 
 ### Replication (Partition Replication)
-- Topic 단위로 설정된다.
 - 고가용성을 위한 방법이다.
 - Broker의 숫자보다 많이 설정 할 수 없다.
 - Follower가 Leader에게 데이터를 가져오기를 요청 (Fetch Request) 한다.
@@ -48,6 +48,9 @@
 - Replication Factor 옵션은 n(원본 + 복제본) 이다.
     - replication1 : 원본 1개
     - replication2 : 원본 1개 + 복제본 1개
+- 데이터 처리속도에 따라 옵션을 결정하는 것이 좋다.
+  - 1 (원본)이어도 되는경우: Metric과 같이 유실되도 되는 데이터
+  - 복제를 많이 하는 경우: 금융정보 같이 유실되면 안되는 데이터
 
 ### 장애 발생 시
 - Follower Partition 중에서 하나가 Leader Partition이 된다.
@@ -65,7 +68,7 @@
 ### HotSpot 방지 (Leader Partition 이 특정 Broker에 몰리는 것)
 - Leader Parition이 특정 Broker에 몰리면 해당 Broker만 Read/Wrtie를 수행하므로 비효율 적이다.
 - Leader Partition을 동등하게 Broker들이 나눠가져야 효율이 좋다.
-- CLI로 제공한다.
+- ShellScript로 재분배 수행을 제공한다.
   - kafka-reassign-partitions.sh
 
 #### 옵션

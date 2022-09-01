@@ -10,7 +10,7 @@
 ### Timestamp
 - Stream Processing을 하기 위한 시간을 저장하는 용도로 사용된다.
 - 기본 값으로 Producer의 Record 생성 시간이 들어간다.
-
+    
 ### Offset
 - Producer가 생성한 Record에는 존재하지 않는다.
 - Broker에 적재될 때 Record에 지정되며, 0부터 시작하여 1씩 증가한다.
@@ -29,6 +29,7 @@
   - 2.4 이전은 RoundRobin
   - 2.4 이후는 Sticky정책으로 동작
     - 랜덤으로 하나의 Partition을 선택하고, 해당 Batch가 닫힐 떄까지 하나의 Partition에 Record를 저장
+- null이 아니면 Hash 처리
 
 ### Value
 - 실제 저장 할 Data

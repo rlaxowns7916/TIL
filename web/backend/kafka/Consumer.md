@@ -19,6 +19,8 @@
 ### ConsumerLag
 - Producer와 Consumer의 Offset 차이를 Consumer Lag라고 부른다.
   - Consumer Lag는 성능을 모니터링 하는 중요 지표이다.
+  - Produce되는 양보다, Consumer가 Consume하는 양이적은 것이 문제이다.
+  - Partition과 Consumer의 숫자를 늘려 병렬처리 양을 늘리는 것이 중요하다.
 
 ### Consumer ReBalancing
 - Consumer가 장애가 났을 떄의 대응이다.

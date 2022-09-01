@@ -4,8 +4,9 @@
 - Leader Partition이 속한 Broker가 관리한다.
 - Leader 장애시에, 새로운 Leader를 선출하는데 사용한다.
     - ISR이 아닌 Partition도 Leader로 승급가능하다.
-        - unclean.leader.election.enable=true: 유실을 감수하고 복제가 안된 Follwer Partition을 Leader Partition으로 승급시킨다.
-        - unclean.leader.election.enable=false: 유실을 감수하지 않는다. **해당 Broker가 복구 될 때 까지 중단**
+      - Topic 단위로 설정이 가능하다.
+          - unclean.leader.election.enable=true: 유실을 감수하고 복제가 안된 Follwer Partition을 Leader Partition으로 승급시킨다.
+          - unclean.leader.election.enable=false: 유실을 감수하지 않는다. **해당 Broker가 복구 될 때 까지 중단**
     - 정합성과 속도사이에서 결정하면 된다.
 - Partition의 최소 서비스 단위이다.
 - min.insync.replicas 설정 값에 따라서 결정된다.
