@@ -31,7 +31,9 @@
 ### Partition의 추가와 삭제
 - 추가만 가능하고, 삭제는 불가능하다.
   - 여러 Broker에 저장된 Data를 취합하고 정렬하는 복잡한 과정이 발생하기 때문이다.
-  - 추가 또한 Global Relocation이 발생하기 때문에 신중하야 한다.
+  - Partition 삭제시에, 그 안에있던 데이터들 또한 즉시 삭제된다.
+- 추가 또한 Data Rebalancing이 발생하기 때문에 신중하야 한다.
+  - key값이 null일 때는 상관 없다. (RR이기 떄문에(Sticky 포함))
 
 ### Leader Partition & Follower Partition
 - Leader Partition에서 Read와 Write를 담당하며, Consumer와 통신한다.
@@ -66,7 +68,7 @@
   여러 Broker가 통신을 분담하게 된다.
 
 ### HotSpot 방지 (Leader Partition 이 특정 Broker에 몰리는 것)
-- Leader Parition이 특정 Broker에 몰리면 해당 Broker만 Read/Wrtie를 수행하므로 비효율 적이다.
+- Leader Parition이 특정 Broker에 몰리면 해당 Broker만 Read/Write를 수행하므로 비효율 적이다.
 - Leader Partition을 동등하게 Broker들이 나눠가져야 효율이 좋다.
 - ShellScript로 재분배 수행을 제공한다.
   - kafka-reassign-partitions.sh

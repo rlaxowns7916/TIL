@@ -50,3 +50,5 @@
 - Key 값을 기준으로 Group By 하고, 최신의 데이터만 남기고 이전 데이터들은 삭제한다. 
 
 ### 3. Delete + Compact
+- Delete와 Compact 두가지를 모두 사용
+- Streams 연산에사 Key-Value 값 기준으로 압축하다가, 기간이 만료되면 삭제를 하고는 한다.

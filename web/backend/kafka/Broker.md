@@ -20,7 +20,8 @@
 ### 2. 데이터 삭제
 - DELETE와 COMPACT로 나뉜다.
 - DELETE
-  - Log Segmenet 단위로 데이터를 삭제한다.
+  - Log Segment 단위로 데이터를 삭제한다.
+    - Partition을 다시 Segment단위로 나눈다. 
     - 파일 단위이기 때문에, 개별 Record 단위의 삭제는 불가능하다.
   - 옵션에 따라서 삭제되는 기준을 변경 할 수 있다.
   - 디스크의 크기를 고려해야한다.

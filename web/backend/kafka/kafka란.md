@@ -1,12 +1,27 @@
 # 1. Kafka란?
-
 ## Event Broker
 - Event Broker는 Message Broker의 역할을 할 수 있다. (역은 불가능하다.)
   - MessageBroker에는 RabbitMQ, Redis Queue 등이 있다.
 - EventBroker는 Message의 영속성을 제공한다.
-  - MessageBroker는 Consume 당시 혹은 짧은 시간 내에 Message 소비 후 삭제한다.\
+  - MessageBroker는 Consume 당시 혹은 짧은 시간 내에 Message 소비 후 삭제한다.
   - 설정에 따라 Message의 영속성이 달라진다.
+
+### 시각화
+https://softwaremill.com/kafka-visualisation/
+
 ***
+
+***
+## 종류
+
+### 1. Apache Kafka
+- Apache 2.0을 사용하는 오픈소스
+- 수정과 배포가 자유롭다.
+
+### 2. Confluent Kafka
+- Kafka를 최초로 개발한 개발자들이 창업 하여 (Confluent) 만든 Kafka 
+- 지원하는 기능에 따라 Community 버전과, Enterprise 버전으로 나뉜다.
+
 ## Kafka의 탄생
 ### 탄생배경
 ```text

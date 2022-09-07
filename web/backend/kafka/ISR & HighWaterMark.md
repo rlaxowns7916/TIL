@@ -9,10 +9,13 @@
           - unclean.leader.election.enable=false: 유실을 감수하지 않는다. **해당 Broker가 복구 될 때 까지 중단**
     - 정합성과 속도사이에서 결정하면 된다.
 - Partition의 최소 서비스 단위이다.
-- min.insync.replicas 설정 값에 따라서 결정된다.
-  - Write를 성공하기 위한 최소 복제본의 수
-  - 높게 설정하면 메세지의 보존 가능성은 높아지나, Availabilty는 낮아진다.
-  - 이 숫자를 유지하지 못하면, 서비스를 할 수 없다.
+
+## min.insync.replicas
+- 서비스를 실행하기 위한 최소 Broker 수
+  - 이 정도 Replication이 되어야, 서비스가 제대로 동작이 된다는 것을 믿겠다라는 의미이다.
+- 높게 설정하면 메세지의 보존 가능성은 높아지나, Availabilty는 낮아진다.
+- 이 숫자를 유지하지 못하면, 서비스를 할 수 없다.
+- replicationFactor와 같은 수준을 유지할 필요는 없다. (도메인의 성격에 따라) 
 
 ### Leader Partition 의 이상감지
 - Leader는 Follower들에게 일정 주기로 Replication요청을 보내도록 요구한다.
