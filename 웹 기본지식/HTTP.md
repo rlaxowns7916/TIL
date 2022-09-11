@@ -9,12 +9,17 @@
     - Client에서 추가적인 데이터 전송이 필요하다 (단점)
 2. Client <- > Server구조 
 3. Connectionless (1 Connection == 1 File)
+   - 요청에 대한 응답 후 TCP/IP 연결을 종료하는 것이다.
+     - 최근의 HTTP는 Persistent Connection (keep-alive)를 통해서 3way-HandShake의 오버헤드를 해결 하였다.
 4. 거의 모든형태의 데이터를 주고 받는 것이 가능
     - JSON,XML
     - Image,File
     - HTML,TEXT
 5. Request <  -- > Response 구조
 6. 캐시 가능 
+   - image
+   - css
+   - js
 
 
 ## Http Method
