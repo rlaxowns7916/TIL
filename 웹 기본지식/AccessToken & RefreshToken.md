@@ -26,11 +26,11 @@
 ### Refresh Token 탈취 위험성을 최소화 하기 위한 방법
 
 #### 1. Refresh Token Rotation 
+- RefreshToken을 통한 accessToken 갱신 요구가 발생하면 AccessToken과 RefreshToken 쌍을 발급한다.
+- 갱신에 사용된 Token을 즉시 만료시킨다.
+
+#### 2. Automatic Reuse Detection
 - RefreshToken을 한번 사용하면 새로운 RefreshToken을 발급한다.
 - Refresh Token이 2번 사용되면 탈취되었다고 판단한다.
 - RefreshToken을 체이닝한다. (History 보관)
   - 탈취되었다고 판단이 되면 해당 체이닝에 얽혀있는 RefreshToken을 모두 만료시킨다.
-
-#### 2. Automatic Reuse Detection
-- RefreshToken을 통한 accessToken 갱신 요구가 발생하면 AccessToken과 RefreshToken 쌍을 발급한다.
-- 갱신에 사용된 Token을 즉시 만료시킨다.
