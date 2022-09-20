@@ -122,8 +122,11 @@ Apache Kafka는 이러한 [DataPipeLine] 구축에 효과적이다.
 ***
 
 ## Kafka 생태계
+  
+<img width="1666" alt="스크린샷 2022-09-07 오후 1 18 18" src="https://user-images.githubusercontent.com/57896918/191292427-9f90427b-e8b3-475d-9435-e1bbda611535.png">
 
-### 1. Kafka Connect
+### 1. Kafka 
+Connect
 - DataPipeLine을 운영하는 핵심
 - DataSouce와 Kafka를 연결해주는 매개체 이다.
 - 다른 시스템에서 Kafka Topic에 Message를 적재하기 위해서 사용된다.
