@@ -32,12 +32,15 @@
   - Key별로 가장 최근의 Key만 남기고 나머지는 삭제한다.
 ### 3. 코디네이터
 - Consumer가 Commit 한 Offset을 저장하는 역할이다. (Consumer가 Topic의 어느 지점 까지 읽었는지 명시 해주는 것)
-- _consumer_offsets라는 Topic에 자동으로 저장된다.
-    - 기본적으로 생성되는 Topic이다.
-- Consumer Group의 상태를 체크고, Rebalance(재 매칭)를 수행한다..
-    - Consumer과 Partition의 정상적인 매칭을 만들어준다.
-    - ex) 보통 Consumer과 Partition은 1:1 관계이지만, Consumer 에러시에 정상인 Consumer가 Partition과 1:N 관계가 될 수도 있다.
-
+  - _consumer_offsets라는 Topic에 자동으로 저장된다.
+      - 기본적으로 생성되는 Topic이다.
+- Consumer Group의 상태를 체크고, Rebalance(재 매칭)를 수행한다.
+  - ConsumerGroup내의 Consumer가 추가되거나 제외 되었을 때
+  - Topic에 새로운 Partition의 추가 혹은 변경
+  - Join과 Sync로 나뉘어진다.
+    - Join: Consumer가 코디네이터에게 Group에게 가입요청을 하는 것이다.
+            Consumer의 Client정보와, Group 메타데이터를 수집한다.
+    - Sync: Leader Consumer의 파티션할당 결과를 Consumer에 전파한다.
 ### 4. 데이터 저장
 - config/server.properties의 log.dir에 명시된 디렉토리에 데이터를 저장한다.
     - Topic이름, Parition번호의 조합으로 하위디렉토리를 생성하여 데이터를 저장한다.

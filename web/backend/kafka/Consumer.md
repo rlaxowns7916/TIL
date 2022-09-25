@@ -18,10 +18,13 @@
         - Consumer : Partition = 1 : 1 
 ### Consumer Rebalancing
 - Consumer Group에 새로운 Consumer가 투입되거나 제외되면 발생
-- Consumer를 어떤 파티션에 할당할지 결정하는 과정이다.
+- Group의 관리는 Coordinator(Broker)가, Partition의 분배는 Leader Consumer가 수행한다.
 - 자주일어나면 장애의 원인이 될 수 있다.
+  - Rebalancing이 일어나는 과정중에 Consume이 중지된다.
+  - Topic에 해당하는 Consumer의 연결을 모두 끊고 ,새롭게 할당하는 과정이다.
 
-### Consumer Group Assigner 
+### Consumer Partition Assigner 
+- Leader Consumer의 수행
 - Consumer와 Partition을 매칭시킨다.
 - ConsumerGroup 단위로 설정된다.
 
