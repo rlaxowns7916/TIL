@@ -1,16 +1,19 @@
 # Redis
 - 영속성을 지원하는 In-Memory 저장소이다.
   - String, List, Hash, Set, SortedSet의 자료구조를 지원한다.
-  - Disk에 데이터를 저장 할 수 있다.
+  - Disk에 데이터를 저장 할 수 있다. (영속성)
 - 읽기 성능 증대를 위한 Replication을 지원한다.
   - Replication을 통한 FailOver도 가능하다.
 - 쓰기 성능 증대를 위한 Sharding을 지원한다.
 - ANSI C로 작성되어 있다. (ANSI C Compiler가 있는 곳에서는 동작가능)
-- 대부분의 언어로 포팅 되어 있다.
+- 대부분의 언어로 작성된 Client가 존재한다.
 
 ## 주요 사용처
 - 캐시
-- pub/sub 모델
+- 데이터베이스
+  - Key-Value 형식의 No-SQL 이다.
+  - Data에 Expiration을 지정할 수 있다.
+- MessageBroker
   - channel 에 publish, subscribe
   - 이벤트를 저장하지 않는다. 
   - 바로 subscriber에게 메세지를 전송한다.
