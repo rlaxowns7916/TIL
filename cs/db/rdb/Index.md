@@ -84,3 +84,18 @@
 4. Join On 조건에 주로 사용되는 Column
 5. ForeignKey (1 : N)에 주로 사용 되는 Column
 6. **Cardinality**가 높은곳 (겹치는게 적어야한다. )
+
+
+## Index Scan
+
+### 1. Index Unique Scan
+- equal (=) 에 따른 검색
+- MasterNode -> LeafNode까지 수직으로 한번에 탐색한다.
+
+### 2. Index Range Scan
+- 범위 탐색 (>, <)
+- MasterNode -> LeafNode까지 수직탐색, 필요한 범위만큼 LeafNode 수평 탐색
+
+### 3. Index Full Scan
+- 전체 탐색
+- 모든 LeafNode 수평탐색

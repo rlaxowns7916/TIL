@@ -176,3 +176,8 @@ public class TransactionTemplate{
 ```
 - 트랜잭션 시작, Commit, Rollback 을 알아서 처리해주기 떄문에, 중복코드를 줄일 수 있다.
 - UncheckedException발생시 Rollback, CheckedException발생 시 Commit 이 정책이다.
+
+
+## Spring에서 CheckedException이 Rollback되지 않는 이유
+- Error와 RuntimeException만 Rollback이 진행된다.
+- EJB의 관습을 따르고있기 때문이라고 한다.
