@@ -18,6 +18,10 @@
     - SpringBean에만 적용가능
         - Interface의 경우 DynamicProxy (Runtime Weaving)를 사용해서 구현한다.
         - Class의 경우 CGlib을 사용해서 구현한다.
+    - public 메소드에만 적용 가능하다.
+      - JDK DynamicProxy기반으로는 불가능하다. (Interface 기반, Interface에 public 이외의 메소드를 두는 것은 무의미하다.)
+      - CGLib에서는 기술적으로는 가능하나 안하는 것을 추천한다.
+      - 결론: SpringAOP로는 Public 메소드만 가능하다.
 - AspectJ
     - 실제코드에 조작이 일어나기 때문에, Method 뿐만 아니라, 생성자, 필드 등에 AOP 적용이 가능하다.
     - CompileTime Weaving
