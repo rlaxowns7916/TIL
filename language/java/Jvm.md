@@ -49,7 +49,7 @@ Java Source File (.java) —> JAVAC —> Java Byte Code (.class File)
 
 2. Method (메소드)
     1. 공유자원
-    2. Class 정보 (FQCN ,클래스 이름, 부모클래스 이름, 메소드,변수) 저장
+    2. Class 정보 (FQCN ,클래스 이름, 부모클래스 이름, 메소드 정보,변수 정보) 저장
 
 3. Heap(힙)
     1. 공유자원
@@ -69,17 +69,4 @@ Java Source File (.java) —> JAVAC —> Java Byte Code (.class File)
 
 1. Interpreter가 Java Byte Code를 Native Code로 바꿔서 한줄 씩 실행
 2. 인터프리터 방식의 문제점 (중복되는 코드여도 한줄 씩 읽어서 실행)을 JIT컴파일러로 보완
-
-### Garbage Collector(가비지 콜렉터)
-
-Java의 경우 프로그래머가 직접 메모리를 해제하지 않는다.
-
-Garbage Collector가 알아서 메모리를 회수해주기 때문이다.
-
-JVM이 동작하는 방식을 Mark And Sweep 이라고 한다.
-
-어떤 객체가 참조되고있는지 찾는다 (Mark)
-
-아무런 참조도 일어나지 않는 객체를 제거한다 (Sweep)
-
-System.gc() 명령어를 통해서 명시적으로 call 할수도 있다.
+3. GC가 사용하지 않는 객체의 자원을 회수

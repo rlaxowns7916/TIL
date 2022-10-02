@@ -2,6 +2,7 @@
 - Redis는 Key-Value Storage이다.
 - 모든 데이터는 Key를 통해서 접근이 가능하다.
   - Value를 통한 검색은 불가능하다.
+- 40 밀리 세컨드 안에, 100만개의 Key를 탐색 가능하다.
 
 
 ## 단건
@@ -27,12 +28,18 @@ $ get [Key]
 ```
 
 ### 3. del
-- Key 삭제
-- 단건, 다건 모두 삭제 가능하다.
-- 공백을 기점으로 Key들을 나열하면 지워진다.
 ```shell
 $ del [Key]
 ```
+- 동기적인 Key 삭제
+  - 여러개의 Key가 있을 경우, 순서대로 삭제한 후 시스템에 제어권을 반환한다.
+- 단건, 다건 모두 삭제 가능하다.
+- 공백을 기점으로 Key들을 나열하면 지워진다.
+
+#### unlink
+- 비동기적인 Key삭제
+- del은 동기적이기 떄문에, 많은 양의 Key를 삭제하게 된다면 시스템에 장애를 유발 할 수 있다.
+- 
 
 
 ### 4. exists
@@ -79,3 +86,92 @@ $ pexpire [Key] [MilliSecond]
 ```shell
 $ persist [Key]
 ```
+
+### 8. keys [expression]
+- 표현식을 통해서 존재하는 Key들을 찾는 것이다.
+- DB에 부하를 주기 때문에, 실행을 심각하게 고려해봐야한다.  (꼭 실행해야 한다면, Expression을 잘 정의해야 한다.)
+  - ```shell
+        keys [expression]
+    ```
+    - ?: 하나의 문자 혹은 숫자와 일치하는 모든 Key를 보여준다.
+      - ```shell
+          keys h?llo;
+          - hello
+          - hallo
+          - hqllo
+          - ...
+        ```
+    - *: 나머지 조건에 일치하는 모든 Key를 보여준다.
+      - ```shell
+          keys h*llo
+          - heeeeeeeeeeeeeeeello
+          - hello
+          - hasdcadfqwaerqasdfasdfllo
+          - ...
+        ```
+    - []: 사이에 있는 문자와 일치하는 것들의 Key를 보여준다.
+      - ```shell
+            keys h[ae]llo
+            - hallo
+            - hello
+        ```
+      - 괄호 내부에 있는 것들의 조합을 의미하는 것이 아니다.
+    - [^]: 괄호에 포함된 것들을 제외하고 검색한다.
+      - ```shell
+          keys h[^e]llo
+          - hallo
+          - hillo
+          - ...
+        ```
+    - [-]: 범위에 포함된 것들을 검색한다.
+      - ```shell
+          keys h[a-c]llo
+          - hallo
+          - hbllo
+          - hcllo
+        ```
+        
+### 9. rename
+- Key의 이름을 변경하는 것이다.
+- ```shell
+    rename [oldKey] [newKey]
+  ```
+  - oldKey가 존재하지 않으면 에러가 발생한다.
+  - newKey에 해당하는 것이 존재한다면 Override한다.
+    - del 후 insert하기 때문에, newKey에 해당하는 기존데이터가 거대했다면, 시간이 많이 소요된다.
+#### renamenx
+- nx 옵션을 통해서, 만약 newKey에 해당하는 것이 존재한다면, 명령을 무시할 수 있다.
+
+
+## Key-Space
+- MySQL의 Database 같은 것 이다.
+- 하나의 KeySpace에서는 1개의 Key값과 1개의 Value값이 고정되지만, KeySpace끼리는 독립적이다.
+- 즉 같은 Key가 여러개의 KeySpace에 존재 할 수 있다는 것이다.
+- KeySpace는 0부터 시작하며, default가 0 이다.
+- RDB와 다르게, KeySpace간의 Link는 불가능하다. 
+
+### 1. Key Space 이동하기
+- ```shell
+   select [index]
+  ```
+  - index 번 째 KeySpace로 이동한다.
+
+### 2. Key Space 비우기
+- ```shell
+  flushdb
+  ```
+  - 롤백이 불가능한 명령이기 때문에, 신중해야 한다.
+
+## Key Naming Convention
+1. 간단하면서 정확한 의미를 가질 것
+2. 너무 짤은 길이의 Key는 좋은 방법이 아니다. 
+  - 짧은 Key는 Memory상의 이점을 주기는 한다.
+  - Key의 Size는 최대 512MB이다.
+3. Schema Design에 맞는 형식을 가져야 한다.
+4. 빈 문자열 또한 유효한 Key로 인식된다.
+5. ObjectId:id 형식이 자주 사용된다.
+   - ```text
+       - users:100
+       - users:100:group
+       - users:100:friends
+     ```
