@@ -4,6 +4,9 @@
 - **Filter < -- > Servlet < -- > Interceptor < -- > Aop < -- > Controller**
 - **Servlet 단위로 실행된다.**
 - **ServletRequest와 ServletResponse를 가로채서 추가 작업을 할 수 있다.**
+  - Request와 Reponse를 조작 할 수 없다.
+    - 내부 상태의 변경이 아닌, 새로운 객체로의 변경이 불가능 하다는 것이다.
+- Spring Container의 도움 (Bean 등)을 받을 수 있기 때문에, 더욱 세분화된 기능을 수행 할 수 있다.
 
 ## Interceptor 사용법
 ### 1. HandlerInterceptor 인터페이스 구현
@@ -52,3 +55,10 @@ public class WebMvcConfiguration implements WebMvcConfigurer {
 }
 ```
 **어떤 URL Pattern을 인터셉트 할 지, 제외할지, 인터셉터끼리의 순서 등을 조절가능**
+
+
+## 어디에 사용되는가
+- Controller에 사용된다.
+- 왜 AOP는 적합하지 않은가?
+  - Controller의 Parameter는 일정하지 않다. (PointCut지정의 어려움)
+  - HttpServletRequest / HttpServletResponse를 Interceptor에서는 객체로 받아 올 수 있다. (Controller에 최적화 되어 있다.)
