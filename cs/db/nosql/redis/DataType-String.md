@@ -13,3 +13,31 @@
 2. Caching
 3. Counter
 4. 고정된 Config 값
+
+## Value 증가/감소
+
+### 증가
+#### incr
+- Number Type 일 때, Value를 1 증가 시킨다.
+- ```shell
+    $ incr [key]
+  ```
+#### incrby
+- Number Type 일 떄, Value를 index만큼 증가 시킨다.
+- ```shell
+    $ incrby [key] [index]
+  ```
+
+  
+### 감소
+#### decr
+- Number Type 일 때 Value를 1 감소 시킨다.
+- ```shell
+    $ decr [key]
+  ```
+  
+#### decrby
+- Number Type 일 때 Value를 index 만큼 감소 시킨다.
+- ```shell
+    $ decrby [key] [index]
+  ```
