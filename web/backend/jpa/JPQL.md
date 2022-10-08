@@ -6,6 +6,7 @@
     1. SQL을 추상화한 객체지향 쿼리언어 제공
     2. SQL문법과 유사하며, SELECT, FROM, WHERE, GROUP BY, HAVING, JOIN 제공
     3. 엔티티 객체를 대상으로 쿼리
+    4. 영속성 컨텍스트를 고려하지않고 쿼리를 실행
 2. JPA Criteria
     1. 자바코드로 SQL 작성
     2. JPQL 빌더 사용 가능

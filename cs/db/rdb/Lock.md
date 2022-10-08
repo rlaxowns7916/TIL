@@ -9,7 +9,7 @@
   - SELECT ~ FOR SHARE
   - SELECT ~ LOCK IN SHARE MODE
 - 일반적인 SELECT != S-Lock
-- 벤더마다 다르다.
+  - 벤더마다 다르다.
   - MS-SQL의 경우, 일반 SELECT가 SharedLock이기 떄문에 FROM table WITH (nolock)을 지정해주어야만, S-Lock없이 조회된다.
 
 ## 2. ExclusiveLock (X-Lock)

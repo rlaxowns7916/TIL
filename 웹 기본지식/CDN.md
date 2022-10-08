@@ -38,7 +38,9 @@
 - 200 (OK)와 함께 content를받는다.
 - CDN은 Content를 갱신 한 후 Client에게 리턴한다.
 
-## CDN Purging
+## CDN Contents Invalidation (컨텐츠 무효화)
+
+### CDN Purging
 - Cache Eviction처럼 특정 조건이 발생하길 기다리는 것이 아닌, **바로 제거해버리는 것** 이다.
   - 삭제 후 원본 서버에서 컨텐츠를 갱신한다.
 - cache tags(캐시 태그), surrogate-cache-keys(삭제 캐시 키)라는 개념을 사용한다.
@@ -47,3 +49,7 @@
 - 자주사용하면 원본서버로의 요청이 증가하여 부하가 커진다.
 - CDN서버의 컨텐츠 갱신이다.
   - LocalCache나 BrowserCache까지 갱신되었다는 보장은 없다.
+
+### Object Versioning
+- 뒤에 Version번호를 붙여 다른 컨텐츠를 소비하도록 하는 것이다.
+- image.png?v=2 같은 식으로, 업데이트마다 버전을 갱신해준다.
