@@ -25,6 +25,8 @@
 - 많은 Connection에서 요청이들어오면? --> ContextSwitching비용의 상승
   - Connection은 Keep-Alive인데 Request는 들어오지 않는다면?? --> 일을하지않고 방치된다.
 - Thread Pool로 문제를 보완하려 하지만, 그 이상 요청이들어오면 추가로 Thread를 생성한다.
+- 다양한 모듈을 제공한다.
+- 확장성이 좋다.
 
 ## Nginx의 구조
 - EventDrivenModel & NonBlocking I/O
@@ -77,23 +79,23 @@ sudo /etc/init.d/nginx start
 ```
 
 ## 디렉토리 구조
-1. **/etc/nginx** <br>
-엔진엑스 서버가 사용하는 기본설정이 있는 루트 디렉토리
+1. **/etc/nginx** 
+- 엔진엑스 서버가 사용하는 기본설정이 있는 루트 디렉토리
 
-2. **/etc/nginx/nginx.conf**<br>
-엔진엑스 기본설정파일, 모든 설정의 진입점<br>
-글로벌 설정(워커프로세스 개수, 튜닝 등) 뿐만 아니라 다른 세부설정 파일의 참조도 지정<br>
-모든 설정을 포함하는 최상위 http블록도 갖고있다.
+2. **/etc/nginx/nginx.conf**
+- 엔진엑스 기본설정파일, 모든 설정의 진입점
+- 글로벌 설정(워커프로세스 개수, 튜닝 등) 뿐만 아니라 다른 세부설정 파일의 참조도 지정
+- 모든 설정을 포함하는 최상위 http블록도 갖고있다.
 
-3. **/etc/nginx/conf.d/**<br>
-기본 HTTP 서버 설정파일 포함 <br>
-nginx.conf에 불러들일 수 있는 설정파일들을 가질 수 있는 디렉토리 
+3. **/etc/nginx/conf.d/**
+- 기본 HTTP 서버 설정파일 포함 
+- nginx.conf에 불러들일 수 있는 설정파일들을 가질 수 있는 디렉토리 
 
-4. **/var/log/nginx**<br>
-accessLog와 errorLog를 갖고있다.
+4. **/var/log/nginx**
+- accessLog와 errorLog를 갖고있다.
 
-5. **/etc/nginx/conf.d/defalut.conf**<br>
-정적 콘텐츠 제공
+5. **/etc/nginx/conf.d/defalut.conf**
+- 정적 콘텐츠 제공
 
 ## 명령어
 ```shell
