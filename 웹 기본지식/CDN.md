@@ -53,3 +53,13 @@
 ### Object Versioning
 - 뒤에 Version번호를 붙여 다른 컨텐츠를 소비하도록 하는 것이다.
 - image.png?v=2 같은 식으로, 업데이트마다 버전을 갱신해준다.
+
+
+## Image CDN
+- 이미지에 특화된 CDN이다.
+  - 이미지를 실시간으로 크기, 형식 등을 바꾸는 역할을 한다.
+- 이론적으로 이미지파일의 크기를 40~80% 줄일 수 있다고 한다.
+- CDN + ProcessingServer + Storage의 구성이다. 
+```text
+USER < -> CDN < -> Processing Server < - > Storage
+```

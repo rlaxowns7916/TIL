@@ -108,16 +108,19 @@ HTTP/1.1 404 Not Found
 - 2015년에 만들어졌다.
 - TCP 기반
 - Multiplexed Stream
+  - 한 Connection으로 여러개의 Message를 순서에 상관없이 Stream(양방향 데이터 흐름)으로 주고받는다.
   - Frame단위로 분할, 및 Binary Format
+    - 이전까지는 PlainText(평문)
+  - 프레임으로 쪼개져서 병렬으로 가기 떄문에 HOL문제의 해결
+    - Binary Frame으로 전송 후 수신측에서 재조립
   - 파싱, 전송속도의 상승
   - 오류 발생 가능성 저하
-  - 프레임으로 쪼개져서 병렬으로 가기 떄문에 HOL문제의 해결
-  - Binary Frame으로 전송 후 수신측에서 재조립
 - Stream Prioritization
   - 리소스간 우선순위를 설정
 - ServerPush
   - ex) a.html에 b.css, c.js가 있으면, a.html만보내주면 다시 또 요청할테니 미리 다 보내주는 것 
 - Header Compression: 헤더의 크기를 줄여서 페이지 로드 시간 감소
+  - 중복된 Header 데이터를 줄일 수 있게 되었다.
 
 ### HTTP 3
 **GOOGLE이 개발한 QUIC(Quick Udp Internet Connection) 이용**
