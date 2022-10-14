@@ -11,6 +11,17 @@
 - 배치 프로세스 관리
 - 인프라 요소 배포 및 관리
 
+## 설치
+```shell
+$ docker pull jenkins/jenkins:jdk11
+$ docker run -d --name jenkins -p 8080:8080 -p 50000:50000 --restart=on-failure
+```
+
+### JDK 경로지정
+- 기본적으로 JRE위에서 돌기 떄문에, JDK설정을 해주어야한다.
+- Manage Jenkins > Global Tool Configuration > JDK
+  - 다운 받을 수도 있지만, 9버전이 최신 & Oracle 계정 필요
+
 ## 최소 하드웨어 요구사항
 - 256MB RAM
 - 10GB 드라이브 공간 (Docker로 실행시)
