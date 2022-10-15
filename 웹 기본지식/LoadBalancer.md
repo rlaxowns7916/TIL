@@ -45,3 +45,30 @@
 - 특정한 비정상 패턴을 지닌 트래픽을 걸러낼 수 있다.
     - DoS/DDoS 같은 것들
 - 비싸다.
+
+## GSLB (Global Server Load Balancing)
+- DNS서비스의 발전된 형태이다.
+  - **지능적 DNS 서비스** 라고 불리기도 한다.
+  - DNS는 하나의 Domain에 대한 여러개의 IP주소를 넘겨줄 수 있다.
+  - 더욱 상세한 로드밸런싱을 가능하게 한다.
+
+### DR (Disaster Recovery)
+- 서버의 상태를 지속적으로 모니터링 한다.
+  - DNS는 서버의 IP만 넘겨줄 뿐, 서버의 상태는 알지 못한다.
+  - 실패한 서버의 IP는 응답에서 제외하기 때문에, 사용자는 서비스를 안정적으로 사용할 수 있다.
+
+### Load Balancing
+- 서버의 Load를 모니터링 한다.
+  - DNS는 RR방식을 사용한다. (DNS LoadBalancing)
+  - GSLB는 LoadTime이 적은 서버의 IP를 반환하는 것을 최우선적으로 한다.
+
+### Latency
+- 지리적으로 가까운 서버를 이욯한다.
+  - DNS는 RR방식이기 떄문에, 먼 거리의 서버를 배정해줄 때도 있다.
+
+
+#### 동작방식
+1. 사용자가 DNS에 Domain 질의
+2. DNS는 Local 부터 Root까지 순차적인 질의를 수행
+3. 해당 Domain이 GSLB에게 위임된 도메인일 경우 GSLB에게 질의
+4. GSLB는 정책에 따라 (HealthCheck, Latency, Custom ...)에 따라서 최적의 IP를 리턴해준다.
