@@ -5,3 +5,4 @@
 - 보통 WellKnown Port에 대해서 열어둔다. (25, 80, 443...)
 - 웹서버, 메일서버등을 DMZ에, WAS, DB서버등을 내부망에 위치시킨다.
 
+![스크린샷 2022-10-16 오후 11 49 44(2)](https://user-images.githubusercontent.com/57896918/196043749-8b5112f4-e16a-40c7-bcdf-172c07a9c139.png)
