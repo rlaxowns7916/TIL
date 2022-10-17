@@ -21,3 +21,5 @@
   - AtomicInteger
   - AtomicLong
   - ...
+  
+<img width="692" alt="Volatile" src="https://user-images.githubusercontent.com/57896918/196179159-0550877b-b7f3-45f8-ad6a-98581fa11c18.png">
