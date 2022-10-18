@@ -2,6 +2,9 @@
 - HTTP에 암호화를 더한 것이다.
   - HTTP 프로토콜 상위에 TLS 암호화를 구현한 것이다.
   - TLS는 SSL이 더욱 발전한 것이다.
+- HTTP 자체를 암호화 하는 것이 아니다.
+  - HTTP Body를 암호화한다.
+  - HTTP Header는 암호화의 대상이 아니다.
 - 443번 포트를 사용한다.
 - Hyper Text Transfer Protocol Secure 이다.
 - 대칭키 / 공개키 방식 모두 사용한다.

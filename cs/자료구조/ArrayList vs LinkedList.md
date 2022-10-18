@@ -7,7 +7,8 @@
   - 더 큰 배열을 만들고 기존 배열에서 옮기는 과정을 거친다.
   - initialSize를 지정해주는 것이 성능상 유리하다.
   - default InitialSize :  10
-  - newCapacity = oldCapacity + oldCapacity / 2
+  - 시프트 연산을 통한 기존 size의 50퍼센트 증가 연산을 수행한다.
+    - newCapacity = oldCapacity + (oldCapacity >> 1);
 - 읽기 성능이 좋다.
   - Index를 통한 접근으로 좋은 성능을 낸다.
   - Index를 통한 접근은 항상 O(1)이다.

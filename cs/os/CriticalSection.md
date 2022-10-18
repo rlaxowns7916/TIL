@@ -40,8 +40,10 @@
 - 자원에 접근할 때 Semaphore-- , 나갈 떄 Semaphore++ 연산을 진행한다.
   - Semaphore가 음수면 접근 할 수 없다.
 - Mutext의 BusyWaiting을 **Block & WakeUp**으로 해결하였다.
-  - CriticalSection에 진입하려 했던 프로세스는 Block 시킨 후 큐에 넣고, 자리가 생기면 다시 WakeUp시킨다.
-
+  - CriticalSection에 진입하려 했던 프로세스는 Block 시킨 후 PCB를 Waiting Queue에 넣고, 자리가 생기면 다시 WakeUp시키고, ReadyQueue에 넣는다.
+- Starvation을 유의해야한다.
+  - Semaphore WaitingQueue에서 빠져나가지 못하는 경우가 존재한다.
+  - FIFO나 오래기다린 순으로 우선순위를 주는 방법을 고려해야 한다.
 ## BusyWait VS Block & WakeUp
 - 일반적으로는 Block & WakeUp이 CPU 소모를 줄일 수 있다.
   - 하지만 WakeUp과정, ReadyQueue에 배치하는 과정 모두 CPU 리소스를 소모한다.

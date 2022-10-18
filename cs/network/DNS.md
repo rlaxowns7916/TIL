@@ -26,6 +26,21 @@
 5. TCP 3-way handshake를 통해서 Connection을 맺는다.
 6. HTTP 통신을 수행한다.
 
+# DNS의 계층구조
+- 한대의 서버로 DNS가 동작할리는 없다.
+- DNS는 계층구조 (Tree구조)로 되어있으며, 상위 NS가 하위 NS의 위치를 알고있으며 root->leaf로 내려가는 구조이다.
+
+```text
+example1   .    example2     .    com      .     (생략)
+(sub)        (second-level)    (top-level)       (root)
+```
+- 맨 뒤에 .(root)가 생략되있는 구조이다.
+- root부터 탐색해간다. 
+  - root는 전세계에 13개만 존재한다.
+- top-level에는 .com이나, .kr 같은 도메인이 포함된다.
+- second-level부터는 그뒤의 sub-domain을 책임진다.
+
+
 # DDNS (Dynamic DNS)
 - 실시간으로 DNS를 갱신하는 방법이다.
 - Domain IP가 유동적인 경우에 사용된다.
