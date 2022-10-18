@@ -40,6 +40,8 @@ example1   .    example2     .    com      .     (생략)
 - top-level에는 .com이나, .kr 같은 도메인이 포함된다.
 - second-level부터는 그뒤의 sub-domain을 책임진다.
 
+<img width="657" alt="스크린샷 2022-10-18 오후 10 59 00" src="https://user-images.githubusercontent.com/57896918/196460530-c44fe2fe-b409-42c1-89bc-8d864d07e397.png">
+
 
 # DDNS (Dynamic DNS)
 - 실시간으로 DNS를 갱신하는 방법이다.
