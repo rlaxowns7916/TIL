@@ -31,6 +31,8 @@
 - 감내할 수 있는 데이터 손실의 지점 (시간)을 나타낸다.
 - 재해 복구 계획을 세우는 기준이 된다.
 
+<img width="853" alt="RPO-RTO" src="https://user-images.githubusercontent.com/57896918/196460294-9026d7a6-f60e-4970-bb41-ce666517ad17.png">
+
 
 ## 재해 복구 계획
 
