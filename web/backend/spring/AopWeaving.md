@@ -28,7 +28,7 @@
   - 순수한 Java코드로 동작한다.
     - ```text
           One of the central tenets of the Spring Framework is that of non-invasiveness.
-          (Spring은 개발자에게 선택지는 제공하지만, 특정 프레임워크의 클래스나 인터페이스가 도메인 코드에 침입하는 것을 신조로한다)
+          (Spring은 개발자에게 선택지는 제공하지만, 특정 프레임워크의 클래스나 인터페이스가 도메인 코드의 침입을 방지하는 것을 주요 개념으로 한다)
       ```
 - Proxy에서 다시 원본객체를 호출하기 때문에, 런타임시 성능이 좋지않다.
 - 동일 Class 호출 문제가 존재한다.
