@@ -50,7 +50,9 @@
 - DNS서비스의 발전된 형태이다.
   - **지능적 DNS 서비스** 라고 불리기도 한다.
   - DNS는 하나의 Domain에 대한 여러개의 IP주소를 넘겨줄 수 있다.
+    - 어떤 것을 사용할지는 사용자, 클라이언트의 몫이다.
   - 더욱 상세한 로드밸런싱을 가능하게 한다.
+- DNS의 프록시 형태로 동작한다.
 
 ### DR (Disaster Recovery)
 - 서버의 상태를 지속적으로 모니터링 한다.
@@ -71,4 +73,5 @@
 1. 사용자가 DNS에 Domain 질의
 2. DNS는 Local 부터 Root까지 순차적인 질의를 수행
 3. 해당 Domain이 GSLB에게 위임된 도메인일 경우 GSLB에게 질의
-4. GSLB는 정책에 따라 (HealthCheck, Latency, Custom ...)에 따라서 최적의 IP를 리턴해준다.
+4. GSLB는 프록시 방식이기 떄문에 담당 도메인에 DNS Query
+5. GSLB는 정책에 따라 (HealthCheck, Latency, Custom ...)에 따라서 최적의 IP를 리턴해준다.
