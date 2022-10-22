@@ -1,28 +1,19 @@
 # JVM
 
 ## JVM(Java Virtual Machine)
-
-JVM은 Class 파일을 읽어서 실행하는 역할을 한다.
-
-JVM의 존재 덕분에, 다른 OS에서 작성된 Java파일(+class파일)
-
-동일하게 실행이 가능하다.
-
-OS에 종속적이며, Java파일을 읽는 것이아닌, Class파일을 읽는 것이기 때문에,
-
-Java라는 특정언어에 종속되는 것은 아니다.
+- JVM은 Class 파일을 읽어서 실행하는 역할을 한다.
+- **1 Applcation : 1 JVM Instance이며, 각각은 독립적이다.**
+  - 필수적인 것은 아니며, 공유를 가능하게 할 수도 있다.
+- JVM의 존재 덕분에, 다른 OS에서 작성된 Java파일(+class파일) 동일하게 실행이 가능하다.
+- OS에 종속적이며, Java파일을 읽는 것이아닌, Class파일을 읽는 것이기 때문에,
+- Java라는 특정언어에 종속되는 것은 아니다.
 
 ## JRE(Java Runtime Environment)
-
-자바 실행에 필요한 환경을 정의한 것으로
-
-JVM + JAVA Library로 구성된다.
+- 자바 실행에 필요한 환경을 정의한 것으로 JVM + JAVA Library로 구성된다.
 
 ## JDK(Java Development Kit)
-
-자바 프로그래밍에 필요한 개발툴이 JRE에 추가 된것이다.
-
-JAVAC(컴파일러) 등이 포함된다.
+- 자바 프로그래밍에 필요한 개발툴 + JRE 이다.
+- JAVAC(컴파일러) 등이 포함된다.
 
 ![dd](https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=https%3A%2F%2Fblog.kakaocdn.net%2Fdn%2Fc00klf%2FbtqAjMzLyF2%2F6sU1VGp5vqAYIPLsXpakpK%2Fimg.png)
 

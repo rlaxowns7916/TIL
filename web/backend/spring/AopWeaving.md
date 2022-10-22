@@ -23,7 +23,13 @@
 - Compile시간은 CTW에 비해서 이점이 있지만, 메모리에 Load 할 때 시간이 걸리기 때문에 Runtime시간은 CTW에비해 좋지않다.
 - 설정이 복잡하다.
 
-## 3. RunTime Weaving
+## 3. Post-Compile Weaving (==Binary Weaving)
+- AspectJ를 필요로 한다. (추가적인 종속성)
+- 이미 존재하는 class파일, jar파일을 Weaving 할 때 사용한다.
+
+
+## 4. RunTime Weaving
+- Spring-AOP의 방식이다.
 - Proxy방식을 사용한다.
   - 순수한 Java코드로 동작한다.
     - ```text

@@ -26,10 +26,14 @@
         - CGLib에서는(Class기반) 기술적으로는 가능하나 안하는 것을 추천한다.
         - 결론: SpringAOP로는 Public 메소드만 가능하다.
 - AspectJ
+    - Spring과 독립적인 프레임 워크이다. 
     - 실제코드에 조작이 일어나기 때문에, Method 뿐만 아니라, 생성자, 필드 등에 AOP 적용이 가능하다.
     - CompileTime Weaving
         - 부가적인 컴파일러 설정이 필요하다.
         - Java파일을 Class파일로 변경 하는 시점에 바이트코드 조작을 통해서 Weaving
+    - PostCompile Weaving
+      - Binary Weaving이라고도 불린다.
+      - 이미 존재하는 class파일이나, jar파일을 weaving하는데 사용된다.
     - LoadTime Weaving
         - Class파일에는 나타나지 않으나, JVM메모리 상에 Weaving
         - ClassLoader가 Class 정보를 Method 영역에 올릴 때 Weaving

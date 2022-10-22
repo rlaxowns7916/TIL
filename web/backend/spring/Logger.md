@@ -24,9 +24,13 @@
 - Parameter만을 출력한다. (다양한 정보의 부재, 출력하기 위한 수작업)
 
 ### Logger
+- 다양한 제어를 가능하게 한다.
+- 구현체에 따라서 Thread-safe 한 것도있고, Non-Thread-Safe한 것도 있다.
+  - Logback의 경우 내부적으로 ThreadLocal을 사용하며, Thread-Safe하다.
 - Logger의 경우 Queue를 두고 다른 연산이 없을 경우에 수행한다.
 - Level의 정의를 통해서 로그를 필터링 할 수 있다.
 - 다양한 타입의 Appender를 제공해주어, 정책에 맞게 사용 가능하다.
   - 외부 시스템과의 연동이 쉽다.
+  - Async하게 Logger를 남길 수도 있다.
   - Kafka Streams, Elastic Search 등 과도 연동이 가능하다.
 - 표준화된 로그 출력 방식 (읽기 쉽다)
