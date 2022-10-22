@@ -44,5 +44,9 @@ Spring-boot-web에서 Embedded Tomcat을 사용한다고 한다.
 ```
 - Dispatcher Servlet은 web.xml에 등록된다.
   - ServletContainer의 영역이다.
-  - 이 곳에서 모든 요청을 받고, SpringContainer와 이어주는 역할이다.
+  - 이 곳에서 모든 요청을 받고, SpringContainer와 이어주는 역할이다.!
 - 그 뒤의 HandlerMapping, HandlerAdapter 등, Spring의 Conatiner의 영역이다.
+
+
+
+![sdf](https://user-images.githubusercontent.com/57896918/197349502-913f51ea-cb8c-4b3e-8859-37f0a4832a6f.png)
