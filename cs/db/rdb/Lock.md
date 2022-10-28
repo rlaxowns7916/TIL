@@ -33,7 +33,5 @@
 - 해당 범위에 존재하는 비어있는 값의 **Insert 를 제한하는 것이다.**
 - RepeatableRead의 일관성을 보장 할 수 있다.
   - Phantom Read의 카운터
-- InnoDB의 경우 Index의 Range검색이 실시될 경우 Gap Lock이 설정된다.
-  - ~ for update로 Range를 걸 경우, 해당 Range에 GapLock(Exclusvie)이 걸린다.
-  - non-unique Index의 Range검색 + Gap Lock Disable  == Phantom Read
-  - Unique한 Index의 Equal연산 (=) 경우에는 GapLock (X)
+- ~ for update로 Range를 걸 경우, 해당 Range에 GapLock(Exclusvie)이 걸린다.
+- Unique한 Index의 Equal연산 (=) 경우에는 GapLock (X)
