@@ -1,4 +1,5 @@
 # DHCP
+- OSI 7 Layer에서 7계층인 ApplicationLayer에서 동작한다.
 - Dynamic Host Configuration Protocol의 약자이다.
 - Host의 IP주소와 TCP/IP 각종 설정을 자동으로 제공해주는 프로토콜을 의미한다.
   - 구성: IP주소, 서브넷 마스크, 가까운 라우터, DNS의 IP 주소

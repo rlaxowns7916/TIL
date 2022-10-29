@@ -34,3 +34,14 @@
 - Refresh Token이 2번 사용되면 탈취되었다고 판단한다.
 - RefreshToken을 체이닝한다. (History 보관)
   - 탈취되었다고 판단이 되면 해당 체이닝에 얽혀있는 RefreshToken을 모두 만료시킨다.
+
+### Header에 둘것인가? Cookie에 둘것인가?
+
+#### 1. Header
+- Header의 Authorization 필드에 토큰을 동봉하는 것이다.
+- CSRF를 방지할 수는 있으나, XSS를 통해서 AccessToken을 탈취 당할 수도 있다.
+
+### 2. Cookie
+- HttpOnly, Secure Cookie를 통해서 XSS로부터 안전할 수 있다.
+- 하지만 CQRS로 부터는 안전하지 못하다.
+  - 별도의 조치를 취해야만 한다.
