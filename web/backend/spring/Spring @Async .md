@@ -5,7 +5,7 @@
   - 해당 메소드가 실행 될 시에, Spring이 가로채서 다른 Thread에 실행을 위임한다.
 
 ## 제한 사항
-1. private Method에는 사용 불가
+1. private Method, protected method 에는 사용 불가
 2. self-invocation (자기호출) 불가능
    - AOP로 동작하고 Proxy 기반이기 떄문이다.
    - @Transactional 문제와 똑같다.
