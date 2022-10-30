@@ -1,4 +1,6 @@
 # Redis
+- 모든 데이터는 내부적으로 Hash-Table에 저장된다.
+  - HashCollision에는 Chaining을 사용한다.
 - 영속성을 지원하는 In-Memory 저장소이다.
   - String, List, Hash, Set, SortedSet의 자료구조를 지원한다.
   - Disk에 데이터를 저장 할 수 있다. (영속성)
