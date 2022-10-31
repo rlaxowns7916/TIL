@@ -19,9 +19,15 @@
   - ...
 ### 3. S/W Interrupt (= Exception, = Trap)
 - 프로그램 처리도중 오는 요청
-- SystemCall
 
 ### Interrupt의 구성요소
 1. Source : 누가 Interrupt를 호출 했는가?
 2. Priority: 2개 이상의 Interrupt가 존재할 때, 무엇을 먼저 처리 할 것인가?
 3. InterruptVector: InterruptServiceRoutine의 시작주소
+
+
+### Sysetm Call과의 차이
+```text
+System Call은 프로그램이 Kernel Layer에서 할 수있는 작업을 가능하도록 OS에서 제공해주는 것이며,
+Interrupt는 CPU가 특정한 작업을 하도록 지시 하는 것이다.
+```

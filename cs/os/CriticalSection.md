@@ -26,6 +26,7 @@
 - CriticalSection에 들어가는 시점에 Lock을 획득
 - CriticalSection에서 나가는 시점에 Lock을 반환
 - Lock이 걸려있기 때문에, MutalExclustion을 만족한다.
+- Lock을 소유한 대상만이 Release가 가능하다.
 
 #### 한계점
 - BusyWaiting (SpinLock)
@@ -44,6 +45,7 @@
 - Starvation을 유의해야한다.
   - Semaphore WaitingQueue에서 빠져나가지 못하는 경우가 존재한다.
   - FIFO나 오래기다린 순으로 우선순위를 주는 방법을 고려해야 한다.
+- Semaphore를 가진 대상이 아니어도 Release가 가능하다.
 ## BusyWait VS Block & WakeUp
 - 일반적으로는 Block & WakeUp이 CPU 소모를 줄일 수 있다.
   - 하지만 WakeUp과정, ReadyQueue에 배치하는 과정 모두 CPU 리소스를 소모한다.
