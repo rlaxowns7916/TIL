@@ -47,7 +47,7 @@ class Example {
 
   Function<Integer, Integer> addFunc2 = x -> x + x;
 
-  boolean isSame = addFunc1(10) == addFunc2(10);
+  boolean isSame = addFunc1.apply(10) == addFunc2.apply(10);
 }
 ```
 
