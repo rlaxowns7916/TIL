@@ -76,3 +76,72 @@ public interface TriFunction<T, U, V, R> {
   R apply(T t, U u, V v);
 }
 ```
+
+## Functional Interface 종류
+
+### 1) Function <T,R>
+
+- Input <T>를 받아서 <R>을 리턴하는 역할을 한다.
+- **apply**라는 Abstract Method를 가진다.
+
+```java
+class Example {
+
+  public static void main(String[] args) {
+    Function<String, String> prefixParser = (x) -> "prefix_" + x;
+    System.out.println(prefixParser.apply("apple"));
+  }
+}
+```
+
+### 2) Consumer<T>
+
+- Input <T>를 받기만한다.
+- 아무것도 Return 하지 않는다. (말 그대로 소비만 한다.)
+- **accept()**라는 Abstract Method를 가진다.
+
+```java
+class Example {
+
+  public static void main(String[] args) {
+    Consumer<Integer> printer = x -> System.out.println(x);
+    printer.accept(10);
+  }
+}
+```
+
+### 3) Supplier<T>
+
+- 아무런 Input도 받지 않는다.
+- <T>를 Return 한다. (말 그대로 공급만 한다.)
+- **get()** 이라는 Abstract Method를 가진다.
+
+```java
+class Example {
+
+  public static void main(String[] args) {
+    Supplier<Integer> randomNumGenerator = () -> (int) (Math.random() * 100);
+    System.out.println(randomNumGenerator.get());
+  }
+}
+```
+
+### 4) Predicate <T>
+
+- Input <T>를 받고, boolean을 리턴한다.
+- **test()**라는 Abstract Method를 가진다.
+- **and()** **or()** **negate()** 이라는 Default Method를 가지고 있다.
+
+```java
+class Example {
+
+  public static void main(String[] args) {
+    Predicate<Integer> isPositive = x -> x > 0;
+    Predicate<Integer> isZero = x -> x == 0;
+    
+    boolean isNonNegative = isPositive.or(isZero).test(10); // 둘 중하나만이라도 참일 때
+    boolean alwaysFalse = isPositive.and(isZero)/test(10); // 두가지 조건이 모두 참일 때
+    isNegative = isPositive.negate().test(-10); //true  --> 기본 Predicate에 not(!)
+  }
+}
+```
