@@ -69,7 +69,8 @@ class BeforeJava9 {
   class Java9 {
 
   public static void main(String[] args) {
-    List<Integer> numList = List.of(1, 2, 3, 4);
+    List<Intger> numList1 = Arrays.asList(1,2,3,4);
+    List<Integer> numList2 = List.of(1, 2, 3, 4);
     Set<Integer> numSet = Set.of(1, 2, 3);
     Map<Integer, String> numMap = Map.of(1, "One", 2, "Two", 3, "Three");
   }

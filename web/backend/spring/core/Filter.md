@@ -16,6 +16,10 @@
 
 ### 1. Filter 구현
 ```java
+/**
+ * 여기서 @Component를 지정하면
+ * 모든 URL에 지정된다.
+ */
 public class PracticeFilter implements Filter {
 	@Override
 	public void destroy() {
@@ -50,8 +54,12 @@ public class PracticeFilter implements Filter {
 @Configuration
 @RequiredArgsConstructor
 public class WebMvcConfiguration implements WebMvcConfigurer {
-    
-    @Bean
+
+  /**
+   *  Filter는 Servlet의 스펙이기 때문에
+   *  @Order를 통한 순서 지정은 동작하지 않는다.
+   */
+  @Bean
     public FilterRegistrationBean practiceFilterRegistrationBean() {
         FilterRegistrationBean filterRegistrationBean = new FilterRegistrationBean(new PracticeFilter());
         filterRegistrationBean.setOrder(Ordered.LOWEST_PRECEDENCE); //Filter 끼리의 순서 지정

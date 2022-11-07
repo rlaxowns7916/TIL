@@ -83,3 +83,18 @@ PEHC2lm60H5Zk0VHJjbIhthvlu55Nu7hmnRWgXTvjKk(signature)
 - Client가 Payload를 조작 했는지 안했는지 알 수 있게 해준다.
 - header와 payload를 서버가 갖고있는 secretKey를 통해 해싱한 것
 - Client가 Server에게 Jwt를 보냈을 때, 서버는 다시 Header와 Payload를 해싱 해본 후 Signature와의 비교를 통해 위변조를 검증한다.
+
+
+## Token의 종류
+
+### 1. Bearer
+- JWT
+- OAuth
+
+### 2. Basic
+- 사용자 ID/ Password를 Base64로 인코딩해서 사용
+
+### 3. Digest
+- 서버의 난수 문자열을 클라이언트에 보낸다.
+- 클라이언트의 암호화 Nonce(암호화 임시값)을 통해서 암호화 한다.
+- MD5를 사용한다.
