@@ -20,3 +20,5 @@
 ### TimeOut 설정
 - DB의 Lock획득에는 많은 시간이 걸릴 수 있기 때문에, TimeOut을 지정해주어서 리소스 낭비를 최소화 해야한다.
 - DB Vendor마다 제공해주는 것이 다르다.
+  - https://blog.mimacom.com/handling-pessimistic-locking-jpa-oracle-mysql-postgresql-derbi-h2/ 
+![스크린샷 2022-11-12 오후 5 13 20(2)](https://user-images.githubusercontent.com/57896918/201474705-e6f535cd-50cd-4205-9a6e-df39f9d363a6.png)
