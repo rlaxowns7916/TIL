@@ -1,6 +1,6 @@
 # Index
-
-**RDBMS에서 검색속도를 높이기위한 기술**
+**RDBMS에서 검색속도를 높이기위한 기술**    
+**검색 범위를 최소화 하는 것이 목적**
 
 - Index파일을 만들어서 따로 저장
     - 추가공간이 필요하다. (DB 용량의 약 10%)
@@ -36,6 +36,7 @@
     - BranchNode에 데이터를 저장하지 않기 때문에, 더 많은 포인터 저장 가능 (전체적인 depth가 낮아짐)
 - LeafNode에 데이터가 저장됨 (다른 노드들에 데이터가 저장안되기 떄문에 메모리 효율성)
 - LeaftNode끼리는 LinkedList로 연결
+  - 연속적인 데이터 접근에 유리하다.
 - 트리의 높이가 낮아진다.
 - FullScan시 선형검색
 
@@ -72,8 +73,11 @@
     - email을 ClusteredIndex로 만든다면? --> 성능저하
     - ALTER를 통해 많은 데이터가 존재하는 곳에 ClusteredIndex를 설정한다면? --> boom
 - default로 PrimaryKey에 지정된다.
-    - PrimaryKey에 강제적으로 NonClusteredIndex 지정도 가능하다.
-    - 테이블에 이미 ClusteredIndex가 있으면 PK가 NonClusteredIndex가된다.
+  - 1순위는 PrimaryKey, 2순위는 UNIQUE, NOT NULL  
+  - PrimaryKey에 강제적으로 NonClusteredIndex 지정도 가능하다.
+  - 테이블에 이미 ClusteredIndex가 있으면 PK가 NonClusteredIndex가된다.
+- PK가 변경되면 실제로 저장되는 물리적 위치가 변경된다.
+  - PK를 신중하게 결정해야 한다.
 
 ### 2. NonClustered Index
 
