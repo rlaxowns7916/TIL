@@ -6,6 +6,7 @@
     - Table Caching
     - Index Data Caching
 - 메모리 공간이기 떄문에 장애 발생 시 휘발 될 수 있다.
+- 이 곳에 데이터가 있을 경우, DISK 접근 횟수가 줄어들기 때문에 좋은 성능을 발휘 할 수 있다.
 - 데이터를 저장할 때 바로 DISK로 들어가는 것이아닌, Memory에 모아두었다가 Insert한다.
 
 ***
@@ -22,27 +23,28 @@
   - Lock 없이 Read하는 것이 목적이다.
 
 ### Undo 정책
-- 트랜잭션이 완료되지 않은 상태에서 데이터를 기록 할 것인가?
+- **트랜잭션이 완료되지 않은 상태에서 데이터를 기록 할 것인가?**
 - 당연히 기록하지 않을 것 같지만 성능상의 이유로 STEAL을 사용한다.
   - NO-STEAL 정책을 사용하면 엄청난 메모리가 필요할 것이기 때문이다.
+  - STEAL 정책을 사용하기 때문에, Undo Log가 필요하다.
 
-|정책 |설명|
-|:----|:-----|
-|STEAL |  기록한다.|
-|NO-STEAL (default) | 기록하지않는다.|
+| 정책              | 설명                           |
+|:----------------|:-----------------------------|
+| STEAL (default) | 언제든지 Disk에 기록한다.             |
+| NO-STEAL        | 트랜잭션 커밋 이전까지는 Disk에 기록하지않는다. |
 
 ## 2. Redo Log
 - DB장애시 복구를 위해서 사용되는 로그이다.
   - BufferPool에 저장되어 있던 데이터 유실을 방지하기 위해서 사용된다.
   - 트랜잭션의 불완전한 완료를 복구하기 위해서 사용한다.
-- 데이터 변경이 있을 시에만 Log에 기록된다.
+- **데이터 변경이 있을 시에만 Log에 기록된다.**
   - DML (SELECT는 제외)
   - DDL
   - TCL
 - 최소한 트랜잭션 Commit시점에는 RedoLog에 변경사항이 기록되어야한다.
 
 ### Redo 정책
-- 트랜잭션 완료 후 바로 Disk에 기록하는가?
+- **트랜잭션 완료 후 바로 Disk에 기록하는가?**
 - 성능상의 이유로 바로 기록이 아닌, 적당한 시점의 기록을 사용한다.
   - 그렇기에 RedoLog가 필요하다.
 
@@ -65,3 +67,15 @@
 ## 3. Binary Log
 - mysql 의 로그 또는 Row내용을 주로 저장한다.
 - Replication에 사용된다.
+
+## Undo 될 데이터가 DISK에 반영 되어있다면?
+- STEAL, NO-FORCE 정책이기 때문에, 트랜잭션이 끝나지 않은 데이터가 DISK에 반영되었을 수 있다.
+- 그렇다면 어떻게 일관성을 유지할 수 있을가?
+
+### DB Isolation Level
+1. READ_UNCOMMITED
+   - InnoDB BufferPool (Memory)나, DISK의 데이터를 반환한다.
+2. READ_COMMITED, REPETABLE_READ, SERIALIZABLE
+   - 아직 Commit되지 않은 데이터를 넘겨줄 수 없는 격리수준이다.
+   - UndoLog에서 반환한다.
+     - DISK나, BufferPool에는 반영시점에 따라, Commit되지 않은 데이터가 있을 수 있기 때문이다.
