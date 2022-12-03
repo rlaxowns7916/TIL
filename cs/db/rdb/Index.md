@@ -11,9 +11,22 @@
     - DELETE - Index를 사용하지 않는다는 작업을 수행한다.
         - Index에는 Delete 개념이 없다.
     - UPDATE - Index를 사용하지 않는다는 작업을 수행 후, 새로운 Index를 매핑한다.
-- 분포도(Selectivity)가 중요하다
-    - 분포도는 데이터가 테이블에 평균적으로 분포되어 있는 정보를 의미한다.
-    - 분포도가 좋다는 것은 **중복이 없다 (== 분포도가 낮다)**는 것이다.
+  - 분포도(Selectivity), Cardinality(Unique한 데이터의 갯수)
+      - 분포도는 데이터가 테이블에 평균적으로 분포되어 있는 정보를 의미한다.
+      - 분포도가 좋다는 것은 데이터가 골고루 퍼져있어, 검색 시 불필요한 데이터를 걸러내기 쉽다는 것이다.
+    - ```sql
+          # Cardinality (Unique 한 정도) 
+          SELECT COUNT(DISTINCT(d.SELLER_ID)) FROM delivery d;
+          
+          # Selectivity (전체에서의 Unique한 비율)
+          SELECT cardinality.SELLER_ID, (CONVERT(float,cardinality.total) /  (SELECT count(*) FROM delivery)) * 100 as selectivity
+          FROM(
+               SELECT d.SELLER_ID, COUNT(*) as total
+               FROM delivery d
+               GROUP BY d.SELLER_ID
+          ) cardinality
+          ORDER BY selectivity DESC;
+      ```
 
 ## 복합 인덱스
 
@@ -115,3 +128,31 @@
 
 - 전체 탐색
 - 모든 LeafNode 수평탐색
+
+## Index 사용시 주의 할점
+
+### 1. Index의 변형
+```sql
+SELECT 
+    *
+FROM 
+    Member m 
+WHERE
+    m.age * 10 = 1;
+```
+- Index가 걸린 필드의 변형은 Index를 타지 못하게 한다.
+- Index가 걸린 필드의 **타입의 오지정** 또한 Index를 타지 못하게 하는 요인이다.
+
+## 2. 복합인덱스의 순서
+- 선행하는 Index의 기준으로 정렬 된 후, 그 다음 Index기준으로 정렬한다.
+- 중복을 최소화 할 수 있는 순서로 Index를 작성하는 것이 유리하다.
+
+## 3. 하나의 쿼리는 하나의 Index만 타게된다.
+- 강제적인 Index 지정 (index merge hint) 사용 시에는 여러개의 Index테이블을 거치게 할 수 있다.
+- 기본적으로는 여러개의 Index테이블 탐색이 아닌, 하나의 Index만 타게 된다.
+- WHERE, ORDER BY, GROUP BY를 모두 아우를 수 있는 인덱스를 지정하는 것이 중요하다.
+
+## 4. Trade-Off 고려하기
+- explain을 통해서 실행계획을 적절하게 확인해야 한다.
+- Write의 성능을 희생하여 Read성능을 높이는 것이다.
+- Index 외의 다른 방법으로 해결 할 수 있는지 또한 고려해봄직하다.
