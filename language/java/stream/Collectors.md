@@ -75,6 +75,21 @@
                     ),
                     Collectors.toSet()
                 );
-        } // {0 = [2,4,6], 1 = [1,3,5]}
+           // {0 = [2,4,6], 1 = [1,3,5]}
+        } 
     }
     ```
+    
+## Collector<T,?, Map<Boolean,D>> partitioningBy(Predicate<? super T> predicate)
+- predicate를 받아서 true,false 두 key가 존재하는 Map을 만들어낸다.
+-  ```java
+    class Example{
+      public static void main(String[] args){
+          List<Integer> numbers = List.of(1,2,3,4,5);
+          Map<Boolean,Integer> isEven = numbers.stream()
+               .collect(Collectors.partitioningBy(it -> it % 2  == 0));  
+      }
+   }
+    ```
+- 두 번째 인자로 Collector를 넘기는 것도 가능하다.
+
