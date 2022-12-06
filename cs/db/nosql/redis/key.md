@@ -147,6 +147,55 @@ $ persist [Key]
 - nx 옵션을 통해서, 만약 newKey에 해당하는 것이 존재한다면, 명령을 무시할 수 있다.
 
 
+### 10. getset
+- atomic하게 get과 set을 한번에 수행하는 것이다.
+- 현재의 결과 값을 가져오고 set한다.
+- key값이 존재하지 않아도 SET은 실행된다. (GET은 당연히 Value가 존재하지 않으니 nil)
+```shell
+> SET app:daily_coupon 10
+OK
+
+> DECR app:daily_coupon
+(integer) 9
+
+> GETSET app:daily_coupon 10
+(integer) 9
+```
+
+### 11. getrange
+- Key값에 해당하는 Value문자열을 subString 하여 가져오는 것이다.
+- index는 0부터 시작한다.
+- startIndex부터 endIndex까지의 문자열을 반환한다.
+  - endIndex까지 포함이다.
+- endIndex는 startIndex보다 크거나 같아야한다.
+- end가 실제 길이보다 길면 에러를 리턴하는 것이 아니라 전체문자열을 리턴한다.
+- Negative Indexing (역순)도 가능하다.
+  - 맨 마지막이 -1 부터 시작한다.
+```shell
+> SET Key "Value"
+OK
+
+> GETRANGE 0 1
+"Va"
+
+> GETRANGE 0 100
+"Value"
+
+> GETRANGE -3 -1
+> "lue"
+```
+
+### 12. setrange
+- Key값에 해당하는 Value문자열을 offset부터 새롭게 설정하는 것이다.
+  - offset뒤에있는 것들을 모두 삭제하고 대체하는 것이 아니다.
+  - offset부터 새롭게 설정하는 문자열의 길이만큼만 대체 하는 것이디.
+- 존재하지 않는 Key값이어도 새롭게 생성이된다.
+  - offset이전 값은 비어있게 된다.
+```shell
+> SETRANGE notExist 5 hello
+"\x00\x00\x00\x00\x00hello"
+```
+
 ## Key-Space
 - MySQL의 Database 같은 것 이다.
 - 하나의 KeySpace에서는 1개의 Key값과 1개의 Value값이 고정되지만, KeySpace끼리는 독립적이다.
