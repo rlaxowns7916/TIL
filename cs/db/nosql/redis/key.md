@@ -3,6 +3,7 @@
 - 모든 데이터는 Key를 통해서 접근이 가능하다.
   - Value를 통한 검색은 불가능하다.
 - 40 밀리 세컨드 안에, 100만개의 Key를 탐색 가능하다.
+- Bucket 기반의 Chained-LinkedList 이다.
 
 
 ## 단건
@@ -15,6 +16,11 @@ $ set [Key] [Value] {옵션}
 - 기본 동작은 덮어쓰기 (Key값이 존재하거나 안하거나 둘다)
   - 만료 옵션이 있을 경우에는 덮어쓰기 안된다.
   - 덮어쓰고 싶은 경우 (XX 옵션 같이주면 된다.)
+- 옵션들을 조합해서 사용 가능하다.
+  - ```shell
+     $ set [key] [value] nx ex 200
+     # key가 존재하지 않으면, 200초의 마감시간을 주고 Value 설
+    ```
 #### 옵션
 1. NX: 겹처쓰기 방지 (Key값이 존재하지 않을 때만 저장이된다.)
 2. XX: 수정 (이미 Key값이 존재할 때만 저장)
@@ -93,6 +99,7 @@ $ persist [Key]
 
 ### 8. keys [expression]
 - 표현식을 통해서 존재하는 Key들을 찾는 것이다.
+- 이 명령이 실행되면 **다를 모든 명령들은 Blocking 된다.**
 - DB에 부하를 주기 때문에, 실행을 심각하게 고려해봐야한다.  (꼭 실행해야 한다면, Expression을 잘 정의해야 한다.)
   - ```shell
         keys [expression]
@@ -147,55 +154,6 @@ $ persist [Key]
 - nx 옵션을 통해서, 만약 newKey에 해당하는 것이 존재한다면, 명령을 무시할 수 있다.
 
 
-### 10. getset
-- atomic하게 get과 set을 한번에 수행하는 것이다.
-- 현재의 결과 값을 가져오고 set한다.
-- key값이 존재하지 않아도 SET은 실행된다. (GET은 당연히 Value가 존재하지 않으니 nil)
-```shell
-> SET app:daily_coupon 10
-OK
-
-> DECR app:daily_coupon
-(integer) 9
-
-> GETSET app:daily_coupon 10
-(integer) 9
-```
-
-### 11. getrange
-- Key값에 해당하는 Value문자열을 subString 하여 가져오는 것이다.
-- index는 0부터 시작한다.
-- startIndex부터 endIndex까지의 문자열을 반환한다.
-  - endIndex까지 포함이다.
-- endIndex는 startIndex보다 크거나 같아야한다.
-- end가 실제 길이보다 길면 에러를 리턴하는 것이 아니라 전체문자열을 리턴한다.
-- Negative Indexing (역순)도 가능하다.
-  - 맨 마지막이 -1 부터 시작한다.
-```shell
-> SET Key "Value"
-OK
-
-> GETRANGE 0 1
-"Va"
-
-> GETRANGE 0 100
-"Value"
-
-> GETRANGE -3 -1
-> "lue"
-```
-
-### 12. setrange
-- Key값에 해당하는 Value문자열을 offset부터 새롭게 설정하는 것이다.
-  - offset뒤에있는 것들을 모두 삭제하고 대체하는 것이 아니다.
-  - offset부터 새롭게 설정하는 문자열의 길이만큼만 대체 하는 것이디.
-- 존재하지 않는 Key값이어도 새롭게 생성이된다.
-  - offset이전 값은 비어있게 된다.
-```shell
-> SETRANGE notExist 5 hello
-"\x00\x00\x00\x00\x00hello"
-```
-
 ## Key-Space
 - MySQL의 Database 같은 것 이다.
 - 하나의 KeySpace에서는 1개의 Key값과 1개의 Value값이 고정되지만, KeySpace끼리는 독립적이다.
@@ -228,3 +186,44 @@ OK
        - users:100:group
        - users:100:friends
      ```
+     
+## Scan
+- 전체 Key를 페이징 크기에 따라서 순회하는 명령이다.
+  - sscan: Set에서 검색
+  - zscan: sortedSet에서 검색
+  - hscan: Hash에서 검색
+- ```shell
+  $ SCAN cursor [MATCH pattern] [COUNT count]
+  $ SSCAN key cursor [MATCH pattern] [COUNT count]
+  $ ZSCAN key cursor [MATCH pattern] [COUNT count]
+  $ HSCAN key cursor [MATCH pattern] [COUNT count]
+  ```
+- 일정 갯수만큼 Key를 짤라서 가져오는 것이다. (페이징)
+  - Count를 지정하지 않으면 10개 씩 가져온다.
+  - 적은 수의 결과를 잘라서 가져오기 때문에 Blocking이 발생하지 않는다.
+    - 많은 개수를 가져오게되면 Blocking이 발생할 수 있다.
+  - 많은 개수를 가져오는 만큼 날리는 쿼리의 수는 줄어들겠지만, 시간은 오래걸린다. (Trade-Off 생각하기)
+- Keys는 일치하는 모든 것을 가져오는 반면에, 페이징을 통해서 가져온다.
+- 이전부터 계속 있었던 데이터가 아니라면, Key가 반환 될 수도, 안될 수도 있다.
+  - 이미 페이지 커서가 지났으면 Key가 반환되지 않을 것이다.
+- 중복 Key가 반환될 수 있다.
+  - 중복 Key에 대한 중복제거는 Application의 몫이다.
+```shell
+1) "10" # Next Cursor
+2)  1) "key:9"
+    2) "key:7"
+    3) "key:4"
+    4) "key:12"
+    5) "key:32"
+    6) "key:29"
+    7) "key:15"
+    8) "key:21"
+    9) "key:3"
+   10) "key:7"
+   11) "key:2"
+```
+- 1번의 결과로 다음 Cursor의 값이 전달된다.
+  - 0이 올 때는 더이상 Scan할 것이 없다는 의미이다.
+  - 시작 & 끝 모두 0 이다.
+- Count 개수 만큼 페이지의 개수를 지정 할 수 있다.
+  - Count의 개수가 항상 지켜지는 것은 아니다.
