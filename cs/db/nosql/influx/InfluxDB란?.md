@@ -37,6 +37,9 @@
 ### 2. Series
 - 여러개의 Point로 이루어진 그룹이다.
 
+![스크린샷 2022-12-14 오후 11 05 01(2)](https://user-images.githubusercontent.com/57896918/207619953-62664e63-625e-4a5c-93d9-6269bcbdfe15.png)
+
+
 
 ## Line Protocol
 - InfluxDB에서 읽기 / 쓰기 에 이용되는 기본적인 프로토콜이다.
@@ -62,6 +65,9 @@
   - UnixTimeStamp
   - ns(NanoMilliSecond)까지 지원한다.
   - Data에 포함되지 않는다면, Host Machine의 System시간을 사용한다. (UTC)
+
+![스크린샷 2022-12-14 오후 11 06 55(2)](https://user-images.githubusercontent.com/57896918/207619988-ff2d16bb-4ab2-49a2-a8f3-b88e68834d95.png)
+
 ```shell
 home,room=Living\ Room temp=21.1,hum=35.9,co=0i 1641024000
 
