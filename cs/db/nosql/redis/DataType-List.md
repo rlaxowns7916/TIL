@@ -68,3 +68,55 @@ RPUSH [KEY] [...VALUES]
 3) "HR"
 4) "Design"
 ```
+
+### 3. (L/R)PUSHX
+- Key가 존재할 때만 List에 데이터를 추가한다.
+  - Key가 존재한다 -> 이미 사용되는 중이었다. -> Insert 
+  - 사용되지 않는 Key 값은 접근을 자주하지 않는다는 의미로 판단하여 정책상으로 캐시를 추가하지않는 등의 작업도 가능하다.
+
+## LINSERT
+- 왼쪽부터 특정 Element의 **(앞/뒤)에 Element를 추가 할 수 있다.
+  - 특정 Element는 값에 해당한다.
+  - 같은 Value를 갖는 것이 여러개라면 **첫번 째 값** 이 적용이된다.
+  - RINSERT는 존재하지않는다. (-1 ~ 로 끝 Index부터 접근이 가능하기 때문이다.)
+- 특정 값에 해당하는 Element가 존재하지 않을 때는 **-1**을 리턴한다.
+- 결과는 INSERT 후 List의 총 개수이다.
+
+```shell
+> linsert [KEY] [BEFORE | AFTER] [PIVOT] [ELEMENT]
+```
+
+## POP 
+- 특정 방향부터 N개의 요소를 제거한다.
+- KEY는 필수요소이며, COUNT가 생략되면 1로 취급된다.
+
+### 1. LPOP
+- 왼쪽부터 N개의 요소를 삭제한다.
+```shell
+> LPOP [KEY] [COUNT]
+```
+
+### 2. RPOP
+- 오른쪽부터 N개의 요소를 삭제한다.
+```shell
+> RPOP [KEY] [COUNT]
+```
+
+
+## LTRIM
+- 지정함 범위만 남기고 List의 모든 것을 삭제한다.
+- RTRIM은 없다 (-1 ~ 부터 끝 Index에 접근 할 수 있기 때문이다.)
+
+```shell
+> lpush ex 1 2 3 4 5 6 7 8 9 10
+(integer) 10
+
+> ltrim 4 -1 (4번째 Index부터 끝 Index 까지만 살림)
+
+1) 6
+2) 5
+3) 4
+4) 3
+5) 2
+6) 1
+```

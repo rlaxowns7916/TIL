@@ -1,12 +1,19 @@
 # Redis (REmote DIctionary Server)
+- 서버 재시작시 모든 데이터는 유실된다.
+  - 캐시 이외에 사용한다면 적절한 데이터 백업이 필요하다.
 - 모든 데이터는 내부적으로 Hash-Table에 저장된다.
   - HashCollision에는 Chaining을 사용한다.
 - 영속성을 지원하는 In-Memory 저장소이다.
   - String, List, Hash, Set, SortedSet의 자료구조를 지원한다.
   - Disk에 데이터를 저장 할 수 있다. (영속성)
     - 2가지의 옵션을 제공한다.
-        1. 특정 간격으로 Disk에 Snpatshot을 저장하는데 시간이 오래걸린다.
-        2. 로그 (AOF File)에만 추가한다. 
+        1. 특정 간격으로 Disk에 Snpatshot을 저장하는데 시간이 오래걸린다. (RDB)
+           - 어느정도 데이터 유실을 감수 할 수 있을 때 사용하자.
+        2. 로그 (AOF File)에만 추가한다.  (AOF)
+           - 장애상황 직전까지의 데이터가 보장되어야 할 때 사용하자.
+           - 기본설정 (everySec)의 경우 최대 1초의 데이터 유실이 발생할 수 있다.
+        3. 두가지 모두사용
+           - 강력한 내구성이 필요할 때 사용하자.
   - InMemory이기 떄문에 DataSet의 크기가 Memory크기를 넘을 수 없다.
   - 비싸다.
 - 읽기 성능 증대를 위한 Replication을 지원한다.
