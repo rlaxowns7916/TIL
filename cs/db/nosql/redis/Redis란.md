@@ -81,3 +81,8 @@ Redis의 병목현상은 메모리 또는 네트워크 대역폭 크기일 가�
 - MemCached는 String 만 사용가능, Redis는 5가지의 자료구조 사용이가능하다.
 - MemCached는 고성능 분산 메모리 객체 캐싱 시스템으로, 영속성을 보장하지 않는다.
 - Redis는 SingleThread, Memcacheds는 MultiThread로 동작한다.
+
+## Collection 주의 사항
+1. 10000개 이하로 Element를 유지하는게 좋다.
+2. Collection의 Expire은 전체에 걸린다.
+   - Collection 내부 데이터 대상으로 Expire를 걸 수 없다.

@@ -28,14 +28,24 @@
   ```
 
 ## LINDEX
-- 왼쪽에서 Index로 Element를 가져오는 것이다.
-- RINDEX(오른쪽 부터 순회)는 존재하지 않는다.
-  - 끝에서부터의 접근은 -1 -> -2 -> -3 슨이다.
-- **INDEX는 0부터 시작한다.**
-  - 마지막 요소는 -1이다.
+- Head(왼쪽)부터 Index로 Element를 가져오는 것이다.
+- RINDEX(Tail 부터 순회)는 존재하지 않는다.
+- **Head는 0부터 증가한다.**
+  - Tail -1부터 감소한다.
+
+```shell
 LINDEX KEY INDEX
 
+> lpush ex "1" "2" "3" "4" "5"
+(integer) 5
+
+> lindex ex 0
+1) "1"
+
+> lindex ex -1
+1) "5"
 ```
+
 
 ## PUSH 
 - 방향의 차이이다.
@@ -83,7 +93,22 @@ RPUSH KEY ...VALUES
 - 결과는 INSERT 후 List의 총 개수이다.
 
 ```shell
-> linsert [KEY] [BEFORE | AFTER] [PIVOT] [ELEMENT]
+linsert KEY [BEFORE | AFTER] [PIVOT] [ELEMENT]
+
+> lpush ex "1" "2" "3" "4" "5"
+(integer) 5
+
+>linsert ex before "3" "30"
+(integer) 6
+
+> lrange ex 0 -1
+1) "1"
+2) "2"
+3) "30"
+4) "3"
+5) "4"
+6) "5"
+
 ```
 
 ## POP 
@@ -198,3 +223,58 @@ LPOS KEY ELEMENT [RANK rank] [COUNT count] [MAXLEN maxlen]
     - 비교의 횟수를 결정하는 것이다.
   - data가 없으면 **(empty array)**을 리턴한다.
   - 가장 우선순위가 높다.
+
+## LREM
+- 특정한 요소의 제거
+- RREM은 없다. (Tail은 음수로 접근 가능)
+- 시간복잡도는 O(N+M)
+  - List의 길이 N: 탐색 연산
+  - 지워야 할 갯수 M: 삭제 연산
+
+```shell
+LREM KEY COUNT ELEMENT
+
+> lpush ex "1" "1" "1" "2" "2"
+(integer) 5
+
+> lrem ex 1 "1" # 왼쪽 (Head) 부터 Element 한 개 삭제
+(integer) 1
+
+> lrem ex -1 "1" # 오른쪽 (Tail) 부터 Element 한 개 삭제
+(integer) 1
+
+> lrem ex 0 "1" # 모두 삭제
+(integer) 3
+```
+- COUNT가 0 인 것은 모두 삭제하겠다는 의미이다.
+
+## LMOVE
+- 특정 List에 있는 Element를 다른 List로 Move
+
+```shell
+#     원본    목적지  SOURCE POP 방향  DEST PUSH 방향    
+LMOVE SOURCE DEST [LEFT | RIGHT] [LEFT| RIGHT]
+
+# Sample Data 생성
+> lpush job:pending "Job1" "Job2" "Job3" "Job4"
+(integer) 4
+
+# job:pending의 Head Elemet를 job:completed의 Head Element에 Push
+> lmove job:pending job:completed LEFT LEFT
+"Job1"
+
+# job:completed 요소 확인
+> lrange job:completed 0 -1
+1) "Job1"
+
+# job:pending의 Tail Elemet를 job:completed의 Head Element에 Push
+> lmove job:pending job:completed RIGHT LEFT
+1) "Job4"
+
+# job:completed 요소 확인
+> lrange job:completed 0 -1
+1) "Job4"
+2) "Job1"
+```
+- dest쪽에 Key값에 해당하는 List가 존재하지 않아도 옮길 수 있다. (생성함)
+- 리턴 값은 Source에서 옮겨진 Element이다.
