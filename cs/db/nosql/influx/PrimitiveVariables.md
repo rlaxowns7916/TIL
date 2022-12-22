@@ -1,4 +1,4 @@
-# Variables
+# Primitive Variables
 
 ## [1] bool
 - true

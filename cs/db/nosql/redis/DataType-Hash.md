@@ -16,6 +16,18 @@ HSET KEY [...field value]
 (integer) 2   
  ```
 
+### HSETNX
+- Hash Field : Value가 존재하지 않을 떄만 값을 추가한다.
+- 아래의 리턴 값을 갖는다.
+  - 1: 새롭게 값이 저장됨
+  - 0: 이미 존재해서 새롭게 값을 저장하지 못함
+```shell
+HSET KEY FIELD VALUE
+
+> hset user firstName "Taejun"
+(integer) 0 #이미 존재해서 저장 못함
+```
+
 ## HGET
 - Key에 해당하는 값들을 가져오는 것이다.
 - 존재하지 않는 filed의 값을 가져오려고하면 **nil**이 리턴된다.
@@ -90,4 +102,47 @@ HEXISTS KEY FIELD
 
 > hexists user firstName1
 (integer)0
+```
+
+## HKEYS
+- Field의 값들을 모두 가져오는 것이다.
+- HGETALL에서 value가 사라진 것이라고 보면 된다.
+```shell
+HKEYS KEY
+
+> hkeys user 
+1) firstName
+2) lastName
+```
+
+## HVALS
+- Value 값을 모두 가져오는 것이다.
+- HGETALL에서 field가 사라진 것이라고 보면된다.
+```shell
+HVALS KEY
+
+> hvals user
+
+1) "Taejun"
+2) "Kim"
+```
+
+## HINCRBY
+- Hash의 Value값을 증가시키는 명령어이다.
+- 숫자형의 증가가 가능하다.
+  - 음수도 가능하다.
+```shell
+HINCRBY KEY FIELD COUNT
+
+> hincrby user age 1
+> (integer)25
+```
+
+### HINCRBYFLOAT
+- HINCR의 실수형 버전이다.
+```shell
+HINCRBYFLOAT KEY FIELD COUNT
+
+> hincrbyfloat user commission 0.25
+> "1.25"
 ```
