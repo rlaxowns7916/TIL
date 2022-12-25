@@ -15,21 +15,54 @@
 4. Counter
 5. 고정된 Config 값
 
-## Value 증가/감소
+#### SET
+```shell
+$ set KEY VALUE {옵션}
+```
+- Key에 따른 Value 저장
+- 기본 동작은 덮어쓰기 (Key값이 존재하거나 안하거나 둘다)
+  - 만료 옵션이 있을 경우에는 덮어쓰기 안된다.
+  - 덮어쓰고 싶은 경우 (XX 옵션 같이주면 된다.)
+- 옵션들을 조합해서 사용 가능하다.
+  - ```shell
+     $ set [key] [value] nx ex 200
+     # key가 존재하지 않으면, 200초의 마감시간을 주고 Value 설
+    ```
+#### 옵션
+1. NX: 겹처쓰기 방지 (Key값이 존재하지 않을 때만 저장이된다.)
+2. XX: 수정 (이미 Key값이 존재할 때만 저장)
+3. EX n: 만료시간 지정: (데이터 생성후 n**초** 이후에 데이터 지워짐)
+4. PX n: 만료시간 지정: (데이터 생성후 n**밀리 초** 이후에 데이터 지워짐)
 
-### 증가
-#### incr
+### GET
+- 단건 조회이다.
+- Key에 따른 Value 조회
+```shell
+$ get [Key]
+```
+
+### DEL
+```shell
+$ del [Key]
+```
+- 동기적인 Key 삭제
+  - Blocking주의
+  - 여러개의 Key가 있을 경우, 순서대로 삭제한 후 시스템에 제어권을 반환한다.
+- 단건, 다건 모두 삭제 가능하다.
+- 공백을 기점으로 Key들을 나열하면 지워진다.
+
+### INCR
 - Number Type 일 때, Value를 1 증가 시킨다.
 - ```shell
     $ incr [key]
   ```
-#### incrby
+### INCRBY
 - Number Type 일 떄, Value를 index만큼 증가 시킨다.
 - ```shell
     $ incrby [key] [index]
   ```
   
-#### incrbyfloat
+### INCRBYFLOAT
 - 부동소수점에 대한 연산이다.
 - decrbyfloat은 제공해주지 않는다.
   - incrbyfloat -num 이런식으로 하면된다.
@@ -38,15 +71,13 @@
   ```
 ***
 
-  
-### 감소
-#### decr
+### DECR
 - Number Type 일 때 Value를 1 감소 시킨다.
 - ```shell
     $ decr [key]
   ```
   
-#### decrby
+### DECRBY
 - Number Type 일 때 Value를 index 만큼 감소 시킨다.
 - ```shell
     $ decrby [key] [index]
@@ -54,7 +85,7 @@
   
 ***
 
-#### append
+### APPEND
 - 문자열을 뒤에 더 붙이는 것이다.
 - 리턴 값은 연산을 한 후의 문자열의 길이이다.
 - 시간데이터 형식에도 사용 가능하다.
@@ -63,24 +94,24 @@
   ```  
   
 
-#### mset
+### MSET
 - 한번에 key-value를 여러개 지정하는 것이다.
 - ***기존에 값이 있다면 대체한다.***
 - ```shell
     $ mset [key1] [value1] [key2] [value2] ...
   ```
   
-##### msetnx
+### MSETNX
 - 기존값을 덮어쓰지않는 mset이다.
 
-#### mget
+### mget
 - 한번에 key-value 여러개를 가져오는 것이다.
 - ```shell
     $mget [key1] [key2] [key3] ...
   ```
 
 
-#### getset
+### getset
 - atomic하게 get과 set을 한번에 수행하는 것이다.
 - 현재의 결과 값을 가져오고 set한다.
 - key값이 존재하지 않아도 SET은 실행된다. (GET은 당연히 Value가 존재하지 않으니 nil)
