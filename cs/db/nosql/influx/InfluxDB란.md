@@ -35,22 +35,20 @@
   - 충돌 시 새로운 Point가 유리하다(?)
 
 ### 2. Series
-- 여러개의 Point로 이루어진 그룹이다.
-
+- 여러개의 Point로 이루어진 그룹이다.   
 ![스크린샷 2022-12-14 오후 11 05 01(2)](https://user-images.githubusercontent.com/57896918/207619953-62664e63-625e-4a5c-93d9-6269bcbdfe15.png)
-
-
 
 ## Line Protocol
 - InfluxDB에서 읽기 / 쓰기 에 이용되는 기본적인 프로토콜이다.
 - Telegraf, 각 언어의 Client들이 자동적으로 프로토콜을 빌드해준다. 
-- **각 요소의 구분은 이스케이프 처리되지 않은 공백 이다.**
+- Measuremet와 다른 요소들의 구분은 ,(1st Comma)를 통해서 구분된다.
+- **나머지 요소(Tag,Field,Time) 의 구분은 이스케이프 처리되지 않은 공백 이다.**
 
 ###  LineProtocol 구성 요소
 - Measurement **(Required)**
   - Measurment 구분을 위함
 - Tag Set
-  - Key=Value 형식이다.
+  - Key=Value 형식이다.]()
   - 대소문자를 구분한다. 
   - Comma(,)로 구분되는 문자열이다.
   - 공백이나 특수문자는 이스케이프 처리 해주어야 한다.
