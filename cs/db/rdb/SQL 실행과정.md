@@ -30,19 +30,17 @@
   - Optimizer 파라미터
 
 ## [3] Row-Source 생성
-- SQL Optimizer가 선택한 실행 경로를, **Code 또는 Procedure** 형태로 포맷팅하는 단계이다.
-- Row-Source Generator가 해당 역할을 맡는다.
+- Row-Source Generator가 역할을 담당한다.
+- SQL Optimizer가 선택한 실행 경로를 받아 Row Source Tree와 SQL 엔진이 실행 가능한 Binary Code를 생성한다.
+
+### Row Source Tree
+**SQL 실행의 방법들이 대부분 들어있다.**
+- 테이블의 순서
+- 테이블 Access 방법
+- Join 방법
+- Filter
+- 정렬 방법
 
 
 
-## 소프트 파싱 vs 하드 파싱
-- 소프트 파싱은 Library Cache에서 CacheHit 이후 추후의 작업 (최적화 -> Row Source 생성)을 하지 않고 바로 실행단계로 넘어간다.
-- 하드 파싱은 Library Cache를 CacheMiss 이후 추후의 작업을 모두 실행 한 후 실행단계로 넘어가는 것이다.
-  - 최적화 연산은 CPU를 많이사용하는 무거운 작업이기 때문에 하드파싱이라고 불린다.
 
-### Library Cache 
-- SGA의 구성요소이며, 메모리 공간이다.
-- SQL의 일련된 처리 이후 (파싱 -> 최적화 -> Row Source 생성)을 거쳐서 생성한 내부 프로시저를 캐싱해 두는 것이다.
-- SQL Parser의 파싱이후, 먼저 Library Cache에 들려서 Caching되어 있는 것이 있는지 확인한다.
-  - SQL 최적화 연산을 최소화 하기 위함이다. 
-  - Library Cache에 존재한다면, 그 이후의 과정(최적화 -> Row Source 생성) 은 생략 된다.

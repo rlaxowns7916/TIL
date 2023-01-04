@@ -75,3 +75,47 @@ SPOP KEY
 > spop sample-set 2
 (empty array)
 ```
+
+## SISMEMBER
+- 하나의 Member씩만 확인 가능하다.
+- SET에 Member가 존재하는지 확인한다.
+```shell
+SISMEMBER KEY MEMBER
+
+> sismember cars FORD
+(integer) 0 # 없을 때
+
+> sismember cars BMW
+(integer) 1
+```
+
+## SMISMEMBER 
+- SISMEMBER의 복수 형태이다.
+  - ISMEMBER앞에 M이 붙어있다.
+- 각 Member의 Index에 맞게 존재 여부를 리턴 값으로 한다.
+```shell
+SMISMEMBER KEY ...MEMBERS
+
+> smismember cars FORD BMW 
+1) (integer) 0
+2) (intger) 1
+```
+
+## SRANDMEMBER 
+- Set에서 Random한 Member들을 가져오는 것이다.
+- Count(갯수)를 지정 할 수 있다.
+  - default는 1이다.
+- 전체 갯수보다 많은 Count를 지정해도 전체 갯수만큼만 나온다.
+  - + 로 더 나오고 nil이 나오는게 아님.
+```shell
+SRANDMEMBER KEY [COUNT] 
+
+> srandmember lottery:num 6
+
+1) (integer) 21
+2) (integer) 37
+3) (integer) 1
+4) (integer) 5
+5) (integer) 42
+6) (integer) 19
+```
