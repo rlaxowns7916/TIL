@@ -119,3 +119,29 @@ SRANDMEMBER KEY [COUNT]
 5) (integer) 42
 6) (integer) 19
 ```
+
+## SMOVE
+- O(1) 명령어이다.
+- 한번에 하나밖에 옮길 수 없다.
+- 하나의 Set에서 다른 Set으로 데이터를 옮기는 것이다.
+- Source에 있는 Member를 Destination으로 옮긴다.
+- 성공적으로 옮겨지면 **1**을 리턴한다.
+- 실패하면 **0**을 리턴한다.
+```shell
+SMOVE SOURCE DESTINATION MEMBER
+
+# 홀수 값 채우기
+> sadd number:odd 1 3 4 5 9
+(integer) 5
+
+# 짝수 값 채우기
+> sadd number:event 2 4 6 8 10
+
+# 짝수집합에서 홀수집합으로 2 넘기기 (성공)
+> smove number:even number:odd 2
+(integer) 1
+
+# 짝수집합에서 홀수집합으로 3넘기기 (실패)
+>smove number:even number:odd 3
+(integer) 0
+```
