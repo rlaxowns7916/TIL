@@ -145,3 +145,94 @@ SMOVE SOURCE DESTINATION MEMBER
 >smove number:even number:odd 3
 (integer) 0
 ```
+
+## SUNION
+- 여러개의 Set을 하나로 합치는 것이다.
+  - 하나로 합쳐서 새로운 Set을 생성하는 것은 아니다.
+  - 여러개의 Set을 합쳤을 때의 결과를 보여준다.
+- Set이기 떄문에, 중복은 제거된다.
+```shell
+SUNION ...KEYS
+
+# key1 > 1,2,3,4,5
+# key2 > 2,4,6,8,10
+
+> sunion key1 key2
+
+1) 1
+2) 2
+3) 3
+4) 4
+5) 5
+6) 6
+7) 8
+8) 10
+```
+
+## SUNIONSTORE
+- SUNION의 결과 값을 저장하는 것이다.
+- 새로운 Set을 생성한다.
+  - 리턴 값은 저장된 Element의 갯수이다.
+```shell
+SUNION DESTINATION ...KEYS
+
+# key1 > 1,2,3,4,5
+# key2 > 2,4,6,8,10
+> sunionstore key3 key1 key2
+(integer) 8
+```
+
+
+### SINTER
+- 교집합이다.
+  - Set + Intersection
+- 각 Set의 공통된 Element를 리턴한다.
+```shell
+SINTER KEY1 KEY2
+
+# key1 > 1,2,3,4,5
+# key2 > 2,4,6,8,10
+> sinter key1 key2
+1) 2
+2) 4
+```
+
+### SINTERSTORE
+- SINTER + STORE 이다.
+- 교집합을 새로운 SET에 저장하는 역할을 한다.
+```shell
+SINTERSTORE DESTINATION ...KEYS
+
+# key1 > 1,2,3,4,5
+# key2 > 2,4,6,8,10
+> sinterstore key1 key2
+(integer) 2
+```
+
+### SDIFF
+- SET + Difference
+- 첫 번째 SET(key1)과, 나머지 SET (key2 + key3 + key4)과의 차이점을 리턴한다.
+```shell
+SDIFF KEY ...KEYS
+
+# key1 > 1,2,3,4,5
+# key2 > 2,4,6,8,10
+# key3 > 1,3
+
+>sdiff key1 key2 key3
+1) 5
+```
+
+### SDIFFSTORE
+- SDIFF + STORE
+- SDIFF의 결과를 Set에 저장하는 것이다.
+```shell
+SDIFFSTORE DESTINATION KEY ...KEYS
+
+# key1 > 1,2,3,4,5
+# key2 > 2,4,6,8,10
+# key3 > 1,3
+
+>sdiffstore dest1 key1 key2 key3
+(integer) 1
+```
