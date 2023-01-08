@@ -109,6 +109,9 @@ BCHR (Buffer Cache Hit Ratio)
   - 같은 Input은 항상 같은 HashBucket (= Hash Chain)에 등록된다.
   - Bucket내에서 정렬을 보장되지 않는다.
 
+![스크린샷 2023-01-08 오후 5 03 31(2)](https://user-images.githubusercontent.com/57896918/211186627-20bb4a0c-ef8c-487c-a587-394ee7cb2b0b.png)
+
+
 ## Cache Buffer Latch
 - 일종의 Lock 개념이다.
   - **해당 Block을 Chain에서 찾았다면, Latch를 해제하여 다른 Process가 탐색 할 수 있게해야 한다.** (Latch는 Block의 수정까지 Lock을 잡고 있는 것이 아니다.)
