@@ -8,7 +8,7 @@
 - Element 추가와, 정렬된 Element를 가져오는 것에 있어서 좋은 성능을 보인다.
 - **여러가지 Membe Field와, 숫자 Field인 Score를 가진다.**
   - Score에 따라서 정렬된다.
-  - Score가 같다면, Member로 정렬된다.
+  - **Score가 같다면, Member로 정렬된다.**
 
 ## ZADD
 - SortedSet에 Data를 추가하는 것이다.
@@ -75,4 +75,30 @@ ZRANGE KEY START STOP [BYSCORE | BYLEX] [REV] [LIMIT offset count] [WITHSCORES]
 1)choi
 2)lee
 3)kim
+```
+
+## ZREVRANGE
+- ZRANGE의 역순이다.
+  - ZRNAGE에 REV 옵션을 주는 것과 동일하다.
+- Default는 Score를 기준으로 내림차순 하는 것이다.
+```shell
+ZREVNRANGE KEY START STOP [WITHSCORES]
+
+# SortedSet의 모든 요소 (index 0 ~ index -1) Score와 함께 가져오기 (내림차순)
+> zrevrange user:follower 0 -1 withscores
+```
+
+
+## ZINCRBY
+- atomic한 연산이다.
+- member의 Score를 올려주는 것이다.
+  - **증가 시킨 최종적인 값이 리턴된다.**
+- **존재하지 않는 Member에 대한 Operation 수행 시, 새롭게 Member가 추가된다.**
+- 양수, 음수 둘다 가능하다.
+  - ZDECRBY 같은건 없다.
+```shell
+ZINCRBY KEY INCREMENT MEMBER
+
+# John의 Score를 30 증가
+> ZINCRBY user:follower 30 john
 ```

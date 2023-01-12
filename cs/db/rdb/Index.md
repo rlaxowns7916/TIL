@@ -27,6 +27,23 @@
           ) cardinality
           ORDER BY selectivity DESC;
       ```
+      
+## Index의 구조 (Oracle 기준)
+- Key: Index가 걸려있는 값으로 정렬되어 있다.
+- RowId: DBA(DataBlockAddress) + Row 주소
+
+### DBA(Data-Block-Address)
+- 실제 Record를 찾아가기위한 논리적인 주소이다.
+- 물리파일 번호 -> Block번호 -> Block내에서의 순번(Row)
+```text
+DBA = 데이터 파일(OS에 저장되는 물리파일) 번호 + Block 번호
+
+Block번호 = Data파일 내에서 부여한 상대적 순번
+
+Row번호 =  Block내 순번
+```
+
+
 
 ## 복합 인덱스
 
@@ -112,22 +129,6 @@
 5. ForeignKey (1 : N)에 주로 사용 되는 Column
 6. **Cardinality**가 높은곳 (겹치는게 적어야한다. )
 
-## Index Scan
-
-### 1. Index Unique Scan
-
-- equal (=) 에 따른 검색
-- MasterNode -> LeafNode까지 수직으로 한번에 탐색한다.
-
-### 2. Index Range Scan
-
-- 범위 탐색 (>, <)
-- MasterNode -> LeafNode까지 수직탐색, 필요한 범위만큼 LeafNode 수평 탐색
-
-### 3. Index Full Scan
-
-- 전체 탐색
-- 모든 LeafNode 수평탐색
 
 ## Index 사용시 주의 할점
 
