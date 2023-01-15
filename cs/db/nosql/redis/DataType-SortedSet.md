@@ -102,3 +102,50 @@ ZINCRBY KEY INCREMENT MEMBER
 # John의 Score를 30 증가
 > ZINCRBY user:follower 30 john
 ```
+
+## ZRANK
+- Member의 Rank를 알려준다.
+- **Rank는 0부터 시작하며, Score가 높을수록 높은 Rank를 가진다.**
+```shell
+ZRANK key member
+
+
+> zrange city 0 -1 withscores
+1) "New Delhi"
+2) (integer) 50
+3) "Seoul"
+4) (integer) 60
+5) "Beijing"
+6) (integer) 70
+7) "New York"
+8) (integer) 80
+
+>zrank city "Seoul"
+(integer) 1
+zrank city "New York"
+(integer) 3
+```
+
+## ZREVRANK
+- Member의 Rank를 **역순**으로 알려준다.
+  - Rank는 0부터 시작하며, Score가 낮을 수록 낮은 Rank를 가진다.
+```shell
+ZREVRANK key member
+
+
+> zrange city 0 -1 withscores
+1) "New Delhi"
+2) (integer) 50
+3) "Seoul"
+4) (integer) 60
+5) "Beijing"
+6) (integer )70
+7) "New York"
+8) (integer) 80
+
+>zrevank city "Seoul"
+(integer) 2
+zrevrank city "New York"
+(integer) 0
+```
+  
