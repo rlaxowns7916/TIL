@@ -5,6 +5,8 @@
   - spring이 내부적으로 Event에 대한 Listener들을 갖고있다.
   - List를 순회하면서, Event의 Trigger를 알려주면 알맞은 Method가 실행된다.
 
+<img width="1082" alt="스크린샷 2023-01-16 오후 9 44 00" src="https://user-images.githubusercontent.com/57896918/212706567-9fb4b521-fa17-45e3-8b54-6308a8aa17dc.png">
+
 
 ## [1] 이벤트 정의
 - Spring 4.2 미만에서는 Evnet를 정의해주어야 한다.
