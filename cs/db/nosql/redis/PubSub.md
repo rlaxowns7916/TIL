@@ -27,6 +27,27 @@ SUBSCRIBE ...CHANNELS
 2) "hello" #메세지
 ```
 
+### Pattern Subscribe
+- subscribe 명령어를 통해서, 일일이 채널을 지정하는 것은 힘들 일이다.
+- psubscribe를 통해서, 패턴에 알맞은 채널을 구독할 수 있게 된다.
+  - 패턴에 알맞기만 하다면, 새롭게 채널을 추가해주지 않아도 알아서 구독된다.
+```shell
+PSUBSCRIBE ...PATTERNS
+
+> psubscribe news:* # news:가 Prefix인 모든 Channel을 구독하는 것이다.
+1) "psubscribe" #명령어
+2) "news:*" #구독하는 채널
+3) (integer) 1 #성공 여부
+
+#------- 다른 Publisher들의 발행-------
+
+1)"pmessage" # 패턴에 맞는 Topic의 Message
+2) "news*" #패턴
+3) "news:politics" #채널 명
+4) "today politics" #Message
+```
+
+
 ## Publish
 - publish명령어를 통해서 Channel에 Message를 발행한다.
 - **리턴값은 Message 구독에 성공한 Client의 수이다.**
