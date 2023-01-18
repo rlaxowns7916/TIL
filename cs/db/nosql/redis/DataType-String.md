@@ -10,7 +10,7 @@
 
 ## 주요 사용처
 1. Plain String
-2. Caching
+2. Cachingㅕ
 3. Static Page
 4. Counter
 5. 고정된 Config 값

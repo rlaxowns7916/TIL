@@ -121,10 +121,26 @@ linsert KEY [BEFORE | AFTER] [PIVOT] [ELEMENT]
 > LPOP KEY [COUNT]
 ```
 
+#### 1-1. BLPOP
+- Blocking + LPop
+- 새로운 요소가 들어올 때 까지 Blocking한다.
+- TimeOut이 지정되지 않으면, 입력 될 때 까지 기다린다.
+```shell
+BLPOP KEY TIMEOUT
+```
+
 ### 2. RPOP
 - 오른쪽부터 N개의 요소를 삭제한다.
 ```shell
 > RPOP KEY [COUNT]
+```
+
+#### 2-1. BRPOP
+- Blocking + RPop
+- 새로운 요소가 들어올 때 까지 Blocking한다.
+- TimeOut이 지정되지 않으면, 입력 될 때 까지 기다린다.
+```shell
+BRPOP KEY TIMEOUT
 ```
 
 

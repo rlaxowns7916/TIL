@@ -1,6 +1,7 @@
 # 0. ElasticSearch란
 - Lucene 기반의 오픈소스 검색엔진
 - Json기반의 문서를 저장하고 검색하며, 분석또한 가능하다.
+- https://esbook.kimjmin.net/
 
 ## [1] 준 실시간 검색 시스템
 - 색인된 데이터가 빠르게 검색된다.
@@ -28,31 +29,8 @@
 | 코디네이팅 노드     | 검색 요청 처리                  |
 | 인제스트 노드      | 색인되는 문서의 데이터 전처리          |
 
-
 ### Index
-
-
-### Shard
-
-
-## [3] 동적 스키마 생성
-- 고정된 Schema를 가지고 있지않다.
-
-
-
-## [4] RestAPI 기반의 인터페이스 젝오
-- REST 기반의 인터페이스를 사용하기 때문에, 진입장벽이 매우 낮다.
-
-
-## [5] 구성
-| Elastic Search | RDBMS            |
-|:---------------|:-----------------|
-| index          | database         |
-| mapping        | schema           |
-| document       | row              |
-
-### Index
-- 문서가 저장되는 논리적인 공간
+- 색인 과정을 거친 문서가 저장되는 논리적인 공간
 - 문서를 저장하기 위해서 필수적으로 필요하다.
 - Index 설계가 Elastic Search사용에서 가장 선행되어야 한다.
   - 설계에 따라서, 문서의 구조와 검색 쿼리가 달라진다.
@@ -78,3 +56,41 @@
 |:---------------|:----------------------------------------------------------------------------------------|
 | Primary 샤드         | - 문서가 저장되는 원본 </br>- 색인과 검색 성능 모두에 영향을 준다.                                              |
 | Replica 샤드        | - Primary 샤드의 복제본 </br> - 검색 성능에 영향을 준다. </br> - Primary Share에 문제가 있을시, Priamry로 승격된다. |
+
+
+### Mapping
+- 문서의 구조를 나타내는 정의
+  - **ElasticSearch는 Schemaless가 아니라, 미리정의하지 않아도 되는 것 뿐이다.**
+- Mapping정보가 생성된 후에, 타입 정보가 맞지않으면 Parsing Error가 발생한다.
+
+#### Dynamic Mapping
+- 최초 색인 시점에 ElasticSearch가 동적으로 Schema를 생성해낸다.
+
+#### Static Mapping
+- 중요한 필드에 타입을 지정해야 할 때 사용한다.
+  - ex) int필드의 범위를 넘어서는 숫자값을 지정해야 할 때 
+- 불필요한 색인을 방지하기 위해서 사용한다.
+  - ex) 문자열 필드 default --> keyword
+
+
+## [3] 동적 스키마 생성
+- Schema를 미리 정의하지 않아도 된다.
+  - Schemaless한 것으 아니다.
+- Mapping이 Schema구조를 나타낸다.
+
+## [4] RestAPI 기반의 인터페이스 제공
+- REST 기반의 인터페이스를 사용하기 때문에, 진입장벽이 매우 낮다.
+
+## [5] FullText-Search (전문검색)
+- 오픈소스 Lucene을 기반으로 만들어졌다.
+  - InvertedIndex를 기반으로 한다.
+- 내부적으로는 InvertedIndex 기반으로 데이터를 정의하나, Json형식으로 결과를 제공한다.
+- Json을 유일하게 제공하기 때문에, 파싱이 필요하다.
+  - LogStash를 통해서 Json을 가공하는 편이다.
+
+## [6] 구성
+| Elastic Search | RDBMS            |
+|:---------------|:-----------------|
+| index          | database         |
+| mapping        | schema           |
+| document       | row              |

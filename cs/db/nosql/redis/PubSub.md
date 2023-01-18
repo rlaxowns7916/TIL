@@ -57,3 +57,27 @@ PUBLISH CHANNEL MESSAGE
 > publish channel1 hello
 (integer) 1
 ```
+
+
+## PUBSUB
+
+### PUBSUB CHANNELS
+- 활성화된 채널리스트를 리턴한다.
+- 하나이상의 구독자가 있는 채널을 리턴한다.
+- 없으면 (empty array)를 리턴한다.
+```shell
+PUBSUB CHANNELS [PATTERN]
+
+> pubsub channels *
+1) "active:channel"
+```
+
+### PUBSUB NUMSUB CHANNEL
+- 활성화된 구독자 수를 리턴한다.
+```shell
+PUBSUB NUMBSUB CHANNEL
+
+> pubsub numsub "active:channel"
+1) "active:channel" # 채널 명
+2) (integer) 2 # 활성 구독자 수
+```
