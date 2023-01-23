@@ -31,6 +31,7 @@ SUBSCRIBE ...CHANNELS
 - subscribe 명령어를 통해서, 일일이 채널을 지정하는 것은 힘들 일이다.
 - psubscribe를 통해서, 패턴에 알맞은 채널을 구독할 수 있게 된다.
   - 패턴에 알맞기만 하다면, 새롭게 채널을 추가해주지 않아도 알아서 구독된다.
+- **PatternUnsubscribe도 존재한다.**
 ```shell
 PSUBSCRIBE ...PATTERNS
 
@@ -46,7 +47,6 @@ PSUBSCRIBE ...PATTERNS
 3) "news:politics" #채널 명
 4) "today politics" #Message
 ```
-
 
 ## Publish
 - publish명령어를 통해서 Channel에 Message를 발행한다.
