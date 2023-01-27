@@ -8,7 +8,7 @@
 - Element 추가와, 정렬된 Element를 가져오는 것에 있어서 좋은 성능을 보인다.
 - **여러가지 Membe Field와, 숫자 Field인 Score를 가진다.**
   - Score에 따라서 정렬된다.
-  - **Score가 같다면, Member로 정렬된다.**
+    - Score가 같다면, Member의 사전순으로 오름차순(ZRANGE) 혹은 내림차순(ZREVRANGE) 정렬된다.
 
 ## ZADD
 - SortedSet에 Data를 추가하는 것이다.

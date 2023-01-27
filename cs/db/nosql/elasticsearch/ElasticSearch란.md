@@ -65,6 +65,9 @@
 
 #### Dynamic Mapping
 - 최초 색인 시점에 ElasticSearch가 동적으로 Schema를 생성해낸다.
+- 문자열의 경우 Text, Keyword 모두 정의된다.
+  - 어떤 Type인지 모르기 때문이다.
+  - 정적 Mapping의 경우, 하나만 명시적으로 정의가 가능하기 때문에 성능에서 유리하다.
 
 #### Static Mapping
 - 중요한 필드에 타입을 지정해야 할 때 사용한다.

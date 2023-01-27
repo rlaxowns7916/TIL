@@ -6,6 +6,19 @@
 - Bucket 기반의 Chained-LinkedList 이다.
 
 ## 명령어
+
+### TYPE
+- Redis Key의 DataStructure을 알 수 있는 명령어이다.
+```shell
+TYPE KEY
+
+> type key1
+set
+
+> type user:membership
+zset # SortedSet
+```
+
 ### UNLINK
 - 비동기적인 Key삭제
   - 별도의 쓰레드에서 백그라운드로 삭제한다.
