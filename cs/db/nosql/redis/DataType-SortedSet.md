@@ -88,6 +88,26 @@ ZREVNRANGE KEY START STOP [WITHSCORES]
 > zrevrange user:follower 0 -1 withscores
 ```
 
+## ZRANGEBYSCOORE
+- Score의 범위를 통해서 내림차순으로 Element를 가져온다.
+- ZREVRANGEBYSCORE를 통해서, 오름차순으로 Elemet를 가져올 수 있다.
+- Min<= score <= MAX 이다.
+  - -INF, +INF를 통해서 무한대를 지정 할 수 있다.
+```shell
+ZRANGEBYSCORE KEY MIN MAX [WITHSCORES] [LIMIT | OFFSET]
+
+> ZRANGEBYSCORE user:score 10 20
+
+1) "kim"
+2) "lee"
+
+ZREVRANGEBYSCORe KEY MAX MIN [WITHSCORES] [LIMIT | OFFSET]
+> ZREVRANGEBYSCORE user:score 20 10
+
+1) "lee"
+2) "kim"
+```
+
 
 ## ZINCRBY
 - atomic한 연산이다.

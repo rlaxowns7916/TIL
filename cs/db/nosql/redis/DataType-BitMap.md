@@ -40,4 +40,57 @@ GETBIT KEY OFFSET
 > getbit visitor:2023-01-27 0
 (integer) 1
 ```
+
+### [3] BITCOUNT KEY 
+- BitMap에 1의 값을 가지는 Offset의 갯수를 리턴한다.
+- start와 end에 음수를 부여 할 수 있다.
+  - -1: n-1
+  - -2: n-2
+  - ...
+- O(N)의 시간이 걸린다.
+```shell
+BITCOUNT KEY [START END]
+# setbit bit:example 0 1 을 수행 한 상태
+
+> bitcount bit:example 
+(integer) 1
+
+> bitcount bit:example 1 3
+(integer) 0
+
+```
+
+### [4] BITOP
+- Bit 연산을 수행한다.
+- ...SRCKEYS에 대한 연산을 DESTKEY에 저장한다.
+- O(N)의 시간이 걸린다.
+```shell
+BITOP [OR | AND | XOR | NOT] DESTKEY ...SRCKEYS
+
+# setbit bit:example:1 0 1
+# setbit bit:example:2 0 0
+
+#################### OR ############################
+> bitop OR bit:example:3 bit:example:1 bit:example:2
+> getbit bit:example:3 0
+(integer) 1
+
+#################### AND ############################
+> bitop AND bit:example:3 bit:example:1 bit:example:2
+> getbit bit:example:3 0
+(integer) 0
+
+#################### XOR ############################
+> bitop XOR bit:example:3 bit:example:1 bit:example:2
+> getbit bit:example:3 0
+(integer) 1
+
+#################### NOT ############################
+> bitop NOT bit:example:3 bit:example:1 
+
+> getbit bit:example:3 0
+(integer) 0
+
+> getbit bit:example:3 1
+(integer) 1
 ```

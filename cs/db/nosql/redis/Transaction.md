@@ -32,6 +32,8 @@ QUEUED
 - MULTI를 통해서 여러개의 명령어를 입력한다. (Queue에 대기중 상태로 쌓인다.)
 - EXEC 전까지 Transaction Queue에 쌓였던 명령어를 하나의 단위로 실행한다.
 - Transaction 단위로 묶인 명령어들은 Atomic하게 실행된다.
+  - 다른 것들이 다 Blocking된다.
+  - 긴 Multi-Exec Command를 잡지 않는 것이 좋다.
 
 ## DISCARD
 

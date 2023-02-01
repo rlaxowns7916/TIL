@@ -124,6 +124,8 @@ linsert KEY [BEFORE | AFTER] [PIVOT] [ELEMENT]
 #### 1-1. BLPOP
 - Blocking + LPop
 - 새로운 요소가 들어올 때 까지 Blocking한다.
+  - 기본적인 Pop은 데이터가 없으면 그대로 리턴한다.
+  - JobQueue와 같은 것을 사용할 때 매우 유용하다.
 - TimeOut이 지정되지 않으면, 입력 될 때 까지 기다린다.
 ```shell
 BLPOP KEY TIMEOUT
