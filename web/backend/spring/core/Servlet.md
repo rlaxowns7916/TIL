@@ -30,21 +30,18 @@
 ## DispatcherServlet
 - SpringMVC에서 사용
 - FrontController패턴으로 구현 (모든 요청을 받는 하나의 서블릿이 앞단에 위치)
+  - 공통로직에 대한 처리가 용이해졌다. (인증, 보안, 다국어 ...)
 - 들어오는 모든 요청 Handling 및 Handler 매핑 (일일이 web.xml에 설정해주지 않아도된다.)
-- 공통작업 처리
 
 
 ![dispatcherServlet](https://user-images.githubusercontent.com/57896918/147087215-820ecfbc-82d9-4fe3-8ba0-641fbd4b047e.png)
 
 
 ## 어디까지가 Spring의 범위인가
-```text
-Spring-boot-web에서 Embedded Tomcat을 사용한다고 한다.
-그럼 Spring안에 Tomcat이 들어가있다는 말인가? 혼동이와서 알아보았다.
-```
+- spring-boot-starter-web에 EmbeddedTomcat이 들어있다.
 - Dispatcher Servlet은 web.xml에 등록된다.
   - ServletContainer의 영역이다.
-  - 이 곳에서 모든 요청을 받고, SpringContainer와 이어주는 역할이다.!
+  - 이 곳에서 모든 요청을 받고, SpringContainer와 이어주는 역할이다.
 - 그 뒤의 HandlerMapping, HandlerAdapter 등, Spring의 Conatiner의 영역이다.
 
 
