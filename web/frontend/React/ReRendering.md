@@ -30,3 +30,29 @@
 ### index의 사용?
 - Key값을 대체할 수 있는 선택지중 하나이다.
 - 컴포넌트가 재 배열 되는 경우에는 비효울적으로 동작하게 된다.
+
+## React.Memo
+- 부모컴포넌트의 변화는 자식 컴포넌트도 ReRendering 시킨다.
+- memo를 사용하여, **props의 변화가 있을 때만** 부모의 변화에 ReRendering하게 최적화 시킬 수 있다.
+  - object라면, 제대로 동작하지 않는다. (랜더링 이전과, 랜더링 후의 object는 다르기 때문이다.)
+  - 해당 object를 useMemo나, useCallback으로 memoization을 하면 된다.
+- 꼭 필요할 때만 사용해야 한다.
+
+```jsx
+/**
+ * 부모 Component가 ChildComponent를 가지고 있다고 가정
+ */
+import React,{memo} from "react"
+const Child = ({name,age}) =>{
+  
+  return (
+      <>
+        <p> {name} </p>
+        <p> {age} </p>
+      </>
+  )
+}
+
+export default memo(Child)
+
+```

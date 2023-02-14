@@ -23,6 +23,8 @@
 ## Custom Hooks
 - **여러 컴포넌트가 비슷한 기능을 공유 할 때 사용**
 - 중복을 방지하는 방법이다.
+- 독립적인 state를 갖는다.
+  - dependency를 갖게하고 싶으면, state를 인자로 넘김으로해서 갖게할 수 있다.
 ```jsx
 const App = () => {
   const useCustom = (value) => {

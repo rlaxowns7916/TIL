@@ -5,6 +5,10 @@
     - 변화에 따른 이벤트를 다른 곳에 전파한다.
     - 데이터 fetch / subscribe / Dom 수정
 - Render가 발생한 이후에 Effect가 발생한다.
+- **Dependency Array를 통해서, 원하는 값의 변화를 catch 할 수 있다.**
+  - == 연산을 통해서 사용한다.
+  - PrimitiveType은 정상적으로 동작한다. (새롭게 Rendering되도, PrimitiveType의 값은 같기때문이다.)
+  - ObjectType은 정상적으로 동작하지 않는다. (새롭게 Rendering하면서, 주소가 바뀌기 때문이다.)
 
 1. 첫 번째 인자는 실행할 작업 정의, 두번 째 인자는 변화를 Checking할 인자
 2. 두 번째 인자 생략시 랜더링 될때마다 실행
@@ -36,11 +40,21 @@ useEffect(() =>{
   * return 을 통한 cleanUp함수를 정의해주면, 언마운트 될 때, 혹은 업데이트 되기직전에 작업을 수행 할 수 있다.
   * 마찬가지로 unMount시점에만 작동하게 하고 싶으면 두번째 인자에 빈배열을 넣으면 된다. 
   */ 
-useEffect(() =>{
-    console.log(useEffect)
+
+const Timer = (props) =>{
+  /**
+    * 최초 랜더링 시점 타이머 세팅 
+    */
+  useEffect(()=>{
+    const timer = setInterval(() =>{
+      console.log("타이머 돌아가는중 ...")
+    },1000)
+    
     return () =>{
-        console.log("cleanUp")
+      clearTimeout(timer)
+      console.log("타이머 종료")
     }
-})
+  },[])
+}
 ```
 - 부모부터 CleanUp 한 후 자식이 CleanUp 된다.

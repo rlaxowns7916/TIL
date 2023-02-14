@@ -7,6 +7,8 @@
 - 동일한 계산을 반복해야 할 때, 이전에 계산했던 값을 메모리에 저장하고 다시 사용하는 것
 - useMemo, useCallback의 주요 개념이다.
   - 동일한 props를 랜더링한다면 Memo나 Callback을 사용하자
+- 메모리에 따로 값을 Memoiztaion 하는 것이다.
+  - Memo할 필요가 없는 값까지 처리한다면 오히려 성능에 악영향을 주게 된다.
 
 
 ***useMemo(callback,[변경을 체크할 값])***
