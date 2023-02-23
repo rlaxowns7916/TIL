@@ -60,8 +60,12 @@ List<Member> resultList = em.createQuery(jpql,Member.class);
                 .setFirstResult(1) //시작페이지
                 .setMaxRestuls(10) //페이징 갯수
                 .getResultList();
-
 ```
+#### Page vs Slice
+![스크린샷 2023-02-23 오후 11 11 26(2)](https://user-images.githubusercontent.com/57896918/220932251-c9d8b837-23c3-410b-b530-e4a139be2b2c.png)
+- Page는 Slice를 상속 받고있다.
+-  Count쿼리가 나가는게 부담스럽다면 Slice를 쓸 수 있다.
+
 
 ### Join
 
