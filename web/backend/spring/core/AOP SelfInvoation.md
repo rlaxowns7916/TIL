@@ -1,11 +1,11 @@
 # AOP Self Invocation
 - AOP가 제대로 동작하지 않는 경우가 있다.
-- 실무에서는 주로 @Transactional, @Asytnc 사용문제에서 발생한다.
+- 실무에서는 주로 @Transactional, @Async 사용문제에서 발생한다.
 - AOP의 동작원리 떄문에 발생한다.
 
 # Deep Dive
 - @Transactional이 제대로 동작안한다 != 같은 Bean은 Transaction에 묶이지 않는다.
-- AOP는 public만 가능하니, private나 protected method들은 Transactiona에 묶이지 않는다? (X)
+- AOP는 public만 가능하니, private나 protected method들은 Transaction에 묶이지 않는다? (X)
 
 
 

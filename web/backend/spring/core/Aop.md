@@ -108,10 +108,12 @@ public class LogAspect {
 ### @Aspect 클래스 외부
 
 - @Order를 통해서 순서를 지정한다.
-    - 같은 @Aspect 내부 Class끼리는 순서를 지정해 줄 수 없다.
+    - 같은 @Aspect 내부 Method끼리는 순서를 지정해 줄 수 없다.
     - 순서를 지정해주어야하는 Aspect라면 Class로 분리 시켜주어야 한다.
     - Spring이 제공해주는 @Order를 통해서 순서를 지정해 줄 수 있다.
-
+- 우선순위가높을 수록, 가장 바깥에 위치한다는 의미이다.
+  - 우선순위가 낮은 객체일 수록 원본 객체에 가깝다.
+  - 
 ```java
 
 @Aspect

@@ -21,6 +21,8 @@
   - UPDATE
   - DELETE
 - X-Lock이 걸려있는 상태이면, 다른 트랜잭션이 S-Lock, X-Lock 모두 얻을 수 없다.
+  - Blocking된다.
+  - 같은 트랜잭션 내에서의 S-Lock -> X-Lock은 상관없다.
 - 하나 이상의 S-Lock이 걸려있는 상태라면, X-Lock을 획들 할 수 없다.
 
 ## 3. Intention Lock (I-Lock)
