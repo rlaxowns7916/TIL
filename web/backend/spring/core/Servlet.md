@@ -33,6 +33,20 @@
   - 공통로직에 대한 처리가 용이해졌다. (인증, 보안, 다국어 ...)
 - 들어오는 모든 요청 Handling 및 Handler 매핑 (일일이 web.xml에 설정해주지 않아도된다.)
 
+```java
+class Sample{
+  // Spring이 알아서 해준다 (내부의 동작원리)
+  public static void main(String[] args) {
+    WebServer webServer = serverFactory.getWebServer(servletContext ->{
+      servletContext.addServlet("dispatcherServlet",new DispatcherServlet(applicaitonContext));
+    }).addMapping("/*");
+  }
+}
+```
+- DispatcherServlet 에게, Bean 설정 정보를 담은 GenericWebApplicationContext 를 넘겨준다.
+- DispatcherServlet은 웹 요청을 처리할 수 있는 Bean을 찾아서 요청정보를 추출하고 HandlerMapping에 추가한다.
+  - @Controller릁 통한 인식이 아닌, @RequestMapping, @GetMapping을 통해서 인식한다.
+  - 에노테이션 이전에는 XML을 통해서 Handler Mapping 정보를 등록했다.
 
 ![dispatcherServlet](https://user-images.githubusercontent.com/57896918/147087215-820ecfbc-82d9-4fe3-8ba0-641fbd4b047e.png)
 
