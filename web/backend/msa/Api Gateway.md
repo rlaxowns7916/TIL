@@ -1,7 +1,6 @@
 # Api Gateway
 - 서버의 최앞단에 위치한다.
 - 모든 Client의 요청에 대한 End-Point를 통합한다.
-- 기능이 추가된 ReverseProxy(?)
 - 병목현상을 막기위해서는 ScaleOut이 필수적이다.
 
 ## 주요 역할
@@ -12,7 +11,18 @@
 - 부하 분산
 - 로깅, 추적
 - IP 허용 및 차단 
-- 회로 차단기 , QOS 재시도
+- Circuit Breaker , QOS 재시도
+
+## Reverse Proxy 와의 차이점
+- Gateway는 ReverseProxy에 비해서 풍부한 기능을 제공한다.
+- ReverseProxy
+  - SSL/TLS (보안) --> 주로 WebApplication, REST API에 초점이 맞춰져있다.
+  - 캐싱
+  - 로드 밸런싱
+- GateWay
+  - Protocol 변환 (다른 Protocol도 통합할 수 있다.)
+  - 데이터 포맷 변환
+  - Routing
 
 ## 주요 오픈소스
 1. Kong
