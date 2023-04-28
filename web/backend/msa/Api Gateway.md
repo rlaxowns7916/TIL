@@ -13,6 +13,20 @@
 - IP 허용 및 차단 
 - Circuit Breaker , QOS 재시도
 
+
+## 장점
+1. Micro Service에 대한 단일 진입점 제공
+2. 한 곳에서, 보안 / 권한 제어
+3. API에 대한 로깅 / 모니터링
+4. 캐싱
+5. Circuit Breaker, QOS
+6. 부하분산 
+
+## 단점
+1. SPOF
+2. 추가 네트워크 비용 -> 응답속도의 저하
+3. 추가적인 관리 포인트
+
 ## Reverse Proxy 와의 차이점
 - Gateway는 ReverseProxy에 비해서 풍부한 기능을 제공한다.
 - ReverseProxy
@@ -24,11 +38,24 @@
   - 데이터 포맷 변환
   - Routing
 
+
+### Client가 각 MicroService들의 EndPoint를 바라보고있으면 안좋은점
+1. Client와 Micro Service들간의 강결합
+2. 개별 Micro Service에 대해서, 많은 통신 기능이 필요
+    - 개별 Micro에 대한 로깅
+    - 개별 Micro에 대한 인증 / 인가
+    - 캐싱
+    - 모니터링
+    - 요청 제한 
+    - ...
+
 ## 주요 오픈소스
 1. Kong
 2. Zuul (2.4 >= Deprecated)
 3. SCG (SpringCloudGateway)
 
+
+***
 
 ## SpringCloudGateway
 - netty 기반 (비동기)
