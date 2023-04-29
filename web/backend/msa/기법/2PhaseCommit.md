@@ -22,3 +22,6 @@
 ### 2PC의 SPOF 문제
 - Coordinator는 SPOF이다.
 - Coordinator의 문제로 트랜잭션 최종 연산 (Commit, Rollback)이 불분명 해 질 수 있다.
+
+
+![스크린샷 2023-04-29 오후 11 26 55(2)](https://user-images.githubusercontent.com/57896918/235310588-daecaf23-86c0-49a5-8e25-7db3260e3699.png)
