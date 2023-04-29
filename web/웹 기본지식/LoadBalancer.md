@@ -47,12 +47,13 @@
 - 비싸다.
 
 ## GSLB (Global Server Load Balancing)
-- DNS서비스의 발전된 형태이다.
-  - **지능적 DNS 서비스** 라고 불리기도 한다.
-  - DNS는 하나의 Domain에 대한 여러개의 IP주소를 넘겨줄 수 있다.
-    - 어떤 것을 사용할지는 사용자, 클라이언트의 몫이다.
-  - 더욱 상세한 로드밸런싱을 가능하게 한다.
+- 각 회사나 집단에서 자사 서비스에 대한 LoadBalancing을 하기 위해서 사용한다.
+  - 단일 Instance들에 대한 LoadBalancing이라기 보다는, Region, DataCenter 같은 더 큰 단위의 LoadBalancing 이다.
+- DNS 기반의 LoadBalancing 이다.
+  - DNS와 다르게 상태에 따른 모니터링이 가능하다. (Health-Check)
+  - DNS와 다르게 지역별 서버에 따른 Latency를 갖고있기 떄문에, Latency가 적은 IP를 리턴해준다.
 - DNS의 프록시 형태로 동작한다.
+- H/W일수도 있고, S/W일 수도 있다.
 
 ### DR (Disaster Recovery)
 - 서버의 상태를 지속적으로 모니터링 한다.
@@ -68,10 +69,16 @@
 - 지리적으로 가까운 서버를 이욯한다.
   - DNS는 RR방식이기 떄문에, 먼 거리의 서버를 배정해줄 때도 있다.
 
+#### 구성 방식
+1. Private DNS서버를 구성
+2. Public DNS서버에서 DNS Query를 내 Private DNS서버로 보내도록 설정
+3. GSLB 소프트웨어를 통해서 적합한 IP를 반환한다.
+
+***AWS Route53, Azure Traffic Manager는 따로 구성안해도 된다.**
 
 #### 동작방식
 1. 사용자가 DNS에 Domain 질의
 2. DNS는 Local 부터 Root까지 순차적인 질의를 수행
-3. 해당 Domain이 GSLB에게 위임된 도메인일 경우 GSLB에게 질의
+3. 해당 Domain이 GSLB에게 위임된 도메인일 경우 GSLB에게 질의 (GSLB는 NameServer에 등록되어있다.)
 4. GSLB는 프록시 방식이기 떄문에 담당 도메인에 DNS Query
 5. GSLB는 정책에 따라 (HealthCheck, Latency, Custom ...)에 따라서 최적의 IP를 리턴해준다.

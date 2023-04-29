@@ -2,6 +2,9 @@
 - IP 주소와 Domain을 이어준다.
 - 전화번호부와 같은 역할이다.
 - NameServer는 동의어이다.
+- 하나의 Domain에 여러개의 IP가 지정 될 수 있다.
+  - 기본적으로 Round-Robin으로 지정된다.
+  - Weighted(가중치)-Round-Robin, Sticky-RoundRobin도 있다. 
 
 ## Domain
 - IP주소를 대신해서 사용하는 주소이다.
@@ -40,6 +43,18 @@ example1   .    example2     .    com      .     (생략)
 - second-level부터는 그뒤의 sub-domain을 책임진다.
 
 <img width="657" alt="스크린샷 2022-10-18 오후 10 59 00" src="https://user-images.githubusercontent.com/57896918/196460530-c44fe2fe-b409-42c1-89bc-8d864d07e397.png">
+
+## Record Type
+| Type  | Description                         |
+|:------|:------------------------------------|
+| A     | 도메인 이름, 호스트명을 IPV4에 매핑              |
+| AAAA  | 도메인 이름, 호스트명을 IPV6에 매핑              | 
+| CNAME | A레코드의 별칭을 매핑                        |
+| NS    | 도메인 네임서버 매핑  (Domain Query를 하는데 사용) |
+| MX    | 메일 서버 매핑                            |
+| PTR   | 역방향 질의 (IP -> Domain)               |
+
+
 
 ## DNS - TTL
 - DNS서버에서 설정하고 관리하는 값이다.

@@ -77,12 +77,19 @@
 #### [3] DNS를 이용한 구성 방식
 - 내부 DNS를 통해서 Service Discovery를 구성한다.
   - DNS가 LB의 역할을 대신하기 떄문에 SPOF를 방지 할 수 있다.
+  - Service 시작 시, Trigger 등으로 DNS서버에 등록한다.
+- DNS - TTL값이 살아있는 동안 해당 Instance가 살아있는 것으로 판단한다.
+  - TTL이 만료되었다면 죽은 것으로 판단하여 새로운 Instance와 매핑된다.
+  - 여러개의 Instance는 기본적으로 RoundRobin으로 LoadBalancing된다.
 - Client는 도메인을 통해서 접근하고, 알맞은 서비스에게 요청을 전달한다.
   - 도메인 이름을 사용하기 떄문에 구성이 단순하다.
   - Service Instance의 추가나 삭제 시에도, Client 코드의 수정은 발생하지 않는다.
 - DNS Cache (DNS TTL) 의 문제로, 실시간성이 저하될 수 있다.
 - DNS단에서 LB가 이루어지기 떄문에, 세밀한 설정이 어려울 수 있다.
 
+##### TTL이 만료되기전에 특정 서비스가 죽어있다면?
+- 어쩔수 없다. (클라이언트는 부정확한 응답을 받게 될 것이다.)
+- 주기적인 HeartBeat를 통해서, 죽어있는 서비스는 제거하는 로직을 추가할 수는 있다.
 
 
 ![ServerSide](https://user-images.githubusercontent.com/57896918/157213578-78aa1d0d-5d6f-4bb5-aac1-74a8a89af96b.png)
