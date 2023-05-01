@@ -25,9 +25,10 @@
 
 ### Refresh Token 탈취 위험성을 최소화 하기 위한 방법
 
-#### 1. Refresh Token Rotation 
+#### 1. Refresh Token Rotation (RTR)
 - RefreshToken을 통한 accessToken 갱신 요구가 발생하면 AccessToken과 RefreshToken 쌍을 발급한다.
 - 갱신에 사용된 Token을 즉시 만료시킨다.
+- RefreshToken이 아닌, 지속적인 AccessToken 탈취 시에는 막을 수 없다는 단점이 있다.
 
 #### 2. Automatic Reuse Detection
 - RefreshToken을 한번 사용하면 새로운 RefreshToken을 발급한다.
@@ -35,13 +36,33 @@
 - RefreshToken을 체이닝한다. (History 보관)
   - 탈취되었다고 판단이 되면 해당 체이닝에 얽혀있는 RefreshToken을 모두 만료시킨다.
 
-### Header에 둘것인가? Cookie에 둘것인가?
 
-#### 1. Header
-- Header의 Authorization 필드에 토큰을 동봉하는 것이다.
-- CSRF를 방지할 수는 있으나, XSS를 통해서 AccessToken을 탈취 당할 수도 있다.
+### Bearer? Basic?
+
+#### [1] Bearer
+- OAuth2.0에서 자주 사용되는 스펙 (RFC 7617)
+- STATELESS, 무결성을 갖는다.
+- 로그인 시 Token을 부여받고, Header에 넣어서 보낸다.
+- **Application의 인증 및 권한 부여에 적합하다.**
+
+#### [2] Basic
+- 가장 간단한 인증방식
+- 웹 표준 (RFC 7617)
+- 사용자의 ID와 Password를 Base64로 Encoding한 값을 토큰으로 사용한다.
+
+### 어디에 저장 할 것인가?
+
+#### 1. Storage (Local || Session)
+- 응답을 받으면 Storage(Local || Session)에 저장한다.
+  - 필요할 때, JavaScript로 꺼내서 동봉해서 요청을 보낸다.
+  - XSS에 취약
+- Cookie보다 더 많은 데이터를 저장할 수 있다.
+- Client가 Expire을 별도로 관리하게된다면 따로 설정해주어야 한다. (Storage에는 만료기간이 없기 때문에)
 
 ### 2. Cookie
 - HttpOnly, Secure Cookie를 통해서 XSS로부터 안전할 수 있다.
-- 하지만 CQRS로 부터는 안전하지 못하다.
-  - 별도의 조치를 취해야만 한다.
+- CSRF에 취약
+  - Browser가 자동으로 요청에 동봉하기 때문이다. (미미하지만 추가적인 트래픽의 발생)
+  - CSRF토큰을 사용하기
+  - SameSite 쿠키 속성 사용하기
+  - 사용자 인증확인 (다시한번)

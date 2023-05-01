@@ -2,14 +2,15 @@
 
 - HTTP를 기반으로한다.
 - Server가 Client에게 Message를 보내는 단방향 통신이다.
+  - Client는 Server에 Request를 보낼 수 없다.
+  - 또다른 HTTP Request가 발생된다면, 기존의 Connection을 재사용하는 것이 아닌 새로운 Connection이 생긴다.
 - 지속적인 Connection을 맺는다.
-  - Connection이 맺어져있다면 이 후의 HTTP통신도 해당 Connection을 통해서 이루어진다.
+  - Connection이 만료되면 Browser는 다시 Connection을 맺는다.
+  - 새롭게 Connection을 맺는다.
 - Web 표준이다.
     - 대부분의 최신브라우저에서 SSE를 지원한다. (https://caniuse.com/?search=Server-Sent%20events)
     - 서버전송 DOM 이벤트를 기본으로 하며, EventSource 인터페이스를 사용한다.
     - **mediaType은 text/event-stream으로 정해져 있다.**
-- Connection이 만료되면 Browser는 다시 Connection을 맺는다.
-  - 새롭게 Connection을 맺는다.
 
 ## vs WebSocket
 |                      | WebSocket                                                      | SSE                                                 |
