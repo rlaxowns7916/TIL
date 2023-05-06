@@ -27,6 +27,7 @@
   - 한정된 수와 함께 재활용하기 때문에 자원관리에 용이하다.
 
 ## ConnectionPool 유의사항
+- TPS에 따라서 Size를 조절하자
 - Connection의 개수가 한정적이기 떄문에, 많은 양의 동시 접근이 발생 할 경우 반납할 때 까지 기다려야 한다.
 - Connection Pool의 개수가 크다면?
   - 사용자 대기시간은 줄지만, 리소스를 많이 사용한다.
@@ -41,3 +42,28 @@
 - Spring은 아래와 같은 Deafault 설정을 갖는다.
   - ThreadPool : 200
   - ConnectionPool : 10
+
+
+# Connection Pool 이외에 알아두면 좋은 설정
+
+### [1] ConnectionTimeOut (커넥션 대기시간)
+- Connection Pool에서 Connection을 구하기 위해서 대기중인 시간
+  - Pool의 모든 Connection이 사용중일 떄 발생한다.
+- Hikrai의 경우 default 30초 (너무 길다)
+  - 사용자가 무한정 대기한다.
+  - **WAS의 WorkingThread들도 대기하면서 Blocking에 걸리게 된다.**   
+**ConnectionTimeOut을 짧게 잡는 것이 좋다.**   
+
+### [2] MaxLifeTime (커넥션 최대 유지기간)
+- Connection이 생성된 이후, 일정 시간이 지나면 Connection을 닫고, Pool에서 제거,
+  - Pool에서 제거 한 이후, 새로운 Connection을 생성한다.
+  - Memory사용을 최적화하고, 불필요한 Resource를 정리하기 위해서 사용된다.
+- Hikrai의 경우 default 30분
+- Network나, DB관련 연결 설정 값보다 적게 설정하자
+- Traffic이 몰리는 시점에 이 Option이 발동되면 성능에 문제가 발생할 수 있다.
+
+### [3] KeepAliveTime (커넥션 확인 주기)
+- Idle Connnection에 대해서, Connection 여부 확인
+  - 유효하지 않은 Connection은 Pool에서 제거
+  - 제거한뒤 새로운 Connection을 새로 생성
+- Network나, DB관련 연결 설정 값보다 적게 설정하자

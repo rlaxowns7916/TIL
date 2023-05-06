@@ -9,8 +9,10 @@
 - CUD시의 성능저하가 발생한다.
     - CREATE - 데이터에 맞는 Index 생성
     - DELETE - Index를 사용하지 않는다는 작업을 수행한다.
-        - Index에는 Delete 개념이 없다.
+        - Masking: InnoDB,Postgre,sqlserver
+        - Delete: Oracle
     - UPDATE - Index를 사용하지 않는다는 작업을 수행 후, 새로운 Index를 매핑한다.
+      - 불필요한 정렬, 재구성을 최소화 하기 위한 방법이다.
   - 분포도(Selectivity), Cardinality(Unique한 데이터의 갯수)
       - 분포도는 데이터가 테이블에 평균적으로 분포되어 있는 정보를 의미한다.
       - 분포도가 좋다는 것은 데이터가 골고루 퍼져있어, 검색 시 불필요한 데이터를 걸러내기 쉽다는 것이다.
@@ -65,10 +67,11 @@ Row번호 =  Block내 순번
 - IndexNode와 LeafNode로 구성
     - BranchNode에 데이터를 저장하지 않기 때문에, 더 많은 포인터 저장 가능 (전체적인 depth가 낮아짐)
 - LeafNode에 데이터가 저장됨 (다른 노드들에 데이터가 저장안되기 떄문에 메모리 효율성)
-- LeaftNode끼리는 LinkedList로 연결
+- LeaftNode끼리는 Double-LinkedList로 연결
   - 연속적인 데이터 접근에 유리하다.
 - 트리의 높이가 낮아진다.
 - FullScan시 선형검색
+  - 모든 Leaf들이 연결되어있고, Leaf에만 데이터가 있기 떄문
 
 #### cf) B-tree
 
@@ -80,6 +83,7 @@ Row번호 =  Block내 순번
       자주 사용하는 데이터라면 rootNode에 가까이 둘 수 있어 성능상의 이점이 있음
 - 한 노드당 2개 이상의 자식이 가능
 - 어떠한 값에 대해서도 동일한 접근시간 == 리프노드를 같은 높이에 (균일성)
+    - 검색, 삽입, 삭제 모두 O(logN)에 수행 가능
     - 삽입,삭제의 경우에 동적으로 균일성 유지
     - 불균형 트리 최악 시간복잡도 O(n)
     - 균형 트리 최악 시간복잡도 O(logn)
@@ -96,10 +100,9 @@ Row번호 =  Block내 순번
 ## Index의 종류
 
 ### 1. Clustered Index
-
 - 한 테이블에 오직 하나만 존재 가능
 - leaf에 실제 데이터가 저장된다.
-- 테이블에 데이터가 삽입되는 순서에 상관없이 Index Key를 기준으로 **정렬**된다.
+- 일반적으로 테이블의 물리적인 순서를 결정한다.
     - email을 ClusteredIndex로 만든다면? --> 성능저하
     - ALTER를 통해 많은 데이터가 존재하는 곳에 ClusteredIndex를 설정한다면? --> boom
 - default로 PrimaryKey에 지정된다.
@@ -110,14 +113,10 @@ Row번호 =  Block내 순번
   - PK를 신중하게 결정해야 한다.
 
 ### 2. NonClustered Index
-
-- Key값만 정렬되어 있고, Data는 정렬되어 있지 않다.
+- Table데이터와 별도로 생성되어 있다.
 - 테이블 당 여러개가 존재한다.
     - 최대 249개 생성이 가능하다.
-- ClusteredIndex보다 검색은 느리지만, 삽입,수정,삭제는 빠르다.
-    - SEARCH : Index 검색 후 실제 데이터위치를 확인하여 접근하기 떄문이다.
-    - CUD: 실제 Data를 정렬하지 않기 때문이다.
-- NonClusterdKey는 정렬되지않는다. (포인터 형식)
+- Key는 정렬되지않는다. (포인터 형식)
 - leaf에 실제 데이터의 주소가 저장된다.
 
 ## 인덱스를 사용해야 할 지점
@@ -148,12 +147,15 @@ WHERE
 - 선행하는 Index의 기준으로 정렬 된 후, 그 다음 Index기준으로 정렬한다.
 - 중복을 최소화 할 수 있는 순서로 Index를 작성하는 것이 유리하다.
 
-## 3. 하나의 쿼리는 하나의 Index만 타게된다.
+## 3. 인덱스 컬럼의 갯수
+- Index는 추가적인 공간을 요구하기 때문에, Column수를 적게 잡는 것이 좋다.
+
+## 4. 하나의 쿼리는 하나의 Index만 타게된다.
 - 강제적인 Index 지정 (index merge hint) 사용 시에는 여러개의 Index테이블을 거치게 할 수 있다.
 - 기본적으로는 여러개의 Index테이블 탐색이 아닌, 하나의 Index만 타게 된다.
 - WHERE, ORDER BY, GROUP BY를 모두 아우를 수 있는 인덱스를 지정하는 것이 중요하다.
 
-## 4. Trade-Off 고려하기
+## 5. Trade-Off 고려하기
 - explain을 통해서 실행계획을 적절하게 확인해야 한다.
 - Write의 성능을 희생하여 Read성능을 높이는 것이다.
 - Index 외의 다른 방법으로 해결 할 수 있는지 또한 고려해봄직하다.

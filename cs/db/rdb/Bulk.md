@@ -50,9 +50,11 @@ UPDATE COMMENT c JOIN TEMP_COMMENT tc ON c.id = tc.id SET c.isDelete = true;
 
 
 ## 성능향상이 일어나는 이유
+- 네트워크 비용의 감소
 - 데이터의 Insert, Update에는 추가적인 작업이 필요하다.
   - Transaction
   - Index
+- I/O 작업을 한번에 처리
 - 이 작업을 개별 쿼리 당 실행이아닌, 묶음 단위로 실행하기 때문에 성능 개선이 일어나는 것이다.
   - Bulk (x): ((N * 쿼리 개별 소모 시간) * (N * 쿼리 전후 추가 작업 시간))
   - Bulk (o): ((N * 쿼리 개별 소모 시간) * ((N/Bulk단위) * 쿼리 전후 추가 작업 시간))
