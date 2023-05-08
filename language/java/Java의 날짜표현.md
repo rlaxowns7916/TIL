@@ -21,7 +21,7 @@
 
 ## Instant
 - 기본적으로 UTC 이다.
-- 1970년 1월 1일 (Epoch) 이후 현재시간 이다.
+- 1970년 1월 1일 (Epoch) 이후 현재시간(나노초) 이다.
 
 ```java
 import java.time.*;
@@ -41,6 +41,8 @@ class HelloWorld {
 ## LocalDateTime
 - 시간대를 명시적으로 지정할 필요가 없다.
     - Default TimeZone이 지정 되어있다. (Local)
+    - OS의 System 설정을 따른다.
+    - **JVM 설정 (-Duser.timezone=Asia/Seoul)이 있다면 JVM설정을 따른다.**
 - 내부적으로 Instant를 사용한다.
   - Instant -> ZonedOffSet -> EpochSecond -> LocalDateTime
 

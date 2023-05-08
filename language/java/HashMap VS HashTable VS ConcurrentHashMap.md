@@ -29,13 +29,18 @@
 - HashMap이 Thread-Safe 한 것이다.
   - Segement 개수 만큼의 여러개의 Lock을 가지고 있다. 
   - default 16개의 Segment를 가지고 있다.
-- 읽기 작업에는 Lock이 걸리지 않는다.
-- 쓰기 작업시에는 특정 Segement의 Lock을 획득한다.
-  - 같은 Segement가 아니라면 RaceCondition이 발생하지 않는다.
+- 각 Bucket에 대한 LocK이 존재한다.
+  - FairLock(공평한 Lock)으로 구현한다.
+  - 읽기 작업에는 Lock이 걸리지 않는다.
+  - 쓰기 작업시에는 특정 Segement의 Lock을 획득한다.
+- 같은 Segement가 아니라면 RaceCondition이 발생하지 않는다.
+- CAS(Compare & Swap)을 통해서 값을 변경한다.
+  - 읽어오는 시점에 Lock이 없기 때문에, 최신화 되지 않은 값을 통해서 변경했을 가능성이 있기 떄문이다.
+  - 검색(get)에는 동기화가 적용되지 않으므로 업데이트 작업(put() or remove())과 겹칠 수 있다. 
 - 버전에 따른 구현방법의 차이가 있다.
   - Java7: HashMap과 유사한 방식
   - Java8: RedBlack Tree를 이용한 구현
-  - 
+
 ![ConcurrentHashMap](https://user-images.githubusercontent.com/57896918/182023536-f3d6b881-c13b-4f1e-959b-af4e24ca2c77.png)
 
 

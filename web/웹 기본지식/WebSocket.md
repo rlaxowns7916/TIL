@@ -6,6 +6,7 @@
   - Message를 주고 받을 때마다 Connection을 맺고 닫을 필요가 없다.
 - 표준 Web Protocol이다.
   - 모든 최신 WebBrowser들이 지원한다.
+  - 지원안하는 경우도있는데, SockJS를 통해서 비슷하게 사용가능하게 한다. (다른 기술을 통해서)
 - 7계층에 존재하며, TCP(4계층)에 의존한다.
   - Connection을 맺을 때, HTTP의 헤더를 이용한다.
   - HTTP와 같이 80,443 Port를 이용하기 때문에, 방화벽을 통한 웹환경과 유사하게 사용가능하다.
@@ -13,6 +14,12 @@
   - 평문화된 Data를 전달하기 때문에, SSL/TLS 암호화가 필요하다.
 - **Frame**이라는 단위로 전송된다.
   - 정해진 Message Format 규약은 없다.
+- Stomp(Simple-Text-Oriented-Messaging-Protocol) 프로토콜도 존재한다.
+  - MessageBroker를 통한 Pub-Sub 구조이다.
+    - Redis: In-Memory로 빠르고 좋은 성능, 데이터 유실의 우려가 있음
+    - Kafka: 대용량 데이터처리, 파이프라이닝, 데이터 유실의 염려가 거의없음, Redis보다는 느린성능
+  - Message에 대한 가공 및 처리가 쉽다.
+  - 여러 Client간의 Message 전달이 쉽다. (모두가 Broker을 subscribe하고 있기 떄문)
 
 ## 과정
 ### 1. 연결 과정

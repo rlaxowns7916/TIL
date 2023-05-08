@@ -151,6 +151,8 @@ public class MyService {
 
 #### 4.2 이후 (@TransactionEventListener)
 - Spring이 내부적으로 TransactionSynchronization을 등록해주는 것은 같다.
+- AfterCommit 시점에 @Transactional작업을 해줄 것이라면 (ex. save) REQUIRES_NEW를 사용하자.
+  - 이미 Commit된 트랜잭션에 새롭게 Commit 할 수는 없기 떄문이다.
 ```java
 @Component
 @RequiredArgsConstructor

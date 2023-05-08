@@ -47,12 +47,15 @@
 
 ### Minor GC
 - YoungGeneration(Eden, Survivor 포함) 에서 발생하는 GC
-- Eden영역이 가득 차 있을 때 발생한다.
-- MinorGC도 StopTheWorld를 발생시킨다.
-### Major GC
-- Old Generation에서 발생하는 GC
-### Full GC
-- YoungGeneartion과 OldGeneration을 포함한 모든 Heap을 비운다.
+- **Eden영역이 가득 차 있을 때 발생한다.**
+- **MinorGC도 StopTheWorld를 발생시킨다.**
+- MinorGC의 횟수와 지속시간을 적절하게 최적화하여 StopTheWorld최적화가 목표이다.
+
+### Major GC (Full GC)
+- **Old Generation이 꽉 찼을 때 발생한다.**
+- **Heap전체를 대상으로 발생하는 GC**
+  - YoungGeneration (Eden, Survivor2개) + OldGeneration
+- MajorGC의 발생 횟수를 줄이는 것이 GC튜닝의 목적이다.
 
 ***
 
@@ -66,7 +69,7 @@
 - GC과정에서 살아남은 객체는 Survivor영역으로 넘어가고 Eden영역은 비워진다.
 
 #### Survivor 영역
-- Eden 영역이 다시 꽉 차게되면, Eden영역과 Survivor영역에 GC가 발생한다.
+- Eden 영역이 다시 꽉 차게되면 GC가 발생한다.
 - Survivor영역에서 살아남은 객체는 또 다른 Survivor영역으로 넘어간다.
 - 특정 Age값이 넘어가는 경우에는 OldGeneration으로 넘어간다.
 
@@ -88,7 +91,7 @@
 - Mark&Sweep&Compact 알고리즘 사용 
 - 실무에선 거의 사용 (x)
 
-### 2. Parallel GC (-XX:+UsePa*rallelGC)
+### 2. Parallel GC (-XX:+UseParallelGC)
 - Java8의 Default GC
 - YoungGeneartion을 멀티 스레드 방식 (Old Generation은 아님)
 - SerialGC에 비해서 상대적으로 StopTheWorld가 짧다.*

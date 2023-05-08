@@ -30,3 +30,11 @@
 - Synchronized보다는 성능이 좋다.
   - 무한 루프로 Checking을 한다면 CPU사용률은 증가하겠지만, Lock으로 Thread의 동작을 Blocking 하는 것이나,     
     Thread의 상태를 바꿔주는 것이 훨씬 비싼 연산이다.
+
+## 4. Volatile
+- Java Multi-Thread 환경에서 가시성에 관련된 문제이다.
+- Multi-Thread 환경에서, 한 Thread가 값을 변경했을 때, 다른 Thread들이 모두 변경된 값을 바라보고 있지 않다.
+  - 각 Core가 Cache를 가지고 있고, Cache에서 읽고 쓰기 때문이다. (일정 시점 마다 동기화)
+- **Volatile은 읽기/쓰기 모두 공유 메모리에서 수행하게 한다.**
+- 동시성문제를 완벽하게 해결하지 못한다.
+  - 두 작업이 동시에 수행 됐을 때, 선행된 작업이 무시될 수 있다. (덮어쓰기)
