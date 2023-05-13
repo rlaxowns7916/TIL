@@ -2,12 +2,14 @@
 - Partition에서 Record를 가져와서 사용하는 어플리케이션
     - 순서대로 Read(Poll)를 수행한다.
     - Record를 읽은 위치를 Commit하여 다시 읽는 것을 방지한다.
-    - Commit 과정에서의 Offset 증가글 통해서 중복 Read를 방지한다.
+    - Commit 과정에서의 Offset 증가를 통해서 중복 Read를 방지한다.
 - 다른 ConsumerGroup에 속한 Consumer들은 서로 연관이 없다.
     - 하나의 Topic에 여러 ConsumerGroup이 동시에 Read할 수 있다.
 - 하나의 Consumer가 0개이상의 Partition 사용이 가능하다.
   - 여러개의 Partition의 Record를 가지고 올 수 있다.
+  - Consumer의 갯수가 Partition의 갯수보다 크다면 특정 Consumer는 놀고있을 수 있다.
 - Commited된 Record만 Read 할 수 있다.
+- **ThreadSafe하지 않기떄문에, MultiThread로 구성해서는 안된다.**
 
 ### ConsumerGroup
 - 동일한 group.id로 구성된 Consumer들이다.
@@ -15,13 +17,14 @@
 - ConsumerGroup에 속한 Consumer들은 Partition을 분배하여 Consume한다.
     - ConsumerGroup이 동일한 Consumer는 동시에 Partition에 접근 할 수 없다.
     - ConsumerGroup에 4개의 Consumer, Topic에 4개의 파티션이 있다면?
-        - Consumer : Partition = 1 : 1 
+        - Consumer : Partition = 1 : 1
 ### Consumer Rebalancing
 - Consumer Group에 새로운 Consumer가 투입되거나 제외되면 발생
+  - Consumer는 지속적으로 HeartBeat를 전송하는데, 일정시간 이상 응답이 없으면(Session TimeOut) Group에서 제외하고 Rebalancing한다.
 - Group의 관리는 Coordinator(Broker)가, Partition의 분배는 Leader Consumer가 수행한다.
 - 자주일어나면 장애의 원인이 될 수 있다.
   - Rebalancing이 일어나는 과정중에 Consume이 중지된다.
-  - Topic에 해당하는 Consumer의 연결을 모두 끊고 ,새롭게 할당하는 과정이다.
+  - Topic에 해당하는 Consumer의 연결을 모두 끊고 새롭게 할당하는 과정이다.
 
 ### Consumer Partition Assigner 
 - Leader Consumer의 수행
@@ -52,7 +55,7 @@
 - TimeOut이 발생한 Broker는 해당 Consumer Group에서 제외되며, 이로인한 Rebalancing이 일어난다.
 
 #### HeartBeat
-- 주기적인 HealthCheck 실패로 인한 TimeOut
+- Broker로 전송하는 주기적인 HealthCheck 실패로 인한 TimeOut은 SessionTimeOut이라고 부른다.
 - session.timeout.ms: TimeOut 기준 값
 - heartbeat.interval.ms: HealthCheck 주기
 
@@ -72,7 +75,9 @@
 - Commit을 제대로 실행하지 못했다면, Consumer가 다시 실행되었을 때, 재처리 될 수 있다.
 
 #### 자동 Commit
+- enable.auto.commit으로 설정한다.
 - auto.commit.interval.ms를 체크하여 poll 작업(이전) 마다 자동 Commit을 실행한다.
+- poll(), close() 메소드 호출 시 자동 호출된다.
 
 #### 수동 Commit
 - Async, Sync를 지원한다.
