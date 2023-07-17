@@ -106,14 +106,18 @@ public class LogAspect {
 **같은 종류의 Advice일 경우, 같은 @Aspect 내부에서는 실행 순서를 보장할 수 없다.**
 
 ### @Aspect 클래스 외부
-
 - @Order를 통해서 순서를 지정한다.
     - 같은 @Aspect 내부 Method끼리는 순서를 지정해 줄 수 없다.
     - 순서를 지정해주어야하는 Aspect라면 Class로 분리 시켜주어야 한다.
     - Spring이 제공해주는 @Order를 통해서 순서를 지정해 줄 수 있다.
-- 우선순위가높을 수록, 가장 바깥에 위치한다는 의미이다.
-  - 우선순위가 낮은 객체일 수록 원본 객체에 가깝다.
-  - 
+- @Ordered.HIGHEST_PRECEDENCE
+  - Integer.MIN_VALUE이다.
+  - 낮은 값을 가지며, 프록시 객체 가장 밖에 위치한다. (가장 먼저 동작을 수행하기 떄문에, 우선순위가 높다는 의미)
+- @Ordered.LOWEST_PRECEDENCE
+  - Integer.MAX_VALUE이다.
+  - 높은 값을 가지며, 원본객체의 가장 가까이에 위치한다. (가장 나중에 동작을 수행하기 때문에, 우선순위가 낮다는 의미)
+  - **트랜잭션을 수행하는 @EnableTransactionManagement가 해당 Order르 갖는다.**
+- 동일한 우선순위를 가질 경우, 사전순으로 순서를 정의한다.
 ```java
 
 @Aspect
