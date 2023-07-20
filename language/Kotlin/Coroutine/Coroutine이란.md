@@ -16,4 +16,10 @@
 - Thread 하나로 동작한다.
 - Coroutine 실행 도중, suspend(정지)가 발생하고  Stack, Register 정보가 메모리에 저장된다.
 - 다시 resume(재개)가 될 경우 메모리를 참조하여 루틴을 시작한다. 
+- Suspend(중지)가 된 시점에, 다른 로직을 실행한다.
 
+## Coroutine 내에서 Thread.sleep
+- Thread.sleep()은 Thread를 Blocking하는 것이기 때문에, 사용해서는 안된다.
+- **suspend 함수인 delay()를 사용하는 것이 적절하다.**
+  - delay는 Blocking이 아니라 Suspend 하면서 다른 로직에게 순서를 양보한다.
+  - delay는 Coroutine내부에서의 대기일 뿐, Coroutine 외부의 순서에 관여하지 않는다.
