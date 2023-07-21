@@ -23,3 +23,6 @@
 - **suspend 함수인 delay()를 사용하는 것이 적절하다.**
   - delay는 Blocking이 아니라 Suspend 하면서 다른 로직에게 순서를 양보한다.
   - delay는 Coroutine내부에서의 대기일 뿐, Coroutine 외부의 순서에 관여하지 않는다.
+ 
+## Coroutine LifeCycle
+![CoroutineLifeCycle](https://github.com/ktj1997/TIL/assets/57896918/dc8f3357-83a7-473d-9ff3-219a0211a057)
