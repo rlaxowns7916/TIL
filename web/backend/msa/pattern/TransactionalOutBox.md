@@ -17,3 +17,6 @@
 ### [3] Event Consumption
 - Consumer가 MessageBroker로 부터 Message를 전달받아 로직을 수행한다.
 - Consume의 실패에 대한 정책은 OutBox Pattern과는 상관없다.
+
+***
+![TOutBox](https://github.com/ktj1997/TIL/assets/57896918/c221472a-8565-4b4f-be97-fd0f67eee4d3)
