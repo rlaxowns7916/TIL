@@ -1,8 +1,6 @@
 # CoroutineScope Builder
 - CorutineScope Builder는 말그대로 CoroutineScope를 만들어주는 Builder이다.
-- 모든 Corutine은 CorutineScope안에서만 동작한다.
-- Coroutine Scope가 아닌 곳에서 Corutine을 사용할 경우 컴파일 에러가 발생한다.
-- 부모 Coroutine이 있다면 상속받고, 없다면 새롭게 Coroutine을 생성한다. (StructuredConcurrency)
+- 옵션을 통해서 Dispatcher를 지정할 수 있다.
 
 ## launch
 - CoroutineScope의 확장함수이다.
@@ -29,12 +27,46 @@ fun main(){
   - Job을 상속한 클래스이다.
   - **결과를 가지는 Coroutine의 실행이다.**
   - **await() 함수를 통해서 결과를 받을 수 있다.**
+- await 키워드를 만나면, async블록이 끝났는지 확인하고 끝나지 않았다면 suspend되었다가 나중에 다시꺠어나서 반환한다.
+  - await는 Join + get의 역할을 한다.
 ```kotlin
 val deferred = CoroutineScope(Dispatchers.Default).async(Dispatchers.IO) {
     return logincSomething()
 }
 val result = deferred.await()  
 ```
+
+### Lazy Start Async
+```kotlin
+import kotlin.random.Random
+import kotlinx.coroutines.*
+import kotlin.system.measureTimeMillis
+
+fun main() = runBlocking {
+    val time = measureTimeMillis {
+        val deferred1 = async(start = CoroutineStart.LAZY) { getRandom1() }
+        val deferred2 = async(start = CoroutineStart.LAZY) { getRandom2() }
+      
+        deferred1.start()
+        deferred2.start()
+        
+        println(deferred1.await() + deferred2.await())
+    }
+    println(time) // 1초 가량
+}
+
+suspend fun getRandom1(): Int {
+    delay(1000L)
+    return Random.nextInt(0,500)
+}
+
+suspend fun getRandom2(): Int {
+    delay(1000L)
+    return Random.nextInt(0,500)
+}
+```
+- 명시적으로 start를 해줄 경우에는 비동기적으로 동작한다.
+- start 없이 await을 만난 경우, 그제서야 실행되고 동기적으로 수행된다.
 
 ## runBlocking
 - 최상위 함수이다.
