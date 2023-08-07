@@ -1,10 +1,31 @@
 # CoroutineContext
 - **Coroutine이 실행되는 환경을 의미한다.**
-- Job,Dispatcher와 CoroutineExceptionHandler 모두 환경의 일부이다.
+  - MetaData를 저장하거나, 자식 Coroutine에 넘길 정보를 저장하는 저장소의 용도로 볼 수 있다.
+  - 임의의 값이 아닌 CoroutineContext.Element 인터페이스를 구현하는 값만 들어갈 수 있다.
+- Job,Dispatcher와 CoroutineExceptionHandler,ThreadLocl 모두 환경의 일부이다.
 - Interface가 존재한다.
   - Map과 같은 형식으로, get을 통해서 CoroutineContext를 가져오거나 없다면 null을 반환한다.
   - plus()를 통해서 Context를 합칠 수 있다.
 - 자식 Coroutine은 Dispatcher를 지정하지 않을 경우 부모의 Context를 덮어쓴다.
+
+### 접근하는 방법
+1. CoroutineScope 내부
+```text
+runBlocking, launch, async와 같은 CoroutineScope 내부에 있다면,
+
+CoroutineScope.coroutineContext로 접근 가능하다.
+Scope내에서는 CoroutineScope가 this로 접근이 가능하므로, this.coroutineContext로 접근 가능하다.
+```
+
+2. Continuation
+```text
+Continuation.coroutineContext로 접근이 가능하다.
+```
+
+3. suspend 함수 내부
+```text
+suspend함수 내부에서, coroutineContext접근이 가능하다.
+```
 
 ## Job
 - Coroutine의 생명주기를 관리하는데 사용된다.
@@ -55,12 +76,22 @@ fun main() = runBlocking{
   - Job
   - CoroutineName
   - CoroutineExceptionHandler
+  - ThreadLocl
   - ... Custom Coroutine Context Element
 - coroutineContext[Element이름] 으로 조회 가능하다.
-- \+ 연산으로 ELemet 끼리의 결합이 가능하다.
-  - 새로운 CoroutineContext를 생성한다.
+  - \+ 연산으로 Elemet 끼리의 결합이 가능하다.
+    - 새로운 CoroutineContext를 생성한다.
+    - 이미 같은 Key값을 갖고있는 Elemnt가 있다면 Override한다.
+    - 리턴 값은 더해진 이후의 CoroutineContext
+  - minusKey 연산을 제공한다.
+    - 해당 Key값의 Element를 coroutineContext에서 제외한다.
+  - \- 연산은 Element를 제거한다.
+  - 리턴 값은 은 - 연산이 진행된 후의 결과이다.
+- CoroutineContext Interface의 구현체이다.
+
 
 ```kotlin
+import kotlin.concurrent.thread
 import kotlinx.coroutines.*
 
 fun main() = runBlocking {
@@ -70,22 +101,27 @@ fun main() = runBlocking {
    * 
    *  CoroutineDispatcher, CoroutineName은 Element를 검색하는 Key값이다.
    */
-  launch {
-    launch(Dispatchers.IO + CoroutineName("launch1")) {
-      println(coroutineContext[CoroutineDispatcher])
+  val threadLocal = ThreadLocal<String>()
+  threadLocal.set("hello")
+  val job1 = launch {
+    launch(Dispatchers.IO + CoroutineName("launch1") + threadLocal.asContextElement()) {
+      println(coroutineContext)
       println(coroutineContext[CoroutineName])
     }
   }
 
-  launch(Dispatchers.Default + CoroutineName("launch2")) {
+  val job2 = launch(Dispatchers.Default + CoroutineName("launch2")) {
     println(coroutineContext[CoroutineDispatcher])
     println(coroutineContext[CoroutineName])
   }
+
+  job1.join()
+  job2.join()
 }
 /**
  * Dispatchers.Default
- * Dispatchers.IO
  * CoroutineName(launch2)
+ * [CoroutineName(launch1), ThreadLocal(value=hello, threadLocal = java.lang.ThreadLocal@1f763139), CoroutineId(4), "launch1#4":StandaloneCoroutine{Active}@504ad22b, Dispatchers.IO]
  * CoroutineName(launch1)
  */
 ```

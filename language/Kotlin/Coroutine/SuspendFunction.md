@@ -1,5 +1,7 @@
 # SuspendFunction
 - 함수앞에 suspend 키워드를 통해서 사용가능하다.
+  - Coroutine 내부에서 실행 가능하다.
+  - 또 다른 Suspend 함수 내에서 실행 가능하다.
 - 같은 Coroutine 내에서는 기본적으로 순차적으로 실행되며, Suspend가 걸린시점에서 실행 할 수 있는 다른 로직을 실행한다.
   - 실행할 다른 로직이 suspend 일 경우, launch(), async()를 통해서 병렬적으로 실행한다.
   - 실행할 다른 로직이 모두 suspend인데, 별도의 Corutine을 생성해주지 않는다면 Blocking과 같이 동작한다.
