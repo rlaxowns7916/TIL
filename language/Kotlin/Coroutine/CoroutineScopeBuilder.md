@@ -2,6 +2,36 @@
 - CorutineScope Builder는 말그대로 CoroutineScope를 만들어주는 Builder이다.
 - 옵션을 통해서 Dispatcher를 지정할 수 있다.
 
+## coroutineScope
+```kotlin
+import kotlinx.coroutines.*
+
+fun main() = runBlocking {
+  coroutineScope {
+    launch {
+      // 첫 번째 작업
+      delay(1000L)
+      println("First Task")
+    }
+
+    coroutineScope {
+      launch {
+        // 두 번째 작업
+        delay(500L)
+        println("Second Task")
+      }
+    }
+  }
+  /**
+   * First Task
+   * Second Task
+   */
+}
+```
+- coroutineScope는 별도의 CoroutineScope를 생성하는 Builder이다.
+- coroutineScope는 자식 Coroutine이 모두 실행될 때 까지 대기한다.
+
+
 ## launch
 - CoroutineScope의 확장함수이다.
 - Job객체를 반환한다.
@@ -35,6 +65,27 @@ val deferred = CoroutineScope(Dispatchers.Default).async(Dispatchers.IO) {
 }
 val result = deferred.await()  
 ```
+
+## withContext
+- CorutineScope의 확장함수이다.
+- Corutine내에서 Context를 일시적으로 변경할 수 있게 한다.
+  - 잠시 변경한 후, 원래의 Context로 복귀한다.
+- 지정한 Context내에서 Coroutine을 실행하고, 결과 값을 반환 후 원래의 Context로 복귀한다.
+  - Deferred<T>가 아닌 실제 반환값 T를 리턴한다.
+- **Corutine의 LifeCycle이나 Exception Handling에는 영향을 미치지 않는다.
+- withContext내에서 실행된 자신 Coroutine들은, withContext에서 지정된 CoroutineContext를 그대로 상속받는다.
+  - withContext내의 Coroutine들이 실행될 때 까지 대기한다.
+
+```kotlin
+suspend fun loadData(): Data {
+    // I/O 디스패처에서 데이터 로드
+    return withContext(Dispatchers.IO) {
+        // IO 디스패처에서 실행
+        loadFromDisk()
+    }
+}
+```
+
 
 ### Lazy Start Async
 ```kotlin
@@ -99,21 +150,14 @@ fun main(){
 }
 ```
 
-## withContext
-- CorutineScope의 확장함수이다.
-- Corutine내에서 Context를 일시적으로 변경할 수 있게 한다.
-  - 잠시 변경한 후, 원래의 Context로 복귀한다.
-- 지정한 Context내에서 Coroutine을 실행하고, 결과 값을 반환 후 원래의 Context로 복귀한다.
-  - Deferred<T>가 아닌 실제 반환값 T를 리턴한다.
-- **Corutine의 LifeCycle이나 Exception Handling에는 영향을 미치지 않는다.
-
+## 커스텀 Coroutine Builder
 ```kotlin
-suspend fun loadData(): Data {
-    // I/O 디스패처에서 데이터 로드
-    return withContext(Dispatchers.IO) {
-        // IO 디스패처에서 실행
-        loadFromDisk()
-    }
+fun <T> customCoroutineBuilder(
+        start: CoroutineStart = CoroutineStart.DEFAULT,
+        parent: Job? = null,
+        block: suspend () -> T
+){
+    
 }
 ```
 

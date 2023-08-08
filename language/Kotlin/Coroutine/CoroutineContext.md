@@ -6,7 +6,12 @@
 - Interface가 존재한다.
   - Map과 같은 형식으로, get을 통해서 CoroutineContext를 가져오거나 없다면 null을 반환한다.
   - plus()를 통해서 Context를 합칠 수 있다.
-- 자식 Coroutine은 Dispatcher를 지정하지 않을 경우 부모의 Context를 덮어쓴다.
+
+## CoroutineContext의 전파
+- 부모 Coroutine의 CoroutineContext는 자식Coroutine으로 전파된다.
+  - 자식 Coroutine을 새로운 CoroutineContext를 지정하면서 생성하면, 부모 Context를 오버라이드하여 생성된다.
+- suspend 함수 호출 시, Caller의 Context가 Callee 에게로 전파된다.
+- withContext를 사용 시, 해당 Scope에서 별도의 CoroutineContext의 사용이 가능해진다.
 
 ### 접근하는 방법
 1. CoroutineScope 내부
@@ -26,8 +31,11 @@ Continuation.coroutineContext로 접근이 가능하다.
 ```text
 suspend함수 내부에서, coroutineContext접근이 가능하다.
 ```
+***
 
-## Job
+# CoroutineContext 구성요소
+
+## [1] Job
 - Coroutine의 생명주기를 관리하는데 사용된다.
   - 하나 혹은 여러개의 Coroutine을 제어 할 수 있다.
 - CoroutineScope와 마찬가지로 Job또한 계층구조를 가지고 있다.
@@ -68,7 +76,67 @@ fun main() = runBlocking{
    */
 }
 ```
+***
 
+## [2] Dispatcher
+- **Coroutine이 실행되는 Thread 또는 ThreadPool을 지정하는데 사용된다.**
+  - 지정하지 않는다면 부모의 Context를 따라간다.
+- 여러개의 Dispatcher를 갖고있다.
+
+### [1] Default
+- Core 수에 비례하는 ThreadPool에서 수행한다.
+- 복잡한 로직을 수행하는데 유리하다.
+
+### [2] I/O
+- Core 수보다 훨씬 많은 Thread를 가지는 ThreadPool에서 수애한다.
+- I/O작업은 CPU를 덜 소모하기 때문이다.
+
+### [3] UnConfined
+- 특정 Thread 어디에도 속하지 않는다.
+  - 처음에는 부모 Thread에서 수행된다.
+  - 한번이라도 Suspend되면, 어느 Thread에서 동작하게 될지 알 수 없다.
+- 사용하지 않는 것이 좋다.
+
+### [4] newSingleThreadContext
+- 새로운 Thread를 생성한다.
+- Thread의 이름또한 지을 수 있다.
+```kotlin
+launch(newSingleThreadContext("Custom Thread"))
+```
+
+## [3] CoroutineExceptionHandler
+- Coroutine 내에서 발생하는 Exception을 제어하는데 사용된다.
+  - Interface이며, CoroutineContext의 하나의 요소로서 동작한다.
+- Default와 I/O의 경우 ThreadPool을 사용하는데, ThreadPool가용범위를 넘었을 경우 Thread를 받지 못할 수 있다. 이럴 경우를 대비해서 사용가능하다.
+- CoroutineExceptionHandler 함수를 통해서 생성 가능하다.
+  - 첫번쨰 인자로는 CoroutineContext, 두 번째 인자로는 Exception을 받는다.
+- **해당 Scope에만 종속적이다.**
+  - 자식 CoroutineContext로 전파되지 않는다.
+  - 각 CoroutineScope의 ExceptionHandling의 유연함을 제공하기 위해서 설계되었다.
+  - 하나의 Scope에 국한됨으로써, 예외처리가 더욱 명확해진다.
+```kotlin
+/**
+ * CoroutineContext는 사용하지않기 떄문에 _로 받을 수도 있음
+ */
+val ceh = CoroutineExceptionHandler { _, throwable ->
+  println("Exception Occurred in $throwable")
+}
+
+fun main() = runBlocking {
+  val scope = CoroutineScope(Dispatchers.IO)
+  val job = scope.launch(ceh + CoroutineName("Context With ExceptionHandler") {
+    launch {
+      println("Coroutine 1")
+    }
+
+    launch {
+      println("Coroutine 2")
+    }
+  })
+}
+```
+
+***
 
 ## Element
 - CoroutineContext의 요소이다.
@@ -126,61 +194,29 @@ fun main() = runBlocking {
  */
 ```
 
+### CoroutineContext에서 ThreadLocal 사용하기
+- Coroutine은 Dispatcher에 따라서, 별도의 Thrad에서 동작 가능하다. (예측 할 수 없다.)
+- TheadLocalElement를 사용한다면, ThreadLocal의 정보를 전파시킬 수 있다.
+  - Element를 구현했다. (ThreadLocalElement -> ThreadContextElement -> Element)
+  - **ThreadLocal에서, asContextElement를 통해서 생성 가능하다.**
 
-## Dispatcher
-- **Coroutine이 실행되는 Thread 또는 ThreadPool을 지정하는데 사용된다.**
-  - 지정하지 않는다면 부모의 Context를 따라간다.
-- 여러개의 Dispatcher를 갖고있다.
+### Custom CoroutineContext 만들기
 
-### [1] Default
-- Core 수에 비례하는 ThreadPool에서 수행한다.
-- 복잡한 로직을 수행하는데 유리하다.
-
-### [2] I/O
-- Core 수보다 훨씬 많은 Thread를 가지는 ThreadPool에서 수애한다.
-- I/O작업은 CPU를 덜 소모하기 때문이다.
-
-### [3] UnConfined
-- 특정 Thread 어디에도 속하지 않는다.
-  - 처음에는 부모 Thread에서 수행된다.
-  - 한번이라도 Suspend되면, 어느 Thread에서 동작하게 될지 알 수 없다.
-- 사용하지 않는 것이 좋다.
-
-### [4] newSingleThreadContext
-- 새로운 Thread를 생성한다.
-- Thread의 이름또한 지을 수 있다.
 ```kotlin
-launch(newSingleThreadContext("Custom Thread"))
-```
 
-## CoroutineExceptionHandler
-- Coroutine 내에서 발생하는 Exception을 제어하는데 사용된다.
-  - Interface이며, CoroutineContext의 하나의 요소로서 동작한다.
-- Default와 I/O의 경우 ThreadPool을 사용하는데, ThreadPool가용범위를 넘었을 경우 Thread를 받지 못할 수 있다. 이럴 경우를 대비해서 사용가능하다.
-- CoroutineExceptionHandler 함수를 통해서 생성 가능하다.
-  - 첫번쨰 인자로는 CoroutineContext, 두 번째 인자로는 Exception을 받는다.
-- **해당 Scope에만 종속적이다.**
-  - 자식 CoroutineContext로 전파되지 않는다.
-  - 각 CoroutineScope의 ExceptionHandling의 유연함을 제공하기 위해서 설계되었다.
-  - 하나의 Scope에 국한됨으로써, 예외처리가 더욱 명확해진다.
-```kotlin
-/**
- * CoroutineContext는 사용하지않기 떄문에 _로 받을 수도 있음
- */
-val ceh = CoroutineExceptionHandler { _, throwable ->
-  println("Exception Occurred in $throwable")
+import kotlin.coroutines.AbstractCoroutineContextElement
+
+class CustomContext(
+      val property: String
+) : AbstractCoroutineContextElement(CustomContext) {
+  companion object Key : CoroutineContext.Key<CustomContext>
 }
 
-fun main() = runBlocking {
-  val scope = CoroutineScope(Dispatchers.IO)
-  val job = scope.launch(ceh + CoroutineName("Context With ExceptionHandler") {
-    launch {
-      println("Coroutine 1")
-    }
 
-    launch {
-      println("Coroutine 2")
-    }
-  })
+fun main() = runBlocking {
+  launch(Dispatchers.Default + CustomContext("Starting coroutine!")) {
+    val customContext = coroutineContext[CustomContext] as CustomContext
+    println(customContext.property)
+  }
 }
 ```
