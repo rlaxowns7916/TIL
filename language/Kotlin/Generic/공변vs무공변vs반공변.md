@@ -1,3 +1,20 @@
+# 선언지점 변성
+**변성을 어느지점에 선언하느냐에 따라서 맥락이 달라진다.**
+- Class에 변성 지정 가능
+  - out
+    - TypeParameter의 생산자의 역할만 가능해진다.
+    - Method의 ReturnType으로 가능해진다.
+  - in
+    - TypeParameter의 소비자 위치만 가능해진다.
+    - Method의 Parameter로 받을 수 있다.
+- Parameter에 변성지정가능
+  - out
+    - Method의 Parmeter를 읽기전용으로 제한한다.(Parameter에서 데이터를 get한다.)
+    - 수정이 불가능해진다.
+  - in
+    - Method의 Prameter를 쓰기전용으로 제한한다. (Parameter에 데이터를 put한다.)
+    - Parameter의 값을 읽어서, 작업을 수행할 수 없다.
+
 # 무공변(불공변)
 ```kotlin
 val goldFishCage = Caae<GoldFish>()
@@ -56,7 +73,7 @@ fun main(){
 
 ## 공변: 하위 Type -> 상위 Type (out)
 ```kotlin
-class Cate<T>{
+class Cage<T>{
     val animals: MutableList<T> = mutableListOf()
     
     fun moveFrom(cage: Cage<out T>){
