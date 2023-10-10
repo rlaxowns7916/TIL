@@ -4,11 +4,16 @@
   - logback이 성능이 준수하다.
 - Slf4j(Simple Logging Facade For Java) 의 구현체이다.
 - 5단계의 로그레벨을 지원한다.
-- spring-boot-starter-web에 기본적으로 포함되어 있다.
+- **spring-boot-starter-web에 기본적으로 포함되어 있다.**
 - 서버를 재시작 하지 않고, 설정 변경이 가능하다.
 - 압축, 보관 기간을 관리 할 수 있다.
 
-***
+## 특징
+- 빠른 implementation
+- 적은 메모리 사용
+- XML 설정
+- Filter를 통한 logLevel별로 조정
+- 비동기 로깅 지원 (AsyncAppender)
 
 ## LogBack Architecture
 
@@ -24,28 +29,12 @@
 - Log 포맷 관련한 Class
 - 패턴을 통한 LogMessage 형식을 지정한다.
 
+### [4] Encoder
+- 실제 로그를 복잡한 인코딩을 통해서 구성할 때 사용된다.
+- Layout보다 조금더 자유도가 높다.
+
 ## 5가지 Logging Level
-**TRACE** < **DEBUG** < **INFO** < **WARN** < **ERROR** 
-
-***
-
-## LogBack 지원 Appender
-### [1] Console Appender
-- 기본적인 Console에 출력하는 Appender
-### [2] File Appender
-- File에 저장하는 Appender
-- 단순히 File에 작성만 한다.
-- 수동으로 재시작하거나, 파일크키를 제한 하지 않으면 무한대로 늘어난다.
-
-### [3] RollingFile Appender
-- File Appender의 확장 버전이다.
-- 파일 크기, 날짜 등의 조건으로 파일을 **롤링** 하며, 현재 로그파일을 닫고 새로운 로그파일을 로그를 작성한다.
-
-### [4] SMTP Appender
-- 메일을 작성한다.
-
-### [5] DB Appender
-- DB에 작성한다.
+**TRACE** -> **DEBUG** -> **INFO** -> **WARN** -> **ERROR** 
 
 ***
 
@@ -55,7 +44,8 @@
 - logback-spring.xml
   - classpath에 위치해야 한다.
   - resource 폴더(src/main/resources/)에 위치해야한다.
-  - 꼭 해당 이름을 사용해야 한다. (logback-spring.xml, logback-spring.groovy)
+  - logback.xml보다 우선순위를 갖는다.
+    - 둘중에 하나만 있으면 (logback.xml, logback-spring.xml 둘 중 있는걸 사용한다.)
 - spring profile 별로 설정 가능하다.
   - ```xml
         <springProfile name="staging" />
