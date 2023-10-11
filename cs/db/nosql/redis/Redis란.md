@@ -1,7 +1,9 @@
 # Redis (REmote DIctionary Server)
+- Dictionary라는 말 그대로, 대부분의 작업을 **상수의 시간복잡도** 로 자료에 접근할 수 있다.
 - ANSI C로 작성되어 있다. (ANSI C Compiler가 있는 곳에서는 동작가능)
+  - 백업을 제외한 대부분의 작업을 메모리에서 수행한다.
 - 대부분의 언어로 작성된 Client가 존재한다.
-- Replication과 Sharding을 지원한다.
+- Replication, Clustering, Sentinel 등의 기능을 통해서 고가용성을 제공한다.
 
 ## 1. InMemory DataBase
 - 서버 재시작시 모든 데이터는 유실된다.
@@ -9,9 +11,9 @@
 - 영속성을 지원하는 In-Memory 저장소이다.
   - Disk에 데이터를 저장 할 수 있다. (영속성)
   - 2가지의 옵션을 제공한다.
-    1. 특정 간격으로 Disk에 Snpatshot을 저장하는데 시간이 오래걸린다. (RDB)
+    1. 특정 간격으로 Disk에 Snpatshot을 저장하는데 시간이 오래걸린다. **(RDB)**
       - 어느정도 데이터 유실을 감수 할 수 있을 때 사용하자.
-    2. 로그 (AOF File)에만 추가한다.  (AOF)
+    2. 로그 (AOF File)에만 추가한다. **(AOF)**
       - 장애상황 직전까지의 데이터가 보장되어야 할 때 사용하자.
       - 기본설정 (everySec)의 경우 최대 1초의 데이터 유실이 발생할 수 있다.
     3. 두가지 모두사용
@@ -75,7 +77,7 @@ Redis의 병목현상은 메모리 또는 네트워크 대역폭 크기일 가�
 - 세션, 캐시 등 기한이 있지만 빠른성능을 요구하는 역할로 사용된다.
 
 ### 차이점
-- Redis는 고가용성을 위한 Replication, Cluster를 제공하지만, Memcached는 제공하지 않는다.
+- Redis는 고가용성을 위한 Replication, Clustering을  제공하지만, Memcached는 제공하지 않는다.
 - MemCached는 LRU알고리즘을 사용, Redis는 6가지의 알고리즘이 존재한다.
 - MemCached는 String 만 사용가능, Redis는 5가지의 자료구조 사용이가능하다.
 - MemCached는 고성능 분산 메모리 객체 캐싱 시스템으로, 영속성을 보장하지 않는다.
