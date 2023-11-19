@@ -1,244 +1,95 @@
-# DataType-Set
-- 순서가 존재하지 않는다.
-  - 인덱스로 특정한 요소만 뽑아 낼 수는 없다.
-- 모든 요소들은 Unique 하다. (중복이 없다.)
-- 모든 요소들은 문자열로 취급된다.
-  - 공백을 넣고싶을 경우, "" (큰 따옴표)로 묶으면 된다.
-- 집합 연산을 제공한다.
-  - Intersection: 교집합
-  - Difference: 차집합
-  - Union: 합집합
-- 일부 커맨드는 O(1)의 성능을 가진다.
-  - 추가
-  - 삭제
-  - 검색
-- 하나의 SET은 최대 40억개의 데이터를 저장 할 수 있다.
+# Set
+- prefix는 s
+- 순서가 없는 데이터구조
+- 중복없이 Element를 관리하는 것이 목적이다.
 
-## SADD
-- Set에 요소를 추가하는 연산이다.
-- 추가된 요소의 갯수를 반환한다.
-```shell
-SADD KEY ...MEMBERS
+## 주요 Command
 
-> sadd sample-set "1","2","3"
-(integer)3
+### [1] SADD
+- O(1)
+- Set에 데이터 추가
+
+```bash
+SADD [KEY] [...MEMBERS]
 ```
 
-## SMEMBERS
-- Set에 존재하는 모든 Member들을 보여주는 것이다.
-- O(N) 명령어로 조심해야 한다.
-```shell
-SMEMBERS KEY
+### [2] SREM
+- O(N)
+  - N은 제거되는 요소의 갯수
+- Set에서 요소 제거
 
-> smembers sample-set
-1) "3"
-2) "1"
-3) "2"
+```bash
+SREM [KEY] [...MEMBERS]
 ```
 
-## SCARD
-- SET에 몇개의 Member가 있는지 확인 하는 것이다.
-- O(1)의 명령어이다.
-```shell
-SCARD KEY
-
-> SCARD sample-set
-(integer) 3
-
+### [3] SISMEMBER
+```bash
+SISMEMBER [KEY] [MEMBER]
 ```
+- O(1)
+- Set에 요소가 있는지 Check
+  - 있으면 1, 없으면 0
 
-## SREM
-- Member를 제거한다.
-- O(1)이다.
-- 2.4버전 이상부터, 복수개의 Member들을 삭제 할 수 있다.
-- Set에서 지워진 Member의 갯수가 리턴된다.
-  - Set에 존재하지 않았던 것은 무시된다.
-```shell
-SREM KEY ...MEMBERS
-
-> srem sample-set 3 4
-(integer) 1
+### [4] SINTER
+```bash
+SINTER [...KEYS]
 ```
+- SET간의 교집합을 반환한다.
+- O(N*M) → N은 가장작은 Set의 크기, M은 Set들의 갯수
 
-##  SPOP
-- Random하게 Member를 제거한다.
-- 지울 개수를 지정할 수 있다.,
-- O(1)이다.
-- 3.2 버전부터 몇개를 지울 지 정할 수 있다.
-  - COUNT (개수) 에 따른 Member들이 삭제되고 리턴된다.
-  - 없다면 (empty array)가 리턴된다.
-```shell
-SPOP KEY 
-
-> spop sample-set 2
-
-1) "1"
-2) "3"
-
-> spop sample-set 2
-1) "2"
-
-> spop sample-set 2
-(empty array)
+### [5] SCARD
+```bash
+SCARD [KEY]
 ```
+- SET에 저장되어있는 요소의 갯수를 구한다.
+- O(1)
 
-## SISMEMBER
-- 하나의 Member씩만 확인 가능하다.
-- SET에 Member가 존재하는지 확인한다.
-```shell
-SISMEMBER KEY MEMBER
 
-> sismember cars FORD
-(integer) 0 # 없을 때
-
-> sismember cars BMW
-(integer) 1
+### [6] SPOP
+```bash
+SPOP [KEY]
+SPOP [KEY] [COUNT]
 ```
+- Set에서 **무작위** 요소 삭제
+  - 3.2부터 N개 꺼내올 수 있다.
 
-## SMISMEMBER 
-- SISMEMBER의 복수 형태이다.
-  - ISMEMBER앞에 M이 붙어있다.
-- 각 Member의 Index에 맞게 존재 여부를 리턴 값으로 한다.
-```shell
-SMISMEMBER KEY ...MEMBERS
 
-> smismember cars FORD BMW 
-1) (integer) 0
-2) (intger) 1
+### [7] SMOVE
+```bash
+SMOVE [SRC_SET_KEY] [DEST_SET_KEY]
 ```
+- Source에 해당하는 Set의 요소를 Destinaton으로 옮김
+- DEST에, SRC의 것을 추가하고, 중복을 제거
 
-## SRANDMEMBER 
-- Set에서 Random한 Member들을 가져오는 것이다.
-- Count(갯수)를 지정 할 수 있다.
-  - default는 1이다.
-- 전체 갯수보다 많은 Count를 지정해도 전체 갯수만큼만 나온다.
-  - + 로 더 나오고 nil이 나오는게 아님.
-```shell
-SRANDMEMBER KEY [COUNT] 
 
-> srandmember lottery:num 6
-
-1) (integer) 21
-2) (integer) 37
-3) (integer) 1
-4) (integer) 5
-5) (integer) 42
-6) (integer) 19
+## 쓰면안되는 Command
+### [1] SMEMBERS
+```bash
+SMEMBERS [KEY] [SORT]
 ```
+- O(N)
+- Set에 포함되어있는 모든 요소들을 가져온다.
+  - SSCAN을 사용하라고하지만, 이것도 결국은 O(N  / M(chunkSize))기 때문에 안쓰는게 좋아보임
+  - SMEMBERS를 ChunkSize로 잘게쪼개서 도는 방식으로 이해함
 
-## SMOVE
-- O(1) 명령어이다.
-- 한번에 하나밖에 옮길 수 없다.
-- 하나의 Set에서 다른 Set으로 데이터를 옮기는 것이다.
-- Source에 있는 Member를 Destination으로 옮긴다.
-- 성공적으로 옮겨지면 **1**을 리턴한다.
-- 실패하면 **0**을 리턴한다.
+
+### [2] SUNION
 ```shell
-SMOVE SOURCE DESTINATION MEMBER
-
-# 홀수 값 채우기
-> sadd number:odd 1 3 4 5 9
-(integer) 5
-
-# 짝수 값 채우기
-> sadd number:event 2 4 6 8 10
-
-# 짝수집합에서 홀수집합으로 2 넘기기 (성공)
-> smove number:even number:odd 2
-(integer) 1
-
-# 짝수집합에서 홀수집합으로 3넘기기 (실패)
->smove number:even number:odd 3
-(integer) 0
+SUNION [...SET_KEYS]
 ```
+- O(N1+…+Nk)
+- SET들의 합집합을 구한다.
 
-## SUNION
-- 여러개의 Set을 하나로 합치는 것이다.
-  - 하나로 합쳐서 새로운 Set을 생성하는 것은 아니다.
-  - 여러개의 Set을 합쳤을 때의 결과를 보여준다.
-- Set이기 떄문에, 중복은 제거된다.
-```shell
-SUNION ...KEYS
-
-# key1 > 1,2,3,4,5
-# key2 > 2,4,6,8,10
-
-> sunion key1 key2
-
-1) 1
-2) 2
-3) 3
-4) 4
-5) 5
-6) 6
-7) 8
-8) 10
+### [3] SDIFF
+```bash
+SDIFF [KEY1] [keys...]
 ```
+- N = 모든 Set들의 요소를 더한 크기
+- KEY1에만 존재하는 것들을 구한다.
 
-## SUNIONSTORE
-- SUNION의 결과 값을 저장하는 것이다.
-- 새로운 Set을 생성한다.
-  - 리턴 값은 저장된 Element의 갯수이다.
-```shell
-SUNION DESTINATION ...KEYS
-
-# key1 > 1,2,3,4,5
-# key2 > 2,4,6,8,10
-> sunionstore key3 key1 key2
-(integer) 8
+### [4] SINTER
+```bash
+SINTER [KEYS]
 ```
-
-
-### SINTER
-- 교집합이다.
-  - Set + Intersection
-- 각 Set의 공통된 Element를 리턴한다.
-```shell
-SINTER KEY1 KEY2
-
-# key1 > 1,2,3,4,5
-# key2 > 2,4,6,8,10
-> sinter key1 key2
-1) 2
-2) 4
-```
-
-### SINTERSTORE
-- SINTER + STORE 이다.
-- 교집합을 새로운 SET에 저장하는 역할을 한다.
-```shell
-SINTERSTORE DESTINATION ...KEYS
-
-# key1 > 1,2,3,4,5
-# key2 > 2,4,6,8,10
-> sinterstore key1 key2
-(integer) 2
-```
-
-### SDIFF
-- SET + Difference
-- 첫 번째 SET(key1)과, 나머지 SET (key2 + key3 + key4)과의 차이점을 리턴한다.
-```shell
-SDIFF KEY ...KEYS
-
-# key1 > 1,2,3,4,5
-# key2 > 2,4,6,8,10
-# key3 > 1,3
-
->sdiff key1 key2 key3
-1) 5
-```
-
-### SDIFFSTORE
-- SDIFF + STORE
-- SDIFF의 결과를 Set에 저장하는 것이다.
-```shell
-SDIFFSTORE DESTINATION KEY ...KEYS
-
-# key1 > 1,2,3,4,5
-# key2 > 2,4,6,8,10
-# key3 > 1,3
-
->sdiffstore dest1 key1 key2 key3
-(integer) 1
-```
+- SET간의 교집합을 반환한다.
+- O(N*M) → N은 가장작은 Set의 크기, M은 Set들의 갯수

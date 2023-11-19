@@ -1,148 +1,61 @@
-# DataType - Hash
-- Key값에 해당하는 Value로 Hash를 가지게 된다.
-  - Key:Value의 리스트를 갖고있는 것이다.
-- 스키마가 존재하지 않는다.
-- 단순한 값이 아닌 object(객체)를 저장하는데 자주 사용한다.
+# Hash
+- prefix는 h
+- flat-structure
+  - Json과 같이 계층형 구조를 가질 수 없다.
+- key-value 쌍의 컬렉션으로 구성된 레코드 유형
+- 간단한 객체구조를 표현 할 수 있다.
+- 필드 수에 대한 제한은 없다.
 
-## HSET
-- Hash에 값을 저장하는 것이디.
+### UseCase
+- Session Storage
+- Data Storage (진짜 DB용으로 사용)
+
+## 주요 Command
+### [1] HSET
+```bash
+HSET KEY [...field value] {OPTION}# hset key f1 v1 f2 v2 {NX | XX}
+```
+- Hash에 값을 저장하는 것이다.
+  - 한번에 N개의 쌍을 저장가능하다.
 - Update와 Insert 모두 가능하다.
-- 새롭게 생성된 Field:Value의 갯수이다.
-  - Update의 경우 0이 리턴 될 것이다.
-```shell
-HSET KEY [...field value]
-  
->hset user firstName "Taejun" lastName "Kim"
-(integer) 2   
- ```
+- 리턴 값은 새롭게 생성된 Field:Value의 갯수이다.
+  - Update의 경우 0이 리턴
 
-### HSETNX
-- Hash Field : Value가 존재하지 않을 떄만 값을 추가한다.
-- 아래의 리턴 값을 갖는다.
-  - 1: 새롭게 값이 저장됨
-  - 0: 이미 존재해서 새롭게 값을 저장하지 못함
-```shell
-HSET KEY FIELD VALUE
-
-> hset user firstName "Taejun"
-(integer) 0 #이미 존재해서 저장 못함
+### [3] HGET
+```bash
+HGET [KEY] [FIELD]
 ```
+- O(1)
+- 단일 field-value 리턴
 
-## HGET
-- Key에 해당하는 값들을 가져오는 것이다.
-- 존재하지 않는 filed의 값을 가져오려고하면 **nil**이 리턴된다.
-- field에 해당하는 값을 가지고 온다. (한 개씩 밖에 못가져온다.)
-```shell
-HGET KEY FIELD
-
-> hget use firstName
-"Taejun"
+### [4] HMGET
+```bash
+HMGET [KEY] [...FIELD]
 ```
+- O(N)
+  - N은 검색하는 field의 갯수
+- Hash에서 여러개의 필드에 대한 값을 검색하는 것이다
+- 없으면 nil 리턴
 
+## 주의해야할 명령어
 
-## HGETALL
-- Hash에 저장되어있는 값을 모두 가져온다.
-- field와 value를 각각 가져온다.
-  - 항상 짝수가 나올 수 밖에 없다.
-```shell
-HGETALL KEY
-
-> hgetall user
-1) "firstName"
-2) "Taejun"
-3) "lastName"
-4) "Kim"
+### [1] HKEYS
+```bash
+HKEYS [KEY]
 ```
+- O(N)
+- Hash에 저장되어있는 모든 field를 가져온다.
 
-## HMGET
-- 한번에 여러개의 Value를 가져올 때 사용된다.
-- 존재하지 않는 Field 값을 입력 했을 경우, **nil**이 리턴 된다.
-```shell
-HMSET KEY ...fields
-
-> hmset user firstName lastName age
-1) "Taejun"
-2) "Kim"
-3) (nil)
+### [2] HVALS
+```bash
+HVALS [KEY]
 ```
+- O(N)
+- Hash에 저장되어있는 모든 value를 가져온더.
 
-## HLEN
-- Hash의 길이를 보여준다.
-- field의 길이이다.
-- O(1)이다.
-```shell
-HLEN KEY
-
-> hlen user
-(integer)2
+### [3] HGETALL
+```bash
+HGETALL [KEY]
 ```
-
-
-## HDEL
-- Hash에서 데이터를 삭제하는 방법이다.
-- 삭제된 Field:Value 쌍의 개수를 리턴한다.
-```shell
-HDEL KEY ...FIELDS
-
-> hdel user firstName lastName
-(integer) 2
-```
-
-## HEXISTS
-- Field값이 있는지 확인한다.
-- 한개밖에 확인을 못하는 한계를 가지고있다.
-  - HMGET을 통해서 사용하는 편이 더 좋다.
-    - Field값에 해당하는 Value값이 없으면 nil이 뜨기 떄문이다.
-- 존재하면 1, 존재하지 않으면 0을 리턴한다.
-```shell
-HEXISTS KEY FIELD
-
-> hexists user firstName
-(integer)1
-
-> hexists user firstName1
-(integer)0
-```
-
-## HKEYS
-- Field의 값들을 모두 가져오는 것이다.
-- HGETALL에서 value가 사라진 것이라고 보면 된다.
-```shell
-HKEYS KEY
-
-> hkeys user 
-1) firstName
-2) lastName
-```
-
-## HVALS
-- Value 값을 모두 가져오는 것이다.
-- HGETALL에서 field가 사라진 것이라고 보면된다.
-```shell
-HVALS KEY
-
-> hvals user
-
-1) "Taejun"
-2) "Kim"
-```
-
-## HINCRBY
-- Hash의 Value값을 증가시키는 명령어이다.
-- 숫자형의 증가가 가능하다.
-  - 음수도 가능하다.
-```shell
-HINCRBY KEY FIELD COUNT
-
-> hincrby user age 1
-> (integer)25
-```
-
-### HINCRBYFLOAT
-- HINCR의 실수형 버전이다.
-```shell
-HINCRBYFLOAT KEY FIELD COUNT
-
-> hincrbyfloat user commission 0.25
-> "1.25"
-```
+- O(N)
+- Hash에 저장되어있는 모든 field-value 쌍을 가져온다. (HKEYS + HVALS)

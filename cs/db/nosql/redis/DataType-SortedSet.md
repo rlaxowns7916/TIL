@@ -1,171 +1,90 @@
-# DataType-SortedSet
-- Set과 Hash가 합쳐진 구조이다.
-  - SkipList + HashTable
-  - Set이기 떄문에 중복을 허용하지 않는다.
-    - 중복된 요소를 Insert 할시에, Score만 업데이트 된다.
-    - Return이 (integer)0 이기 때문에, Update 안된 것으로 생각 할 수도 있다.
-  - Hash처럼, 여러가지의 Element를 저장 할 수 있다.
-- Element 추가와, 정렬된 Element를 가져오는 것에 있어서 좋은 성능을 보인다.
-- **여러가지 Membe Field와, 숫자 Field인 Score를 가진다.**
-  - Score에 따라서 정렬된다.
-    - Score가 같다면, Member의 사전순으로 오름차순(ZRANGE) 혹은 내림차순(ZREVRANGE) 정렬된다.
+# SortedSet
+- prefix는 z
+- set에 정렬이가능한 score를 추가한 것
+  - 기본적으로 Score 내림차순이다.
+  - score가 동일하다면, key값에 따라서 “사전순”으로 정렬된다.
+- RankingBoard, RateLimiter등에 사용 가능하다.
+- SkipList와 HashTable로 구성되어있다.
+- 대부분의 연산이 수행되는데 O(logN)의 시간복잡도를 가진다.
 
-## ZADD
-- SortedSet에 Data를 추가하는 것이다.
-- Return 값은 저장한 Element의 갯수이다.
-- 옵션
-  - XX: Update (있을 때만)
-  - NX: 새롭게 Insert (없을 때만)
-  - LT: 새롭게 정의한 Score가 기존에 존재하던 Score보다 낮을 때만 Update
-  - GT: 새롭게 정의한 Score가 기존에 존재하던 Score보다 높을 때만 Update
-  - CH: Return값을 새롭게 Insert된 Element의 갯수에서, Update된 Element의 갯수로 변경한다.
-  - INCR: Score를 증가시킨다.
-- GT, LT, NX는 함께 사용할 수 없다.
-```shell
-ZADD KEY [NX | XX]  [GT | LT] [CH] [INCR] ... SCORE MEMBER
+## 주요 Command
 
-> zadd user:follower 10 kim 20 lee
-(integer) 2
-
-> zadd user:follwer ch 10 kim 20 lee 30 choi
-(integer)2
-
-# incr은 해당 값만큼 Score를 올린 후의 값을 리턴해준다.
->zadd user:follower ch incr 30 kim
-(integer)40
+### [1] ZADD
+```bash
+ZADD [KEY] [SCORE][MEMBER]
 ```
+- O(logN)
+- SortedSet에 Member를 추가한다.
 
-
-## ZRANGE
-- SortedSet에서 Element를 가져오는 방법이다.
-- START, STOP은 LRAGNE와 같다. (0은 왼쪽부터, -1은 오른쪽부터)
-- 범위에 대한 표현식이 존재한다.
-  - default: 포함
-  - [: 필수
-  - (: 제외
-- 옵션
-  - REV: 역순 조회
-  - BYSCORE: Score를 조회조건으로 사용한다.
-  - BYLEX: Member를 조회조건으로 사용한다.
-  - LIMIT: 가져올 갯수를 제한한다.
-  - WITHSCORES: 리턴에 Score도 추가한다.
-
-```shell
-ZRANGE KEY START STOP [BYSCORE | BYLEX] [REV] [LIMIT offset count] [WITHSCORES]
-
-# SortedSet의 모든 요소 (index 0 ~ index -1) Score와 함께 가져오기 (오름차순)
-> zrange user:follower 0 -1 withscores
-...
-
-# SortedSet의 모든 요소 역순으로 (index 0 ~ index -1) Score와 함께 가져오기 (내림차)
-> zrange user:follower 0 -1 withscores rev
-...
-
-# Member -> 100 <= SCORE <= 1000
-> zrange user:follower 100 1000 BYSCORE
-...
-
-# Member -> 100 < SCORE < 1000
-> zrange user:followe (100 (1000 BYSCORE
-...
-
-# Member -> choi= MEMBER <=kim
-# Member는 사전순이다.
-> zrange user:follower [kim [choi bylex
-1)choi
-2)lee
-3)kim
+### [2] ZRANGE
+```bash
+ZRANGE [KEY] [START] [STOP] {OPTIONS}
 ```
+- O(log(N)+M)
+- 기본적으로 Score를 기준으로 오름차순으로 정렬되어있다.
+- START와 STOP은 Index를 나타낸다.
+  - ‘[’  : 포함 (default)
+  - ‘(‘: 미포함
+- -1은 END부터 첫번째 요소를 나타낸다.
+  - ZRANGE [KEY] 0 -1 은 전체요소를 나타낸다.
+- OPTIONS
+  - WITHSCORES: 점수도 함께 출력
+  - REV: 내림차순으로 출력
+  - BYSCORE: 점수를 기준으로 조회
+    - O(logN)
+  - BYLEX: lexicographical의 약자, Value를 사전순으로 정렬한다
+    - 정렬 시, Score는 무시된다.
+    - O(logN+M)
+      - N: 정렬해야 할 요소들의 수
+      - M: 반환하는 요소들의 수
+  - LIMIT OFFSET COUNT
+    - offset 부터 시작하여 count 갯수를 가져온다.
 
-## ZREVRANGE
-- ZRANGE의 역순이다.
-  - ZRNAGE에 REV 옵션을 주는 것과 동일하다.
-- Default는 Score를 기준으로 내림차순 하는 것이다.
-```shell
-ZREVNRANGE KEY START STOP [WITHSCORES]
-
-# SortedSet의 모든 요소 (index 0 ~ index -1) Score와 함께 가져오기 (내림차순)
-> zrevrange user:follower 0 -1 withscores
+### [3] ZINCRBY
+```bash
+ZINCRBY [KEY] [SCORE] [MEMBER]
 ```
+- Score를 증가시킨다.
+- 값이 존재하지 않는다면, 0.0을 기준으로 증가시킨다. (새롭게 Insert)
 
-## ZRANGEBYSCOORE
-- Score의 범위를 통해서 내림차순으로 Element를 가져온다.
-- ZREVRANGEBYSCORE를 통해서, 오름차순으로 Elemet를 가져올 수 있다.
-- Min<= score <= MAX 이다.
-  - -INF, +INF를 통해서 무한대를 지정 할 수 있다.
-```shell
-ZRANGEBYSCORE KEY MIN MAX [WITHSCORES] [LIMIT | OFFSET]
-
-> ZRANGEBYSCORE user:score 10 20
-
-1) "kim"
-2) "lee"
-
-ZREVRANGEBYSCORe KEY MAX MIN [WITHSCORES] [LIMIT | OFFSET]
-> ZREVRANGEBYSCORE user:score 20 10
-
-1) "lee"
-2) "kim"
+### [4] ZRANK
+```bash
+ZRANK [KEY] [MEMBER] {WITHSCORE}
 ```
+- O(logN)
+- 순위를 가지고온다.
+  - 순위는 0부터 시작한다.
+- 없으면 nil이 뜬다.
+- 반대 명령어는 **ZREVRANK** 이다.
 
-
-## ZINCRBY
-- atomic한 연산이다.
-- member의 Score를 올려주는 것이다.
-  - **증가 시킨 최종적인 값이 리턴된다.**
-- **존재하지 않는 Member에 대한 Operation 수행 시, 새롭게 Member가 추가된다.**
-- 양수, 음수 둘다 가능하다.
-  - ZDECRBY 같은건 없다.
-```shell
-ZINCRBY KEY INCREMENT MEMBER
-
-# John의 Score를 30 증가
-> ZINCRBY user:follower 30 john
+### [5] ZREM
+```bash
+ZREM [KEY] [...MEMBERS]
 ```
+- O(M * logN)
+  - 하나를 삭제하는데 O(logN)의 시간이 걸리고, 삭제할 갯수 M을 곱한만큼 걸린다.
 
-## ZRANK
-- Member의 Rank를 알려준다.
-- **Rank는 0부터 시작하며, Score가 높을수록 높은 Rank를 가진다.**
-```shell
-ZRANK key member
-
-
-> zrange city 0 -1 withscores
-1) "New Delhi"
-2) (integer) 50
-3) "Seoul"
-4) (integer) 60
-5) "Beijing"
-6) (integer) 70
-7) "New York"
-8) (integer) 80
-
->zrank city "Seoul"
-(integer) 1
-zrank city "New York"
-(integer) 3
+### [6] ZREMRANGEBYSCORE
+```bash
+ZREMRANGEBYSCORE [KEY] [MIN] [MAX]
 ```
+- O(logN+M)
+- Score를 기반으로 삭제한다
+- -inf ~ inf까지 지원한다.
+  - 위 옵션 사용시 모두 지운다.
 
-## ZREVRANK
-- Member의 Rank를 **역순**으로 알려준다.
-  - Rank는 0부터 시작하며, Score가 낮을 수록 낮은 Rank를 가진다.
-```shell
-ZREVRANK key member
-
-
-> zrange city 0 -1 withscores
-1) "New Delhi"
-2) (integer) 50
-3) "Seoul"
-4) (integer) 60
-5) "Beijing"
-6) (integer )70
-7) "New York"
-8) (integer) 80
-
->zrevank city "Seoul"
-(integer) 2
-zrevrank city "New York"
-(integer) 0
+### [7] ZCARD
+```bash
+ZCARD [KEY]
 ```
+- O(1)
+- SortedSet에 존재하는 Member들의 수를 리턴한다.
+
+### [8] ZCOUNT
+```bash
+ZCOUNT [KEY] [MIN] [MAX]
+```
+- O(logN)
+- Score내에 있는 요소의 갯수를 리턴한다.
+- 오직 Score만 지원한다. (byLex는 지원하지 않는다)
   
