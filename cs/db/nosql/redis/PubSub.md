@@ -1,83 +1,83 @@
-# PubSub
-- Redis가 Channel 역할을 한다. (Broker 역할)
-- Channel에 Publish하고, Subscribe할 수 있다.
-  - 1:1관계가 아니다.
-  - 여러 Client가 Channel을 Subscribe 할 수 있다.
-- **fire & forget 방식이다.**
-  - Message를 보관하지 않는다. 
-  - Memory최적화를 하는 방식이다.
+# Redis PubSub
 
-## Subscribe
-- subscribe명령어를 통해 Channel을 구독한다.
-  - 동시에 여러개의 Channel을 구독 할 수 있다.
-- 정상적으로 subscribe되면, 프롬포트 창이 열린다.
-  - redis-cli:  ctrl + c를 통해서 나갈 수 있다.
-  - 기타 Tool: Unsubscribe 명령어를 통해서 구독취소가 가능하다.
-```shell
-SUBSCRIBE ...CHANNELS
+- 빠르고 경량화되어있다.
+- Fire & Forget
+  - 특정 Channel에 Publish하면 Subscribe하던 Consumer는 Data를 바로 소비할 수 있다.
+  - Message의 유실 가능성이 있다.
+    - Redis는 Message를 영속화 하지 않는다.
+    - Subscriber가 미작동하는 상태
+    - Publishing 패킷 유실
+    - Redis 서버 과부화 및 Buffer Overflow
+- Push 방식이다.
+  - Message가 Publish된 순서대로 Subscribe한다.
+  - 일반적으로 순서가 보장된다.
+  - Network지연, Cluster에서의 Node들간의 동기화로 인해서 순서가 알맞지 않을 수 있다.
+- Redis에 접근하는 모든 Node는 Publisher / Subscriber가 될 수 있다.
+- MetaData를 갖고있지 않다.
+  - 어떤 Subscriber가 읽어갔는지
+  - Subscriber에게 정상적으로 전달 됐는지 (ACK)
+  - Message가 언제생성되었는지
+  - 어떤 Publisher가 Message를 생성했는지
+  - …
+- KeySpace와 별도이다
+  - Key-Value 등 데이터구조와는 아무런 연관성이 없으며 서로 영향을 주지 않는다.
 
-> subscribe channel1 #channel1 구독
+## [0] Cluster구조에서의 Pub/Sub
 
-0) "subscribe" #명령어
-1) "channel1" #채널명
-2) (integer)1 #성공여부
+- Publish를 하게되면 Cluster에 속한 모든 Node에게 전달된다.
+  - 그렇기 때문에, Subscriber는 Cluster상의 아무 Node에 연결하여 처리 할 수 있다.
+  - 간단한 방법이지만, 비효율을적이다. (불필요한 리소스 사용 및 네트워크 부하)
+- Redis7.0부터 shared pub/sub을 지원한다.
+  - 각 Channel은 Slot에 매핑된다.
+  - Key가 Slot에 할당되는 것과 동일하며, 같은 Slot간에만 pub/sub을 전달한다.
 
-0) "message" #명령어
-1) "channel1" #채널명
-2) "hello" #메세지
+## [1] Command
+
+### [1] PUBLISH
+
+```
+> PUBLISH [CHANNEL] [MESSAGE]
 ```
 
-### Pattern Subscribe
-- subscribe 명령어를 통해서, 일일이 채널을 지정하는 것은 힘들 일이다.
-- psubscribe를 통해서, 패턴에 알맞은 채널을 구독할 수 있게 된다.
-  - 패턴에 알맞기만 하다면, 새롭게 채널을 추가해주지 않아도 알아서 구독된다.
-- **PatternUnsubscribe도 존재한다.**
-```shell
-PSUBSCRIBE ...PATTERNS
+- 특정 Channel에 Message를 Publish한다.
+- 해당 Channel을 구독하던 Subscriber의 수가 리턴된다.
 
-> psubscribe news:* # news:가 Prefix인 모든 Channel을 구독하는 것이다.
-1) "psubscribe" #명령어
-2) "news:*" #구독하는 채널
-3) (integer) 1 #성공 여부
+### [2] SUBSCRIBE
 
-#------- 다른 Publisher들의 발행-------
+```
+> SUBSCRIBE [...CHANNELS]
 
-1)"pmessage" # 패턴에 맞는 Topic의 Message
-2) "news*" #패턴
-3) "news:politics" #채널 명
-4) "today politics" #Message
+1) "subscribe"
+2) "event1"
+3) (integer) 1
+1) "subscribe"
+2) "event2"
+3) (integer) 2
 ```
 
-## Publish
-- publish명령어를 통해서 Channel에 Message를 발행한다.
-- **리턴값은 Message 구독에 성공한 Client의 수이다.**
-```shell
-PUBLISH CHANNEL MESSAGE
+- 동시에 여러개의 Channel을 subscribe 할 수 있다.
+- Subscribe를 수행하여 구독자가 되면 pub-sub이외의 Command들은 수행할 수 없다.
+  - SUBSCRIBE
+  - SSUBSCRIBE
+  - SUNSUBSCRIBE
+  - PSUBSCRIBE
+  - UNSUBSCRIBE
+  - PING
+  - RESET
+    QUIT
+- 3개의 리턴 값을 가진다.
+  - MessageType
+  - 채널이름
+  - 구독중인 Channel의 수
 
-> publish channel1 hello
-(integer) 1
+### [3] PSUBSCRIBE
+
+```
+> PSUBSCRIBE mail-*
+
+1)"psubscribe"
+2) "mail-*"
+3) (integer) 1
 ```
 
-
-## PUBSUB
-
-### PUBSUB CHANNELS
-- 활성화된 채널리스트를 리턴한다.
-- 하나이상의 구독자가 있는 채널을 리턴한다.
-- 없으면 (empty array)를 리턴한다.
-```shell
-PUBSUB CHANNELS [PATTERN]
-
-> pubsub channels *
-1) "active:channel"
-```
-
-### PUBSUB NUMSUB CHANNEL
-- 활성화된 구독자 수를 리턴한다.
-```shell
-PUBSUB NUMBSUB CHANNEL
-
-> pubsub numsub "active:channel"
-1) "active:channel" # 채널 명
-2) (integer) 2 # 활성 구독자 수
-```
+- 패턴을 통해서 여러 Channel을 subscribe 하는 것이다.
