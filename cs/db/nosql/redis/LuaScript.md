@@ -31,6 +31,7 @@ Sandboxed LuaScript
    - Lua모듈을 가져오는 것(require)은 제한된다.
 ```
 
+
 ## Lua가 제공해줄 수 있는 이점
 
 - 지역성을 제공하기 떄문에, 전체 대기 시간을 줄이고 네트워킹 리소스를 절약한다.
@@ -80,9 +81,9 @@ KEYS와 ARGV 변수를 넘기기 이전에 존재하는 숫자는 KEYS배열의 
 
 ### 사용예시 (Redisson)
 - tryLock
-
-- Hash 자료구조 사용
-    - LockKey가 존재하지 않음(최초진입)  OR Hash내에 Value가 존재 (Reentrant) 할 때만
+  - <img width="998" alt="스크린샷 2023-11-26 오후 3 29 36" src="https://github.com/ktj1997/TIL/assets/57896918/d8dc99d5-282e-40de-8542-c691a4a4de3a">
+  - Hash 자료구조 사용
+      - LockKey가 존재하지 않음(최초진입)  OR Hash내에 Value가 존재 (Reentrant) 할 때만
         - hincrby → Reentrant Count 증가
         - Expire지정
         - Lock을 정상적으로 설정했다면 nil리리턴
@@ -90,6 +91,7 @@ KEYS와 ARGV 변수를 넘기기 이전에 존재하는 숫자는 KEYS배열의 
     - Lock을 얻지못했다면, Lock의 남은 만료시간을 조회
 
 - unLock
+    - <img width="565" alt="스크린샷 2023-11-26 오후 4 21 35" src="https://github.com/ktj1997/TIL/assets/57896918/dce48450-9cd5-4bf5-bfcd-d2733db19144">
     - key가 존재하지 않거나, hash에도 존재하지 않으면 그대로 리턴
     - LockCount—
     - LockCount가 0보다 크다면,
