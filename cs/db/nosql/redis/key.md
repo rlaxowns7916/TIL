@@ -5,6 +5,16 @@
 - 40 밀리 세컨드 안에, 100만개의 Key를 탐색 가능하다.
 - Bucket 기반의 Chained-LinkedList 이다.
 
+### Key Eviction Policy
+- 설정해 둔 max-memory에 근접해지면 설정에 따라서 Key를 제거한다.
+- 6가지 정책이 있다.
+  1. volatile-lru: 설정된 TTL을 가진 Key중에서, 가장 최근에 사용되지 않은 Key를 제거한다.
+  2. allkeys-lru: 모든 Key중에서, 최근에 사용되지 않은 Key를 제거한다.
+  3. volatile-random: TTL을 가진 Key중에 무작위로 제거한다.
+  4. allkeys-random: 모든 Key중에서 무작위로 제거한다.
+  5. volatile-ttl: TTL이 가장 짧은 Key를 우선적으로 제거한다.
+  6. noeviction: Memory가 꽉차면 Write작업을 더 이상 수행하지 않는다.
+
 ## 명령어
 
 ### TYPE
@@ -32,11 +42,9 @@ zset # SortedSet
 - Key가 존재하는지 확인하는 방법
 - 단건 조회, 다건 조회 모두 가능하다.
 - 리턴값은 존재하는 Key의 개수이다.
-
 ```shell
 $ exists [Key]
 ```
-
 
 ### TTL
 - 만료 옵션이 존재하는 Key의 남은 시간 체크
@@ -64,6 +72,14 @@ $ expire [key] [Second]
 $ pexpire [Key] [MilliSecond]
 ```
 
+### Key가 Expire 된후 실제 Memory에서 살아지는 시점
+- 실제 Memory해제는 즉각적으로 발생하지 않는다.
+- 아래의 2가지 경우에 해제가 발생한다.
+  1. Active Expiration (능동만료)
+     - 주기적으로 Expire된 Key를 샘플링한다.
+     - 이 때, 샘플링에 포함하면 Memory에서 해제된다.
+  2. Lazy Expiration (지연만료)
+     - Client가 Expire된 Key에 접근하면 Memory에서 해제한다.
 ### PERSIST
 - 만료 옵션이 지정되있는 Key를 영구보관으로 바꾼다.
   - 만료옵션을 제거한다.
