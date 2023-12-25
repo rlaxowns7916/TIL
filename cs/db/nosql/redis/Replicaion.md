@@ -13,10 +13,11 @@
 - RDB는 Replicaion과정에서 주로 사용되지만, AOF는 사용되지 않는다.
   - RDB옵션을 꺼두어도, Replicaion이 Enable되있으면 RDB저장이 수행된다.
     - 영속성과 별개로, 복제를 위해서 사용된다.
+  - RDB 옵션을 통한 fork() & COW로 인해서, 과도한 Replica연결은 장애를 유발 할 수 있다.
+    - Replica Node를 연결 할 때, 한개씩 순차적으로 접근하는 것이 좋다.
   - diskless옵션을 키면 RDB가 저장되지 않는다.
 
 ### 복제 Case
-
 ```bash
 (1) Master와 Replica가 잘 연결되어 있을 때 - ReplicaionBuffer를 이용한 명령어 전달
 (2) Master와 Replica의 연결이 끊어졌을 때  - 부분 재동기화 시도
@@ -24,22 +25,20 @@
 ```
 
 ### 부분 재동기화
-
 - 연결이 끊어질 때마다 매번 RDB 스냅샷 파일을 전송하는 것은 매우 비효율적이다.
 - Master는 Connection 유실에 대비하여, BacklogBuffer라는 메모리공간을 둔다.
     - 이 곳에는, Replica에 전달할  Command들을 저장해둔다.
     - BacklogBuffer Size에 대한 설증은 redis.conf에서 구성가능하다.
+- 계속해서 업데이트 된다.(Master와의 연결이 끊어짐 시점부터 기록하는 것이 아니다)
 - ReplicaNode는 재연결이 되었을 때, MasterNode에게 자신의 ReplicaionId와 Offset을 전달한다.
 - 충분한 Backlog가 없거나, 알 수 없는 ReplicaionId를 참조하는 경우 재동기화가 발생한다.
 
 ### 전체 재동기화
-
 1. RDB 스냅샷 생성: 전체 재동기화 과정의 첫 단계로, 마스터 인스턴스는 자신의 전체 데이터셋에 대한 스냅샷을 생성한다.
 2.  RDB 스냅샷 전송: 생성된 스냅샷은 복제 인스턴스로 전송한다. 네트워크 대역폭과 데이터 크기에 따라 시간이 소요될 수 있다.
 3. 명령어 스트림 전송 재개: 스냅샷 전송 후, 마스터 인스턴스는 복제 인스턴스에 데이터셋 변경 사항을 반영하는 명령어 스트림의 전송을 재개한다.
 
 ### Command
-
 ```bash
 # 복제 프로세스 시작
 REPLICAOF <master-ip> <master-port>
@@ -59,7 +58,6 @@ CONFIG REWRITE
     - CONFIG REWRITE를 통해서, 설정을 적용시킨다.
 
 ### 과정
-
 ```
 (1) REPLICAOF를 통해서, 복제 연결을 시도한다.
 (2) MasterNode에서는, fork()를 통해서 자식 Process를 생헝 한 후 RDB Snapshot을 생성한다
@@ -69,7 +67,6 @@ CONFIG REWRITE
 (6) Replica에 저장되어있던 모든 내용을 삭제한 후, RDB파일을 이용하여 데이터를 로딩한다.
 (7) Replica과정동안 Buffering됐던 데이터를 Replica에 전달하여 수행시킨다.
 ```
-
 - RDB Snapshot은 Redis 전체의 복사본이다.
 - RDB와 ReplicaionBuffer 두가지 방법을 사용하는 이유는 효율성 + 일관성의 목적이다.
     - RDB: 초기 DataSet을 제공하기 위해서 사용된다.
@@ -77,7 +74,9 @@ CONFIG REWRITE
 
 
 ### 비동기 (기본)
-
+- Replicaion Lag이 발생할 수 있다.
+  - Lag이 벌어지는 경우, Replica가 Master와 연결을 끊고, 다시 연결을 요청한다.
+  - 이 때 부하가 발생한다. (전체 재동기화)
 - 유실이 발생할 수 있다
     - Client와 Master간의 Command 및 응답이 선행된다.
     - 그 이후에 Master와 ReplicaNode간의 통신이 수행된다.
@@ -85,7 +84,6 @@ CONFIG REWRITE
 - Replica 속도가 굉장히 빠르기 떄문에, 유실이 빈번하게 발생하지는 않는다.
 
 ### 동기
-
 - WAIT명령을 수행한다.
     - 지정된 수의 Replica가 Write명령을 받을 때 까지 대기한다.
 - 데이터의 내구성은 향상시키지만, 성능을 저하시키게된다.
@@ -94,7 +92,6 @@ CONFIG REWRITE
     - 장애발생 및 설정에 따라서 달라질 수 있기 떄문이다.
 
 ### Replicaion ID
-
 ```
 > INFO Replication
 
@@ -133,7 +130,6 @@ repl_backlog_first_byte_offset:0
 repl_backlog_histlen:0
 
 ```
-
 - RandomString값을 가지며, Offset과 쌍으로 유지된다.
 - ReplicaionId가 같다는 것은 같은 DataSet을 구성하고 있다는 것을 의미한다.
     - ReplicaNode는 ReplicaitonConnection이 맺어지면 Master의 ReplicaionId를 상속받는다.
@@ -147,7 +143,6 @@ repl_backlog_histlen:0
     - 단순히 Network문제로 인해서, 승격이 결정되고 이전 Master가 그대로 동작하고있다면 같은 DataSet을 가지고있다는 사실을 위반하게된다.
 
 ### Replica에서의 Expire
-
 - ReplicaNode는 스스로 Key를 Expire시키지 않는다.
     - MasterNode가 Key를 만료시키거나, LRU를 통해서 제거될 때 까지 기다린다.
     - Master는 Expire가 된다면 ReplicaNode에게 DEL명령을 전달한다.
