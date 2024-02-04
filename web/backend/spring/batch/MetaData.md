@@ -28,3 +28,7 @@
 ## [6] BATCH_STEP_EXECUTION_CONTEXT
 - Step의 실행동안 여러가지 상태정보, 공유 데이터를 직렬화(Json) 하여 저장
 - Step 별로 저장되며, Step간 서로 공유 할 수 없음
+
+
+---
+![스크린샷 2024-02-04 오후 11 15 48(2)](https://github.com/ktj1997/TIL/assets/57896918/a73c3c34-a743-435b-a9cd-ff16dae48404)
