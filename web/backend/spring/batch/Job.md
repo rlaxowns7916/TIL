@@ -6,10 +6,24 @@
 - 명세서 혹은 설계도 라고 볼 수 있다.
 
 ## 구현체
+```java
+    /**
+      * JobBuilder 내부 코드
+      */
+    public SimpleJobBuilder start(Step step) {
+        return (new SimpleJobBuilder(this)).start(step);
+    }
+
+    public JobFlowBuilder start(Flow flow) {
+        return (new FlowJobBuilder(this)).start(flow);
+    }
+```
 ### [1] SimpleJob
 - 순차적으로 Step을 실행시킬 수 있는 Job
 - 모든 Job에서 유용하게 사용할 수 있는 표준 기능을 가지고 있음
 - 내부적으로 Step들을 List로 관리한다.
+- JobBuilder에서 start(step)메소드 호출 시, SimpleJobBuilder가 내부적으로 생서된다.
+- SimpleJobBuilder 인자 이후에, FlowJob연산 (on, ...)을 사용하면 자동으로 FlowJob으로 변경된다.
 
 ### [2] FlowJob
 - 특정한 조건의 흐름에 따라 Step을 구성하고 실행시킨다.
@@ -18,6 +32,7 @@
   - 반복
 - Flow객체를 실행시켜서 작업을 수행한다.
   - Decider라는 객체를 통해서, Step실행 후의 상태를 평가하고 다음에 어떤 Step이나 Flow를 수행할지 판단한다.
+- JobBuilder에서 flow(step)메소드 호출 시, FlowJobBuilder가 내부적으로 생서된다.
 
 
 ## 실행흐름
@@ -49,6 +64,7 @@
 - job을 실행시킨다.
 - Job과, JobParameters를 인자로 받는다.
 - SpringBoot에서는 자동 실행이 옵션으로 되어있다.
+  - JobLauncherApplictionRunner가 자동으로 실행시킨다. 
   - 아래의 설정을 통해 자동실행을 막을 수 있다.
   - ```yaml
       spring:
@@ -56,6 +72,21 @@
             job:
               enabled: false
     ```
+- 배치 작업 수행 후, Client에게 JobExecution을 반환한다.
+
+
+### 동기 / 비동기 실행
+1. 동기적 실행
+  - TaskExecutor를 SyncTaskExecutor로 사용할 경우 (기본 값)
+  - Batch처리가 길어도 상관없는 경우에 주로 사용한다.
+  - JobExecution을 획득 한 후, Batch처리를 최종 완료 한 후 Client에게 반환한다.
+    - EXIT_STATUS는 FINISHED || FAILED이다.
+2. 비동기적 실행
+   - TaskExecutor를 SimpleAsyncTaskExecutor로 사용할 경우
+   - JobExecution을 획득 한 후, 바로 Client에게 반환하며, 그 이후 Batch작업을 수행한다.
+     - EXIT_STATUS는 UNKNOWN이다.
+   - HTTP 요청에 의한 Batch 처리에 적합하다.
+
 ---
 ## JobParameters
 - Job을 실행할 때, 함께 포함되어 사용되는 Parameter를 가진 도메인 객체
@@ -125,6 +156,7 @@
 - 배치 작업 중, 정보를 저장하는 저장소 역할
 - Job이 언제 수행되었고, 언제 끝났고, 몇번 실행되었는지 등의 MetaDat를 저장한다.
 - JobLauncher, Job, Step 구현체 내부에서 CRUD를 처리한다.
+- MetaData 연동에필요한 여러가지 Dao들을 모두 가지고있다.
 
 ## JobRepository 설정
 - BatchConfigurer나, BasicBatchConfigurer를 상속해서 JobRepository 설정을 커스터 마이징 가능하다.
@@ -136,7 +168,9 @@
   - 성능 등의 이유로 Database에 저장하기 싫은 경우 사용
   - 보통 Test나, Prototype 개발이 필요할 때 사용
   - ResourcelessTransactionManger를 사용하면 된다. (DataSource를 비워주면 자동으로 설정된다.)
-
+- Custom
+  - BasicBatchConfigurer 상속
+  - createJobRepository 오버라이드
 
 ## MetaData 사용하지 않기
 ```java
@@ -171,3 +205,5 @@
         }
     }
 ```
+
+---
