@@ -1,6 +1,17 @@
+# With
+- 임시테이블을 생성한다.
+- mysql 8.0 이전버전에서는 동작하지 않는다.
+```sql
+WITH [Table 명] AS (
+    SELECT [Column 명]
+    FROM [Table 명]
+    ...
+)
+```
+
 # With Recursive
 - 반복적인 작업을 하는 구문이다.
-- 임시적인 Table을 생성해 낸다.ㄷ
+- 임시적인 Table을 생성해 낸다.
 
 ## [1] 문법
 ```mysql

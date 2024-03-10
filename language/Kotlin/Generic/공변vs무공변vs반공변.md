@@ -66,10 +66,13 @@ fun main(){
 
 # 공변(Covariant)
 - 상위 - 하위 Type의 관계(상속)이 Generic 까지 연장되는 것을 의미한다.
-- 읽기전용이다
-- 무공변 한 것은, Variance Annotation을 통해서 공변으로 변경 할 수 있다.
-  - out (Kotlin)
-  - extends (Java)
+- 읽기전용이다.
+  - 내부적으로 저장을 하고 다시 읽을 수 있다.
+    - List<out T>
+    - Producer<out T>
+- 무공변 한 것은, Variance Annot*ation을 통해서 공변으로 변경 할 수 있다.
+  - \<out T>(Kotlin)
+  - \<extends T>(Java)
 
 ## 공변: 하위 Type -> 상위 Type (out)
 ```kotlin
@@ -96,12 +99,15 @@ class Cage<T>{
 
 # 반공변
 - 공변의 반대이다.
-- 쓰기전용이다.
+- 쓰기전용이다. (소비자)
+  - 내부적으로 제네릭을 받아, 비교하거나 연산을 수행할 수 있다.
+    - Comparator<in T>
+    - Consumer <in T>
 - 하위 - 상위 Type의 관계가 Generic까지 연장되는 것을 의미한다.
 - 하위 Type Generic에, 상위 Type을 집어 넣는 것이다.
 - 무공변 한 것은, Variance Annotation을 통해서 공변으로 변경 할 수 있다.
-  - in (Kotlin)
-  - super (Java)
+  - \<in T>(Kotlin)
+  - \<? super T>(Java)
 
 
 ## 반공변: 상위 Type -> 하위 Type (in)

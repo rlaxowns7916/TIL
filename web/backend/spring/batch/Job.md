@@ -119,6 +119,7 @@
 ## JobExecution
 - JobInstance에 대한 한번의 시도를 의미한다.
   - Job실행 중에 발생한 정보들을 저장하고 있다.
+- 내부적으로 StepExecution List를 가진다.
 - JobInstance의 상태에 따라서 재실행 여부가 결정된다.
   - FAILED이면 재실행이 가능하다.
   - COMPLETED이면 완료된 것으로 간주되어 재실행이 불가능하다.
