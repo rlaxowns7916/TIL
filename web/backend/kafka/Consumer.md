@@ -126,3 +126,21 @@
     - default는 300000ms이다
 12. isolation.level
     - Producer가 Record를 트랜잭션 단위로 보낼 때 사용한다.
+
+
+### spring-kafka에서의 Gracefully Shutdown
+```yml
+# 즉시 종료에 대한 여부
+spring.kafka.listener.immediate-stop: true
+
+# SpringApplication을 종료할 때 Timeout 시간
+spring.lifecycle.timeout-per-shutdown-phase: 30s
+```
+- 내부적으로 shutdownHook & wakeUp을 사용한다.
+  - consumer의 wakeUp을 사용하여, Exception을 발생 시킨 후, 현재 Consume중인 Message의 Offset을 Commit한다.
+- true라면 지금 처리중인 Message만 처리 후, 종료한다.
+  - SIGTERM, SIGINT와 같은 정상적인 종로 로직에서만 기대하는바를 이룰 수 있다.
+  - OOM  같은 비정상종료때는 기대하는바를 얻지 못힐 수 있다.
+- false(default) 라면 poll()한 모든 Message를 처리 후 종료한다.
+  - AckMode가 Batch이고, 가져온 Record의 갯수가 많을 경우, Offset Commit에 실패할 수 있다.
+    - spring.lifecycle.timeout-per-shutdown-phase보다 오래걸릴 경우에 해당된다.
