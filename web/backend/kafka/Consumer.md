@@ -10,6 +10,13 @@
   - Consumer의 갯수가 Partition의 갯수보다 크다면 특정 Consumer는 놀고있을 수 있다.
 - Commited된 Record만 Read 할 수 있다.
 - **ThreadSafe하지 않기떄문에, MultiThread로 구성해서는 안된다.**
+  - MultiThreadConsumer를 지원한다.
+
+### TransactionConsumer
+- TransactionProducer가 여러 Partition에 전송한 Record 및 TransactionMessage를 보고 동작한다.
+- Transaction Message(Commit)이 있을 때 까지 읽고, 없으면 대기한다.
+  - IsolationLevel이 READ_COMMITED일 때 이다.
+  - READ_UNCOMIITED라면, TransacitonMessage가 없어도 다 읽어간다.
 
 ### ConsumerGroup
 - 동일한 group.id로 구성된 Consumer들이다.
@@ -127,6 +134,17 @@
 12. isolation.level
     - Producer가 Record를 트랜잭션 단위로 보낼 때 사용한다.
 
+### Consumer Lag
+- 필수적으로 모니터링 해야 할 지표이다
+  - 지연 여부를 파악하여, 적절한 Consumer 및 Partition 갯수를 설정 가능하다.
+  - Partition에 이슈가 생겨서 특정 Broker에만 Lag이걸리는 것으로 판단이 가능하다.
+- Partition의 최신 Offset(Log-End-Offset)과, Consumer의 현재 Offset(Current-Offset)사이의 차이를 나타낸다.
+    - ConsumerGruop-Topic, Partition 단위로 생성된다.
+      - ex) 1개의 Topic, 1개의 ConsumerGroup, 3개의 Partiton == > 3개의 ConsumerLag
+### MultiThreadConsumer
+- 기본적으로 1Consumer - 1Thread가 원칙이지만, MultiThreadConsumer를 사용할 수 있는 기능을 지원한다.
+- 적절한 Thread 장애에 대한 예외처리가 필요하다.
+  - 기본적으로는 여러 Process를 통해서 Partition에 대한 Consume을 수행하지만, 하나의 Process에서 여러 Thread를 통해서 Partition에 대한 Consume을 수행하기 때문이다.
 
 ### spring-kafka에서의 Gracefully Shutdown
 ```yml

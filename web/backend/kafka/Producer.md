@@ -23,25 +23,40 @@
 ## [2] 종류
 
 ## Transaction Producer
-- 한번의 로직으로 atomic하게 여러 Partition에 모두 데이터를 저장해야 하는 경우가 있다.
-- Partition에 데이터를 기록 할 때, 부가적으로 Commit 여부를 함께 기록한다.
+- 다수의 Data를 하나의 Transaction으로 묶어, Atomic하게 처리하는 것을 의미한다.
+- 사용자가 보낸 Record를 저장할 뿐만 아니라, Transaction의 시작과 끝을 알리는 Record 또한 전송한다.
+- Producer별로, 고유한 ID값을 사용해야한다. 
+  - init -> begin -> commit 순서대로 동작한다.
+```java
+class Example{
+    public static void main(String[] args) {
+        configs,put(ProducerConfig.TRANSACTIONAL_ID_CONFIG, UUID.randomUUID());
+        Producer<String,String> producer =new kafkaProducer<>(configs);
 
-### 과정
-1. Partitioner를 통해서 어느 Partition으로 보낼지 결정한다.
-    - key가 있으면 Hash, 없으면 RoundRobin
-    - Custom Partitioner도 생성 가능하다.
-    - Partition 추가를 신중하게 고려해야 하는 이유는 Partition 추가 시에, Key값에 따른 Hash가 깨지기 때문에
-      이전의 Key와 파티션과의 매칭의 동일성을 보장 할 수 없기 때문이다. (Global Relocation)
-2. Compress(Optional)을 통해서 Message를 압축한다.
-    - 권장하는 추세이다.
-    - CPU Usage는 늘지만, Latency를 낮추고 성능상 유리하다.
-3. RecordAccumulator에서 Message를 모아서 Batch로 전송한다.
-4. Sender가 Batch단위로 모은 Message를 전송한다.
+        producer.initTransactions();
 
+        producer.beginTransaction();
+        for (int i = 0; i < 100; i++){
+            producer.send(new ProducerRecord<>("my-topic", Integer.toString(i),Integer.toString(i)));
+        }   
+    }
+}
+```
 
 ## Idempotent Producer
-- 중복 메세지 전송이나, 메세지 순서변경과 같은 일을 방지하기 위해서 있는 Producer이다.
+- Exactly-Once-Delivery(정확하게 1번) 를 지원한다. (default: false, Kafka 3.0.0 부터는 true)
+  - **true로 변경 시, acks=all로 변경된다.**
+  - enable.idempotence=true로 설정한다. 
+- 제한적으로나마 중복 메세지 전송이나 메세지 순서변경과 같은 일을 방지하기 위해서 있는 Producer이다.
+  - Partition 마다 생성된다. 
   - Network오류로 인해서 Message의 중복발송이나, 순서가 변경되는 것을 방지 할 수 있다.
+- 여러번 전송하더라도, KafkaCluster에서는 단 한번만 저장된다.
+- 데이터를 Broker로 전달 할 때, PID(Producer 고유 ID)와 SID(Record Id)를 전달한다.
+  - PID는 동일한 Session에서만 유효하다.
+    - 즉, Producer가 새롭게시작된다면 의미없다.
+  - SID는 순서를 의미하는데, 순서가 역전되거나 꼬이는 현상이 있으면 OutOfOrderSequenceException이 발생한다.
+  - Producer의 Data가 정확하게 한번 Broker에 저장되도록 동작한다.
+  - 이미 저장되어있는 것을 또 저장하려고해도 acks를 보내준다.
 
 ### 과정
 1. 각 메시지에 고유한 일련번호(PID, Sequence Number)를 할당한다.

@@ -44,12 +44,16 @@
 
 ### Replication (Partition Replication)
 - 고가용성을 위한 방법이다.
-- Broker의 숫자보다 많이 설정 할 수 없다.
+  - 보통 상용환경에서는 Replication Factor를 2(1 복제) 혹은 3(2복제)를 준다.
+    - 신뢰성이 중요한 경우에는 3, 보통인 경우에는 2이다.
+    - 1인 경우는 Log와 같은 Metric성 정보일 때 주로 사용한다.
+- Partition단위로 동작하며, Broker의 숫자보다 많이 설정 할 수 없다.
 - Follower가 Leader에게 데이터를 가져오기를 요청 (Fetch Request) 한다.
 - 미리 원본(Leader) 을 복사한 복제본(Follower)을 준비하여, 장애가 발생했을 때를 미리 대비한다.
 - Replication Factor 옵션은 n(원본 + 복제본) 이다.
-    - replication1 : 원본 1개
-    - replication2 : 원본 1개 + 복제본 1개
+  - 최댓값은 Broker 갯수이다.
+  - replication1 : 원본 1개
+  - replication2 : 원본 1개 + 복제본 1개
 - 데이터 처리속도에 따라 옵션을 결정하는 것이 좋다.
   - 1 (원본)이어도 되는경우: Metric과 같이 유실되도 되는 데이터
   - 복제를 많이 하는 경우: 금융정보 같이 유실되면 안되는 데이터
