@@ -91,6 +91,8 @@ HTTP/1.1 404 Not Found
 ### HTTP 1.0
 - 헤더가 생김
 - 여러가지 파일 타입을 전송가능 (헤더의 Content-Type)
+- 하나의 요청/응답에 Connection을 Open하고 Close했다.
+  - 매번 3-way handshake를 요구했기 때문에, 비효율적이었다.
 
 ### HTTP 1.1
 - TCP 기반
@@ -99,20 +101,22 @@ HTTP/1.1 404 Not Found
   - 이미 연결되어있는 TCP Connection을 재사용한다.
   - 오히려 성능 저하를 일으키는 경우도 있다.
   - **대량접속을 받는 서버라면 오히려 성능에 영향을 미친다.**
-- Pipelining (한번에 여러개의 요청을 같이보내고 순서에맞춰 응답여러개를 받음)
-  - HeadOfLine: 첫번째 순서의 요청이 오래걸리면 그 뒤의 것들이 실행되지못함
-  - Header구조의 중복
-
+  - 명시적으로 닫을 수 있다.
+- Pipelining 
+  - 여러개의 요청을 순차적으로 보내고 순서에맞춰 응답여러개를 받음
+    - HeadOfLine(HOL): 첫번째 순서의 요청이 오래걸리면 그 뒤의 것들이 실행되지못함
+  - **기본적으로 Disable**
+    - 서버, 프록시가 제대로 지원하지 않는 경우가 많았다.
+    - HOL에 따른 Blocking이 유발하는 성능문제도 있었다.
 ### HTTP 2
 **표준의 대체가 아닌 확장**
 - 2015년에 만들어졌다.
-- TCP 기반
-- Multiplexed Stream
-  - 한 Connection으로 여러개의 Message를 순서에 상관없이 Stream(양방향 데이터 흐름)으로 주고받는다.
+- Multiplexing
+  - 한 Connection으로 여러개의 Message를 요청간에 순서에 상관없이 Stream(양방향 데이터 흐름)으로 주고받는다.
+  - **모든 요청은 고유한 StreamId가 태그로 달린다.**
   - Frame단위로 분할, 및 Binary Format
     - 이전까지는 PlainText(평문)
-  - 프레임으로 쪼개져서 병렬으로 가기 떄문에 HOL문제의 해결
-    - Binary Frame으로 전송 후 수신측에서 재조립
+    - 같은 Stream내의 Frame들은 순서가 보장된다.
   - 파싱, 전송속도의 상승
   - 오류 발생 가능성 저하
 - Stream Prioritization
@@ -121,6 +125,8 @@ HTTP/1.1 404 Not Found
   - ex) a.html에 b.css, c.js가 있으면, a.html만보내주면 다시 또 요청할테니 미리 다 보내주는 것 
 - Header Compression: 헤더의 크기를 줄여서 페이지 로드 시간 감소
   - 중복된 Header 데이터를 줄일 수 있게 되었다.
+- HeadOfLine(HOL)이 완벽하게 해소된 것은 아니다. (TCP 레벨에서의 존재)
+  - TCP의 Packet Loss가 발생하면, 후속 Packet들이 기다려야하는 문제가 있기 때문이다.
 
 ### HTTP 3
 **GOOGLE이 개발한 QUIC(Quick Udp Internet Connection) 이용**

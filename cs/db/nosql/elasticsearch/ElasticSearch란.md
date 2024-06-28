@@ -14,7 +14,7 @@
 ### Cluster
 - 고가용성을 위한 1개 이상의 Node들로 Cluster 구성이 가능하다.
 -Cluster 성능을 높이기 위해서, Node의 갯수를 늘릴 수 있다.
-  - Node의 갯수와,Clusert의 성능은 정비례하지 않는다.
+  - Node의 갯수와,Cluster의 성능은 정비례하지 않는다.
 - 어느 Node에 요청해도 같은 결과를 내려준다.
   - Clsuter기 떄문에 한몸처럼 동작하기 때문이다.
   - 하지만, Node끼리 통신하는데에도 네트워크 비용이 들기때문에, 불필요한 노드에 직접 접근을 차단하는 방법을 고려하는 것이 좋다.
@@ -53,9 +53,10 @@
 - Index에 색인된 문서가 저장되는 공간이다.
   - index에 색인된 문서들이 저장되는 물리적인 공간
 **하나의 Index는 반드시 하나이상의 Shard를 가진다.**
-- Index를 생성 할 때 설정 가능하다.
+- Index를 생성 할 때 Primary Shard의 갯수 설정이 가능하다.
   - **생성시점 이후에는 PrimaryShard의 개수를 변경할 수 없다.**
     - 재색인을 수행해도 PrimaryShard의 개수를 변경 할 수 없다.
+    - 하나의 데이터에 대한 원본이 저장되는 것으로, 하나의 데이터의 Primary shard는 1개이다.
   - Replica Shard의 갯수는 동적으로 변경 가능하다.
 - RoutingRule => 문서 Id의 % 연산을 통해서, 각 Shard에 골고루 저장된다.
   - Global Relocation 때문에, Primary Shard의 개수는 고정된다. (default: 1 => 성능에 영향을 많이 미침)
