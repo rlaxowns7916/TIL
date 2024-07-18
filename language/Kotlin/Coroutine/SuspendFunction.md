@@ -1,4 +1,5 @@
 # SuspendFunction
+- Coroutine이 중지되었다가(중지가 될 수도 있고, 안될 수도 있다.) 재개 될 수 있는 지점이다.
 - 함수앞에 suspend 키워드를 통해서 사용가능하다.
   - Coroutine 내부에서 실행 가능하다.
   - 또 다른 Suspend 함수 내에서 실행 가능하다.

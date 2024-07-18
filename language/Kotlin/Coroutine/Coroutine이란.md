@@ -5,16 +5,20 @@
 - 경량화된 동시성 (Concurrency) 기법
   - Thread와 유사하지만, Thread보다 경량화 되어있다. (light-weighted Thread)
   - **운영체제의 개입 없이, 소프트웨어 레벨로 동작한다.**
-  - **Thread를 사용하지않는다.**
+  - 동일 Thread에서 같은 Coroutine이 실행된다면, ContextSwitching이 불필요하다.
 - 가독성이 좋다.
   - callback방법이나, Promise보다 훨씬 경량화 되어있다.
-- kotlinx.coroutines 라이브러리를 사용해 Coroutine을 구현할 수 있다.
-- kotlinx.serialization 라이브러리를 사용해 객체의 Serialization, Deserialization을 구현할 수 있다.
-- kotlinx.lincheck 라이브러리를 통해 동시성 버그를 탐지하고, 디버깅 할 수 있는 환경을 제공한다.
+- 라이브러리로 존재한다.
+  - kotlinx.coroutines 라이브러리를 사용해 Coroutine을 구현할 수 있다.
+  - kotlinx.serialization 라이브러리를 사용해 객체의 Serialization, Deserialization을 구현할 수 있다.
+  - kotlinx.lincheck 라이브러리를 통해 동시성 버그를 탐지하고, 디버깅 할 수 있는 환경을 제공한다.
 - 프로세스가 종료되면 Coroutine의 생명주기가 살아있더라도 종료된다. 
 
 ## 원리
-- Thread 하나로 동작한다.
+- CPS(Continuation Passing Style) 이다.
+  - 내부적으로 Continuation을 전달하여 로직의 끝날 때마다, Callback 처럼 사용한다.
+- 특정 Thread에 종속되어있지 않다.
+  -  중단지점(suspend)를 경계로 유휴 Thread가 실행가능한 Coroutine을 그때 그때 실행한다.
 - Coroutine 실행 도중, suspend(정지)가 발생하고  Stack, Register 정보가 메모리에 저장된다.
 - 다시 resume(재개)가 될 경우 메모리를 참조하여 루틴을 시작한다. 
 - Suspend(중지)가 된 시점에, 다른 로직을 실행한다.
@@ -24,11 +28,6 @@
 - **suspend 함수인 delay()를 사용하는 것이 적절하다.**
   - delay는 Blocking이 아니라 Suspend 하면서 다른 로직에게 순서를 양보한다.
   - delay는 Coroutine내부에서의 대기일 뿐, Coroutine 외부의 순서에 관여하지 않는다.
- 
-## Coroutine LifeCycle
-![CoroutineLifeCycle](https://github.com/ktj1997/TIL/assets/57896918/dc8f3357-83a7-473d-9ff3-219a0211a057)
-
-
 
 ## 동작원리
 

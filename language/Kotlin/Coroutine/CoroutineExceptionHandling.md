@@ -1,9 +1,25 @@
 # CoroutineExceptionHandling
-- 일반적인 try-catch로는 ExceptionHandling이 불가능하다.
-- Root Coroutine(부모 Coroutine)에 지정해야 한다.
-  - 자식 Coroutine에서는 ExceptionHandler가 무시된다.
+- Coroutine에서의 예외
+  - CcanellactionException인 경우 --> **취소로 간주하고, 부모에게 전파하지 않는다.**
+  - 그 외 다른 Excpetion --> **취소로 간주하고, 부모에게 전파한다.**
 
-# [1] launch에서의 ExceptionHandling
+## [0] ExceptionHandler
+- Corutine에서 Exception을 Handling하는 방법 중 하나
+  - launch에만 적용 가능하다.
+  - 최상위 Root Coroutine에서만 동작한다. (자식 Coroutine에 지정해도 의미없다.)
+```kotlin
+fun main() = runBlocking{
+    val exceptionHandler = CoroutineExceptionHandler { _, exception ->
+        println("Caught exception: $exception")
+    } 
+  
+  val job = CorutineScope(Dispatchers.Default).launch(exceptionHandler){
+    throw RuntimeException("Exception")
+  }
+}
+```
+
+## [1] launch에서의 ExceptionHandling
 - **RootCoroutine에 ExceptionHandler를 넣는 것이 좋다.**
 - launch의 경우 Exception을 Propagate(전파) 한다.
 ```kotlin
@@ -35,7 +51,8 @@ fun main() = runBlocking {
 import kotlinx.coroutines.*
 
 fun main() = runBlocking {
-    val deferred = async {
+    // 독립된 영역의 RootCoroutine은 명시적인 await()를 통해서 Excpetion을 Handling할 수 있다.
+    val deferred1 = CoroutineScope().async {
         println("Async task starts")
         throw ArithmeticException("Some math error")
         println("Async task ends") // 이 부분은 실행되지 않습니다.
@@ -45,6 +62,17 @@ fun main() = runBlocking {
         deferred.await() // 여기서 예외가 발생합니다.
     } catch (e: ArithmeticException) {
         println("Caught exception: ${e.message}")
+    }
+
+    // 자식 Coroutine은 await()가 없어도, 부모로 Exception이 전파된다.  
+    try{
+      val deferred2 = async{
+        println("Async task starts")
+        throw ArithmeticException("Some math error") // 여기서 예외가 발생합니다.
+        println("Async task ends") //        
+      }   
+    }catch (e: ArithmeticException){
+      println("Caught exception: ${e.message}")
     }
 }
 ```

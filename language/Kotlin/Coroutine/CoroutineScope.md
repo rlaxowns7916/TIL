@@ -2,22 +2,33 @@
 - Coroutine이 실행되는 범위를 의미한다.
   - Coroutine Scope가 아닌 곳에서 Corutine을 사용할 경우 컴파일 에러가 발생한다.
 - Interface로 구현되어있다.
+- CoroutineContext를 보관한다.
   - **내부적으로 CoroutineContext를 감싸고 있는 Wrapper이다.**
 - 함수도 존재한다.
   - 내부적으로 ContextCoroutine을 리턴한다.
-  - ```kotlin
-     public fun CoroutineScope(context: CoroutineContext): CoroutineScope =
-       ContextScope(if (context[Job] != null) context else context + Job())
-    
-      fun main(){
-        val scope = CoroutineScope(Dispatchers.Default)
-        val job = scope.launch(Dispatchers.IO){
-            launch { println()}
-        }
-      }
-    ```
-- 각각의 CoroutineScope는 별개이며, 순서에 영향을 미치지 않는다.
 - 같은 CoroutineScope에서는 순차적으로 실행된다.
+
+## 독립적인 Coroutine
+```kotlin
+fun main() = runBlocking{
+    
+    // runBlokcing Main Coroutine
+    println("Main Coroutine")
+    
+    launch{
+        // runBlocking의 자식 Coroutine
+        delay(1000L)
+        println("Child Coroutine")
+    }
+  
+  // runBlocking과 구분된 독립된 Coroutine
+   CoroutineScope(Dispatchers.IO).launch{
+        delay(1000L)
+        println("New Main Coroutine")
+    }
+}
+```
+- CoroutineScope() 를 통해서, 부모 Coroutine으로 부터 독립된 Coroutine 생성이 가능하다.
 
 
 ## Global Scope

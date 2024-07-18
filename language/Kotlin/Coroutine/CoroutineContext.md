@@ -1,4 +1,5 @@
 # CoroutineContext
+- Map + Set을 합쳐놓은 형태
 - **Coroutine이 실행되는 환경을 의미한다.**
   - MetaData를 저장하거나, 자식 Coroutine에 넘길 정보를 저장하는 저장소의 용도로 볼 수 있다.
   - 임의의 값이 아닌 CoroutineContext.Element 인터페이스를 구현하는 값만 들어갈 수 있다.

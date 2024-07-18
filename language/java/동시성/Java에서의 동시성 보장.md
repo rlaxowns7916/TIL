@@ -8,12 +8,79 @@
 
 ## 1. Synchronized
 - 객체단위의 Lock을 건다.
+  - ```java
+      class Example{
+    
+          private int count = 0;
+          private final Object lock = new Object(); // 동기화를 위한 별도의 객체 생성
+          
+          /**
+            * Method단위의 synchronzied
+            * Method 전체를 Lock을 건다. (this 객체가 Lock에 잡히는 것)
+            */
+          public synchronized void increment(){
+              count++;
+          }
+    
+          /**
+            * 객체 단위의 synchronized
+            * synchronized 대상 객체(lock)에 Lock을 건다.
+            * 이 방식을 통해서, 다른 Method의 수행은 Blocking이 걸리지 않는다.
+            */
+          public void increment(){
+                 synchronized(lock){
+                   count++;
+                 }
+             }
+    }
+    ```
 - blocking을 사용하여 Thread-Safe를 보장한다.
 - 성능상의 저하를 유발한다.
   - Thread가 block 에 최초 접근시에 lock을 걸게된다.
   - lock이 걸린 block에 다른 Thread들이 접근하면 Blocking이 된다.
     - Blocking 되는 동안 아무런 작업을 수행하지 않는다.
-  - Blokcing에서 Thread의 상태를 바꿔주는 것에도 System Resource가 소모된다.
+  - Blokikng에서 Thread의 상태를 바꿔주는 것에도 System Resource가 소모된다.
+
+
+
+
+### wait & notifyAll
+```java
+class Example {
+    private final Object lock = new Object();
+    private boolean condition = false;
+
+    public void waitingMethod() {
+        synchronized (lock) {
+            while (!condition) {
+                try {
+                    lock.wait();
+                } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
+                }
+            }
+            // 조건이 만족되었을 때 수행할 작업
+        }
+    }
+
+    public void signalingMethod() {
+        synchronized (lock) {
+            condition = true;
+            lock.notifyAll();
+        }
+    }
+}
+```
+- wait
+  - 특정 접근 대상에대한 Monitor(Lock)을 획득 할 때 까지, 현재쓰레드를 wait 상태로 만든다.
+  - 다른 쓰레드가 notify() 또는 notifyAll()을 호출할 때까지 기다린다.
+- notifyAll
+  - wait 상태에 있는 모든 쓰레드를 깨운다.
+  - notify()는 wait 상태에 있는 쓰레드 중 하나만 무작위로 깨운다.
+  - 여러 스레드가 동일한 조건을 기다리는 경우, notifyAll을 사용하는 것이 안전하다.
+
+
+### <2> notifyAll
 
 ## 2. Concurrent
 - Java5에 포함된 패키지, 다양한 유틸리티 클래스를 제공한다.

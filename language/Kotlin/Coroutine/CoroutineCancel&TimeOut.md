@@ -1,10 +1,4 @@
 # CoroutineCancel
-- Job객체를 통해서 제어한다.
-  - job.cancel()메소드를 통해서 실행한다.
-    - **호출 시 Canceling 상태로 변경된다.**
-  - job.join()또한 필수적으로 작성해야 한다. (Corutine 취소의 정리를 위한 대기)
-    - job의 상태가 canceling -> cancelled로 바뀔 때 까지 대기하는 것이다.
-  - cancelAndJoin()을 통해서 한번에 해결 할 수 있다.
 - Coroutine을 종료시킨다.
   - 이미 완료된 Coroutine에는 영향을 미치지 않는다.
   - 중복 호출은 무시된다. (최초의 호출만 유효하다.)
@@ -12,7 +6,7 @@
   - **새로운 Suspension(중지) 호출 시 Exception을 던진다.**
 - CoroutineCooperative(협조적)이어야 한다.
   - **suspend(중단) 지점이 있어야 한다.**
-  - 중단지점에서 Coroutine을 종료한다.
+  - 중단지점에서 외부의 신호를 받으면 (cancel) Coroutine을 종료한다.
   - **사용할 중단지점이 없다면 yield()를 사용하면 된다.**
     - yield()는 중단 후 바로 재개한다.
 - **직계 자식 Coroutine 또한 함꼐 종료된다.**
