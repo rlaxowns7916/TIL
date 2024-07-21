@@ -59,3 +59,51 @@ Java Source File (.java) —> JAVAC —> Java Byte Code (.class File)
 1. Interpreter가 Java Byte Code를 기계어로 바꿔서 한줄 씩 실행
 2. 인터프리터 방식의 문제점 (중복되는 코드여도 한줄 씩 읽어서 실행)을 JIT컴파일러로 보완 (자주사용되는 코드(기계어)를 캐싱)
 3. GC가 사용하지 않는 객체의 자원을 회수
+
+
+
+### Jstat을 이용한 GC 모니터링
+- JDK에 포함되어있는 유틸성 도구
+- JVM에서 실행중인 어플리케이션의 Heap, GC, ClassLoading, Compiling 등의 통계를 실시간으로 제공한다.
+```shell
+# option   -> 통계 유형
+# pid      -> Java Application의 ProcessId
+# interval -> 통계를 수집하는 간격 (ms)
+# count    -> 통계를 수집하는 횟수 
+
+jstat [option] <pid> [interval] [count]
+
+# Timestamp         S0     S1     E      O      M      CCS     YGC   YGCT    FGC   FGCT     GCT   
+#          0.00   0.00   0.00  50.00  70.00  80.00   60.00      5   0.050      2   0.020   0.070
+#          1.00   0.00   0.00  60.00  70.00  80.00   60.00      6   0.060      2   0.020   0.080
+#          2.00   0.00   0.00  70.00  70.00  80.00   60.00      7   0.070      2   0.020   0.090
+
+
+# Timestamp: 통계가 수집된 시간(초 단위).
+# S0: Survivor space 0의 사용률(%).
+# S1: Survivor space 1의 사용률(%).
+# E: Eden space의 사용률(%).
+# O: Old generation의 사용률(%).
+# M: Metaspace의 사용률(%).
+# CCS: 클래스 데이터 공간(Class space)의 사용률(%).
+# YGC: 젊은 세대 가비지 컬렉션(Young Generation GC) 횟수.
+# YGCT: 젊은 세대 가비지 컬렉션에 소요된 시간(초).
+# FGC: 전체 가비지 컬렉션(Full GC) 횟수.
+# FGCT: 전체 가비지 컬렉션에 소요된 시간(초).
+# GCT: 가비지 컬렉션에 소요된 총 시간(초)
+```
+
+### Jstat 옵션
+- -class : 클래스 로딩 통계
+- -compiler : JIT 컴파일러 통계
+- -gc : 가비지 컬렉션 통계
+- -gccapacity : 가비지 컬렉션 힙 용량 통계
+- -gcnew : 가비지 컬렉션의 젊은 세대 통계
+- -gcnewcapacity : 가비지 컬렉션의 젊은 세대 힙 용량 통계
+- -gcold : 가비지 컬렉션의 오래된 세대 통계
+- -gcoldcapacity : 가비지 컬렉션의 오래된 세대 힙 용량 통계
+- -gcpermcapacity : 가비지 컬렉션의 퍼먼트 세대 힙 용량 통계
+- *-gcutil : 가비지 컬렉션의 힙 사용률 통계*
+- -printcompilation : JIT 컴파일러의 컴파일 통계
+- -uptime : JVM의 가동 시간 통계
+- -version : JVM의 버전 통계

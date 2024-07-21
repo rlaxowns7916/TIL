@@ -1,5 +1,10 @@
 # Garbage Collector
-**메모리 관리 기법으로, 사용하지않는 동적할당 메모리 영역을 회수 하는 것**
+**메모리 관리 기법으로, 사용하지않는 동적할당 메모리 영역(Heap) 을 회수 하는 것**
+
+## GC의 원리가 되는 가설
+- Weak Generational Hypothesis
+  - 대부분의 객체는 금방 접근 불가능 상태가 된다.
+  - 오래된 객체에서 새로운 객체로의 참조는 매우 적다.
 
 ## Mark & Sweep
 
@@ -71,6 +76,7 @@
 #### Survivor 영역
 - Eden 영역이 다시 꽉 차게되면 GC가 발생한다.
 - Survivor영역에서 살아남은 객체는 또 다른 Survivor영역으로 넘어간다.
+  - Copy & Delete
 - 특정 Age값이 넘어가는 경우에는 OldGeneration으로 넘어간다.
 
 #### Promotion
@@ -101,19 +107,51 @@
 -XX:+ParallelGCThreads=n 옵션으로 멀티 스레드 개수를 지정할 수 있음
 
 ### 4. CMS GC(ConCurrent Mark Sweep GC)
+- Java14에서 제거됨
 - StopTheWorld로 JavaApplication이 멈추는 현상을 줄이고자 만든 GC
 - 접근 가능한 객체를 한번에 찾는게 아닌, 4번의 과정을 나눠서 한다.
-    
     1. InitialMark : GCRoot가 참조하는 객체만 Mark
     2. ConcurrentMark: 참조하는 객체를 따라가면서 지속적인 Mark
     3. Remark: ConcurrentMark과정에서 변경된점이 없는지 다시 체크
     4. ConcurrentSweep: StopTheWorld 없이 접근 할수 없는 객체를 제거
 **StopTheWorld를 최대한 줄이고자 함**
 
-### 5. G1GC(-XX:G1HeapRegionSize=n)
+### 5. G1GC(Garbage-First GC)
 - Java9+의 Default GC
-- 현존 GC중 stop-the-world의 시간이 제일 짧음
-- CMS GC를 개선한 GC
-- Heap을 **Region**이라는 부분으로 나눠서 메모리 관리
-- Region단위로 탐색하고 **각각의 Region에서 GC가 발생한다.**
-- RegionsSize: **startingHeapSize/2048** (1~32MB 사이의 값 위치)
+  - 현존 GC중 stop-the-world의 시간이 제일 짧음
+  - CMS GC를 개선한 GC
+- Heap을 **Region**이라는 부분으로 나눠서 메모리 관리 (고정된 크기)
+  - Region단위로 탐색하고 **각각의 Region에서 GC가 발생한다.**
+  - RegionsSize: **startingHeapSize/2048** (1~32MB 사이의 값 위치)
+  - Humonogous (Region 크기의 50% 이상을 차지하는 객체를 저장하기 위한 공간) / Available/Unused: 아직 사용되지 않은 공간
+- GC
+  - MinorGC
+    - 기존 MinorGC와 유사하다.
+    - MultiThread로 동작한다.
+  - MixedGC
+    - YoungGeneration 뿐만 아니라, OldGeneration도 수집
+    - MajorGC의 비용이 크기 때문에 수행한다.
+    - ConcurrentMark가 완료 된 후 실행
+    - OldGeneration의 사용률이 임계치 (default: 45%)를 넘으면 수행 // -XX:InitiatingHeapOccupancyPercent
+  - MajorGC
+    - OldGeneration을 수집한다.
+- 아래의 순서를 가진다.
+  1. Initial Mark
+     - STW 벌생
+     - OldGeneration 에서 참조되는 YoungGeneration 객체를 식별
+  2. Root Region Scan
+     - Application Thread와 병행하며 실행
+     - YoungGeneration에서 참조되는 OldGeneration 객체 식별
+  3. Concurrent Mark
+     - Application Thread와 병행하며 실행
+     - Heap을 순회하며 Marking
+  4. Remark
+     - STW 발생
+     - Concurrent Marking과정에서 변경된 객체를 다시 확인
+  5. Cleanup
+     - Garbage로 식별된 객체를 제거
+     - Application Thread와 병행하며 실행
+     - OldGeneration 영역중 Garbage가 많은 영역을 대상으로 실행
+  6. Evacuation
+     - STW 발생
+     - 살아있는 객체는 다른 Region으로 이동하고, Garbage로 마킹된 것은 비운다.

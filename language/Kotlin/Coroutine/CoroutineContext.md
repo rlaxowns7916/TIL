@@ -102,6 +102,12 @@ fun main() = runBlocking {
 - TheadLocalElement를 사용한다면, ThreadLocal의 정보를 전파시킬 수 있다.
   - Element를 구현했다. (ThreadLocalElement -> ThreadContextElement -> Element)
   - **ThreadLocal에서, asContextElement를 통해서 생성 가능하다.**
+  - ThreadContextElement는 조금 더 상위 추상화 인턴페이스이다.
+- Log의 TraceId(MDC에 넣어져있음)은 Coroutine에서 아래와 같이 전파된다.
+  - MDCContext -> ThreadContextElement<MdcContextMap>
+  - MDCContext(kotlinx.coroutines.slf4j)는 CoroutineContext가 전파 될 때마다, MDC를 Restore한다.
+  - slf4j는 MDC에 저장되어있는 traceId, spanId를 통해서 logging하기 때문에, Coroutine이 여러번 suspend되어도 전파가 가능하다.
+  - CoroutineContext 내부 -> restoreThreadContext -> MDCContext -> ThreadContextElement (MDC 값 Restore)
 
 ### Custom CoroutineContext 만들기
 
