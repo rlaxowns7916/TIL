@@ -52,8 +52,9 @@ sudo tcpdump -i any -lA -nn tcp and port 1234
   - 이 Flag가 설정된 패킷을 수신하면 연결이 즉시 종료된다.
   - (예시)
     1. 없는 Port에 요청을 보냈을 때
-    2. SEQ가 잘못 되었을 때
-    3. 비정상적 연결 종료 (정상적이라면 FIN)
+      - <img width="498" alt="없는 포트에 보냈을 때" src="https://github.com/user-attachments/assets/38f909b6-5132-49ef-bf14-48e7b4f19565">
+    3. SEQ가 잘못 되었을 때
+    4. 비정상적 연결 종료 (정상적이라면 FIN)
 - **PSH**
   - 데이터를 전송하겠다는 Flag이다.
   - 데이터를 전송하겠다는 쪽에서 보내는 Flag이다.
@@ -80,7 +81,12 @@ and (2) an "abort" in which one or more RST segments are sent and the connection
   - -> syn
   - <- syn + ack
   - -> ack
+
+---
 ![3way-handshake](https://user-images.githubusercontent.com/57896918/159167298-8b71e1f5-6357-4236-bb0c-a47529d4556b.png)
+<img width="496" alt="3way-handshake" src="https://github.com/user-attachments/assets/28bf3e96-2365-48e3-a4c9-1c7ae9b180d0">
+
+
 
 ### 4way-CloseHandShake
 - TCP에서 연결을 끊는 과정이다.
