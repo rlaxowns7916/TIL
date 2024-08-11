@@ -13,28 +13,92 @@
 - 흐름을 제어한다.
 - 혼잡을 제어한다.
 
+### nc를 이용한 간단한 TCP 서버/클라이언트 구현
+```shell
+(optional)
+# nc 설치
+brew install netcat
+
+# 서버
+nc -lk 1234
+
+# 클라이언트
+nc -v localhost 1234
+
+# tcp dump (1234 포트, any 인터페이스, 사람이 읽을수 있게, 실시간으로 출력)
+sudo tcpdump -i any -lA -nn tcp and port 1234
+
+
+```
+
+
 ## TCP Header
 ![TCP Header](https://user-images.githubusercontent.com/57896918/159167310-845174f6-cf7a-47cc-86cf-b8cc2be6246c.png)
+
+### TCP Flag
+
+- **SYN**
+  - 연결을 요청하는 Flag이다.
+  - 연결을 요청하는 쪽에서 보내는 Flag이다.
+- **ACK**
+  - 수신측에서 데이터를 받았다는 Flag이다.
+  - 데이터를 받았다는 Flag이다.
+- **FIN**
+  - 정상적으로(gracefully) 연결을 종료하겠다는 Flag이다.
+  - 연결을 종료하겠다는 쪽에서 보내는 Flag이다.
+- **RST**
+  - 일종의 강제종료이다. 
+  - 비정상적인 연결을 종료한다.
+  - 이 Flag가 설정된 패킷을 수신하면 연결이 즉시 종료된다.
+  - (예시)
+    1. 없는 Port에 요청을 보냈을 때
+    2. SEQ가 잘못 되었을 때
+    3. 비정상적 연결 종료 (정상적이라면 FIN)
+- **PSH**
+  - 데이터를 전송하겠다는 Flag이다.
+  - 데이터를 전송하겠다는 쪽에서 보내는 Flag이다.
+- **URG**
+  - 긴급 데이터를 전송하겠다는 Flag이다.
+- **PSH**
+  - 빠른 데이터 처리를 위해서 데이터를 즉시 수신측의 어플리케이션으로 전달한다.
+
+
+### FIN vs RST
+```text
+[RFC 1122]
+
+A TCP connection may terminate in two ways: 
+(1) the normal TCP close sequence using a FIN handshake, 
+and (2) an "abort" in which one or more RST segments are sent and the connection state is immediately discarded.
+```
 
 ## 연결지향
 
 ### 3Way-HandShake
 - TCP에서 연결을 맺는 과정이다.
-
+- 아래와 같은 순서이다.
+  - -> syn
+  - <- syn + ack
+  - -> ack
 ![3way-handshake](https://user-images.githubusercontent.com/57896918/159167298-8b71e1f5-6357-4236-bb0c-a47529d4556b.png)
+
+### 4way-CloseHandShake
+- TCP에서 연결을 끊는 과정이다.
+- 아래와 같은 순서이다.
+  - -> fin
+    - 클라이언트가 서버에 연결을 끊겠다는 신호를 보낸다. (FIN flag)
+  - <- ack
+    - 서버가 연결을 CLOSE-WAIT로 변경하고, 클라이언트에게 ACK를 보낸다.
+  - <- fin
+    - 서버가 클라이언트에게 연결을 끊겠다는 신호를 보낸다.
+  - -> ack
+    - 클라이언트가 서버에게 ACK를 보낸다.
+![4way handshake](https://user-images.githubusercontent.com/57896918/167259506-05d908f8-4b1d-43ac-8adf-2c0073e33b53.png)
 
 ### 가상회선
 - 3Way-HandShake를 통해서 생성된 논리적인 연결이다.
 - 각 패킷에는 가상회선 식별번호가 포함된다.
 - 최초 패킷 전송 떄 경로가 결정되고 그 이후로 똑같은 경로로 순서대로 전송된다.
-
-### 4Way-HandShake
-- TCP에서 연결을 끊는 과정이다.
-- ACK와 동시에 FIN을 보내지 않는 이유는 아직 전송하지 않은 패킷들을 전송 한 후 FIN을 보내기 위함이다.
-
-![4way handshake](https://user-images.githubusercontent.com/57896918/167259506-05d908f8-4b1d-43ac-8adf-2c0073e33b53.png)
-
-
 
 ## 오류제어
 - 오류가 발생하면 재전송을 통해서 신뢰성 있는 통신을 보장한다.
