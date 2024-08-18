@@ -3,6 +3,8 @@
   - 포트번호에 해당하는 Process에게 데이터를 전달한다.
 - PDU로 Segment를 사용한다.
 - 연결 지향형이다.
+  - 연결은 필연적으로 상태를 동반한다.
+  - **연결을 맺고, 연결을 끊는 과정과 순서가 존재한다.**
   - 3Way-HandShake를 통한 통신 연결을 하고, 4way-HandShake로 연결을 해제한다.
 - Byte Stream
    - 연속적인 Byte 열을 보낸다.
@@ -13,6 +15,24 @@
 - 흐름을 제어한다.
 - 혼잡을 제어한다.
 
+### TCP 연결은 진짜 연결인가?
+```text
+파일 다운로드 중 LAN 케이블을 분리했다가 다시 연결하면 TCP 연결은 유지되어있을까? 
+물론 TimeOut 한계까지 LAN선이 분리되어 있었다면 연결이 끊어지겠지만, 그 이전에 연결한다면 TCP 연결은 정상동작한다.
+
+재전송 타이머의 기본 근사값은 대략 3초이다. (대부분의 OS는 1초미만)
+재전송 타이머 만료후에도 Ack를 받지 못한 경우, Segmenet를 재전송하고 RTO의 값을 2배로 증가시킨다.
+5회 재전송 시도 후 모두ㅅ 실패한다면 전송오류가 발생한다.
+
+TCP 연결은 물리적 연결이아닌 가상의 연결이다. (엄밀하게 연결이라 할 수 없다)
+물리적 연결의 일시적 해제는 '충격'의 일종으로 볼 수 있으며, 
+해당 충격을 완화하기 위한 장치인 Buffer(송신Buffer - 수신측의 ACK를 받지못하면 재전송을 위해남아있음)에 데이터는 저장되어 있다.
+
+물리적으로 연결되어 있으나, Application단 의 Context 유지를 확인하기위하여 HeartBeat(ping)을 던지는 경우도 많다.
+```
+
+### TCP 상태변화
+
 ### nc를 이용한 간단한 TCP 서버/클라이언트 구현
 ```shell
 (optional)
@@ -20,7 +40,7 @@
 brew install netcat
 
 # 서버
-nc -lk 1234
+nc -l 1234
 
 # 클라이언트
 nc -v localhost 1234
@@ -53,8 +73,8 @@ sudo tcpdump -i any -lA -nn tcp and port 1234
   - (예시)
     1. 없는 Port에 요청을 보냈을 때
       - <img width="498" alt="없는 포트에 보냈을 때" src="https://github.com/user-attachments/assets/38f909b6-5132-49ef-bf14-48e7b4f19565">
-    3. SEQ가 잘못 되었을 때
-    4. 비정상적 연결 종료 (정상적이라면 FIN)
+    2. SEQ가 잘못 되었을 때
+    3. 비정상적 연결 종료 (정상적이라면 FIN)
 - **PSH**
   - 데이터를 전송하겠다는 Flag이다.
   - 데이터를 전송하겠다는 쪽에서 보내는 Flag이다.
@@ -70,13 +90,17 @@ sudo tcpdump -i any -lA -nn tcp and port 1234
 
 A TCP connection may terminate in two ways: 
 (1) the normal TCP close sequence using a FIN handshake, 
-and (2) an "abort" in which one or more RST segments are sent and the connection state is immediately discarded.
+(2) an "abort" in which one or more RST segments are sent and the connection state is immediately discarded.
 ```
 
 ## 연결지향
 
 ### 3Way-HandShake
 - TCP에서 연결을 맺는 과정이다.
+  - Sequence Number를 교환한다. (Syn, ACK 시 수신받은 Sequence Number + 1)
+  - MSS(Maximum Segment Size)를 교환한다.
+    - TCP 옵션 필드에 포함되어 있다.
+    - 각자 수신 할 수 있는 최대 Segment Size를 교환한다.
 - 아래와 같은 순서이다.
   - -> syn
   - <- syn + ack
@@ -85,8 +109,6 @@ and (2) an "abort" in which one or more RST segments are sent and the connection
 ---
 ![3way-handshake](https://user-images.githubusercontent.com/57896918/159167298-8b71e1f5-6357-4236-bb0c-a47529d4556b.png)
 <img width="496" alt="3way-handshake" src="https://github.com/user-attachments/assets/28bf3e96-2365-48e3-a4c9-1c7ae9b180d0">
-
-
 
 ### 4way-CloseHandShake
 - TCP에서 연결을 끊는 과정이다.
@@ -100,6 +122,13 @@ and (2) an "abort" in which one or more RST segments are sent and the connection
   - -> ack
     - 클라이언트가 서버에게 ACK를 보낸다.
 ![4way handshake](https://user-images.githubusercontent.com/57896918/167259506-05d908f8-4b1d-43ac-8adf-2c0073e33b53.png)
+
+### Active Close vs Passive Close
+- 누가 Close 요청을 수행하는가에 따라 다르다.
+- FIN Flag를 보낸측이 Active, 받는 측이 Passive이다.
+  - Server는 PassiveClose인 경우가 좋다.
+    - ActiveClose인 경우, 자신이 Ack를 보낸 이후, TIME_WAIT 상태로 대기해야한다.
+    - 이 대기하는 시간동안 유한한 자원인 Socket이 유휴상태가 되기 떄문이다.
 
 ### 가상회선
 - 3Way-HandShake를 통해서 생성된 논리적인 연결이다.
