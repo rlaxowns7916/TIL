@@ -1,5 +1,5 @@
 # Redis Transaction
-- 명령의 직렬화 및 순차적인 실행을 보장한다.
+- 명령의 직렬화 및 순차적인 실행, **원자성(Atomic)**을 보장한다.
 - 다른 클라이언트의 요청은 실행중간에 처리되지 않으며, 격리된 작업으로 수행한다.
 - OptimisitcLock을 제공한다.
     - Redis2.2, CAS매커니즘으로 동작한다.
@@ -7,7 +7,7 @@
 - 전통적인 RDB 트랜잭션의 개념과는 다르다.
     - Client레벨에서, Atomic한 단위의 순차적인 실행을 보장한다.
     - 해당 Client에 국한되기 때문에, 다른 Client와의 RaceCondition이 발생될 수 있다.
-    - 실패시에 Rollback을 하지 않는다.
+    - 개별 명령어의 실패시에 Rollback을 하지 않는다.
 - 트랜잭션 안에서의 검증은 실제 명령어가 수행될 때 일어난다.
     - 모든 검증은 EXEC가 호출될 때 발생한다.
 - Transaction 중간에 명령이 실패할 수 있다.
@@ -15,7 +15,31 @@
     - DataType 불일치
     - Redis Server의 Memory 및 리소스 부족
     - WATCH Command와의 충돌
-- 트랜잭션이 중간에 실패해도 나머지 명령이 계속 수행된다.
+- Transaction이 중간에 실패할 시, 모든 명령어 실행이 중지된다.
+
+## 롤백?
+```text
+Redis는 트랜잭션을 지원하지만, 롤백을 지원하지 않는다.
+Transaction 실행 시, 명령어는 Queue에 쌓이게 되고 Exec 시점에 모두 수행된다.
+
+Exec 실행시점에 Redis는 트랜잭션으로 묶인 명령어들에 대해서 Validation을 수행한다.
+아래와 같은 경우 Validation에 실패하게 되고, 명령어들은 수행되지 않는다.
+
+1. Watch를 통한 Key 변경 확인
+2. 외부 요인에 의한 오류 (메모리 부족, 서비스 장애 ...)
+3. (조금 다른 상황이지만) Discard를 통한 Transaction 중간 취소
+
+개별명령어의 실패는 무시된다. (롤백이 없기 때문)
+간단한 설계를 위한 Redis의 철학 때문이다.
+예를들어 아래와 같은 명령어는 그대로 수행된다.
+
+SET key1 val1
+INCR key2 # key2가 숫자가 아닌 경우 실패
+SET key3 val3 
+
+위와 같은 경우, key2가 숫자가 아니기 때문에 실패하지만, key1과 key3는 정상적으로 수행된다.
+
+```
 
 ## [1] Cluster환경에서의 Transaction
 
