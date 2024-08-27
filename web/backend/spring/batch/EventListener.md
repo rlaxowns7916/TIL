@@ -2,6 +2,8 @@
 - Batch 에서 Job, Step, Chunk 단계의 실행 전/후에 발생하는 이벤트를 받아 활용가능하게 하는 인터셉터
 - 각 작업의 성공/실패 상관 없이 무조건 호출 
 
+<img width="1188" alt="dd" src="https://github.com/user-attachments/assets/ba8ffd8f-22b0-408a-9320-30756e1ec699">
+
 ## 구현체 
 1. Job
    - JobExecutionListener: Job 실행 전/후
