@@ -14,13 +14,27 @@
 ## HeapByteBuffer
 - 파일의 내용을 Heap Memory에 Load하고 Read / Write를 수행한다.
 - HeapMemory에 저장하는 것은 결과적으로 Copy가 필요로 하기 때문에, DirectByteBuffer에 비해서 성능이 좋지않다.
+- allocate()를 통해서 HeapByteBuffer를 생성한다.
+  - 기본구현 내부적으로는 DirectBuffer를 사용한다고 한다 (아래 블로그 글 참조)
 
 ## DirectByteBuffer
 - MappedByteBuffer도 DirectByteBuffer에 포함된다.
 - **파일의 내용을 NativeMemory에 적재한다.**
   - I/O 작업을 수행하는데에 있어서 FileChannel이 필요하지 않다.
   - **파일의 일부를 NativeMemory 에 적재하여, 실제 메모리의 일부처럼 동작하는 것으로 보이게 하며 성능이 좋다.**
+- allocateDirect()를 통해서 DirectByteBuffer를 생성한다.
+- DirectByteBuffer의 생성 빈도가 많으면 성능에 악영향을 미칠 수 있다. (비용이 더 크므로, 내부적으로 Cache를 사용한다.)
+- 회수가 되지 않는다면 OOM의 원인이된다.
+- Native 메모리를 참조하는 객체는 결국 JVM Heap 안에 생성되며, 이 객체가 JVM의 GC에 의해 회수되면 이 객체가 참조하는 Native 메모리는 JVM이 아닌 다른 메커니즘에 의해 어쨌든 회수된다.
+  - 혹은 강제회수
+  - ```java
+        ((DirectBuffer)directBuffer).cleaner().clean()
+    ```
 
+### HeapBuffer와 DirectBuffer 분석 블로그 글
+https://homoefficio.github.io/2020/08/10/Java-NIO-FileChannel-%EA%B3%BC-DirectByteBuffer/
+
+---
 ### DirectByteBuffer가 HeapByteBuffer 보다 성능이 좋은 이유
 1. NativeMemory 접근
    - OS Library와 직접 상호작용이 가능하다.
@@ -47,14 +61,30 @@ ByteBuffer는 기본적으로 Overwrite이다.
    - WriteMode -> ReadMode로 전환한다.
    - position을 0으로 설정하고 limit을 데이터의 끝(position) 으로 설정한다.
 2. get()
+   - 상대적 get
    - 현재 position에 있는 데이터를 읽어온다.
    - position을 1 증가시킨다.
-3. clear()
-   - position을 0으로 설정하고 limit을 capacity로 설정한다.
+3. get(index)
+   - 절대적 get
+   - index에 있는 데이터를 읽어온다.
+   - position은 변하지 않는다.
+4. put()
+   - 상대적 put
+   - 현재 position에 데이터를 쓴다.
+   - position을 1 증가시킨다.
+5. put(index)
+   - 절대적 put
+   - index에 데이터를 쓴다.
+   - position은 변하지 않는다.
+6. clear()
+   - position을 0으로 설정하고 limit을 capacity로 설정한다. 
    - 기존 Buffer에 있던 데이터가 삭제되는 것이 아닌, Position에 의해서 Overwrite된다.
-4. compact()
+7. compact()
     - position과 limit 사이에 있는 데이터를 앞으로 당긴다. (아직 읽지 않은 데이터를 앞으로 땡긴다.)
     - position은 limit - position 만큼 증가한다.
+8. wrap()
+   - byte[]를 ByteBuffer로 만든다.
+   - capacity와 limit은 byte[]의 크기를 따라간다.
 
 ### SampleCode
 ```java
