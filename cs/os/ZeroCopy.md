@@ -9,9 +9,13 @@
 1. Disk --> Kernel 데이터 복사
 2. Kernel --> User 데이터 복사 (사용자 프로그램이 사용 할 수 있도록)
 3. User --> Kernel 데이터 복사 (Network, Disk에 전송하기 위해서)
-4. Kernel --> Network 데이터 복사 
+4. Kernel --> Network 데이터 복사
+
+![일반적](https://github.com/user-attachments/assets/5c75d17d-72ec-4ca5-a34a-01c5dd9bc185)
 
 ## ZeroCopy I/O
 1. Disk --> Kernel 데이터 복사
 2. MemoryMapping (Kernel 공간의 Memory를 매핑하여, 사용자 프로그램이 접근 가능하도록 함)
 3. Kernel --> Network 데이터 복사 (MemoryMapping된 데이터를 Network로 전송)
+
+![zero copy](https://github.com/user-attachments/assets/1704e743-1ba0-4c4e-b5e9-f82899e7f543)
