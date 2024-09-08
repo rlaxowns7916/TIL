@@ -11,6 +11,21 @@
   - DataLoss를 방지하기 위해서, File에 즉시 Write를 할 수 있다.
 
 
+## ByteOrder
+- ByteBuffer에서 Byte의 순서(endian)을 지정하는데 사용된다.
+  - 다중바이트 데이터타입 (int, long, float, double)을 바이트 배열에 저장하여 읽을 때, 순서를 결정하는데 중요한 역할을 한다.
+- 기본적으로 BigEndian 이다.
+  - Network에서 데이터는 일반적으로 BigEndian으로 전송된다.
+- 플랫폼간 독립성에 유용하다.
+  - 플랫폼에 따라서, 알맞은 ByteOrder를 지정하여 사용할 수 있다.
+
+### BigEndian
+- ByteOrder.BIG_ENDIAN
+- 32비트 정수 0x12345678은 메모리에 [12][34][56][78] 순서로 저장
+### LittleEndian
+- ByteOrder.LITTLE_ENDIAN
+- 32비트 정수 0x12345678은 메모리에 [78][56][34][12] 순서로 저장
+
 ## HeapByteBuffer
 - 파일의 내용을 Heap Memory에 Load하고 Read / Write를 수행한다.
 - HeapMemory에 저장하는 것은 결과적으로 Copy가 필요로 하기 때문에, DirectByteBuffer에 비해서 성능이 좋지않다.

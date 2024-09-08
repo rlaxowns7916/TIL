@@ -7,17 +7,33 @@
 - ZeroCopy 사용가능 (내장 복합 버퍼형식 사용)
 - Read / Write 마다 각각 고유한 Index 소유
 - Method Chain 지원
-- Reference Counting을 통한 메모리 관리
+- Reference Counting을 통한 메모리 관리 (내부구현)
+  - allocator에 의해서 할당 될 때, Reference Counting이 증가한다.
+  - retain()을 통해서 Reference Counting을 증가시킨다. // 비동기 사용시, Memory 해제를 막기위함
+  - release()를 통해서 Reference Counting을 감소시킨다.
 - Polling 지원
 
 ## Read / Write Index
 - 각각 고유한 Index를 가지고 있다.
   - ReadIndex와 WriteIndex가 같아지면 데이터의 끝이다.
   - 그 이상 읽으려고 하면, IndexOutOfBoundsException이 발생한다.
-- read(), write()는 index를 증가시킨다.
-- get(), set()은 index를 증가시키지 않는다.
+- **read(), write()는 index를 증가시킨다.**
+- **get(), set()은 index를 증가시키지 않는다.**
 - index는 capacity를 넘겨서는 안도며, readableBytes(), writableBytes()를 통해서 남은 공간을 확인할 수 있다.
 
+
+## 주요메소드
+- get(index): 특정 Index의 Byte를 가져온다. (rIndex를 증가시키지 않는다.)
+- set(index): 특정 Index에 Byte를 쓴다. (wIndex를 증가시키지 않는다.)
+- read():     rIndex 위치의 값을 가져온다. (자료형 별로 파생 메소드가 존재한다.)
+- write():    wIndex 위치에 값을 쓴다. (자료형 별로 파생 메소드가 존재한다.)
+- isReadable(): 읽을 수 있는 데이터가 있는지 확인한다. (읽을 수 있는 Byte가 하나 이상이면 true를 반환한다.)
+- isWritable(): 쓸 수 있는 공간이 있는지 확인한다. (쓸 수 있는 Byte가 하나 이상이면 true를 반환한다.)
+- readableBytes(): 읽을 수 있는 Byte의 수를 반환한다.
+- writableBytes(): 쓸 수 있는 Byte의 수를 반환한다.
+- capacity(): 버퍼의 최대 크기를 반환한다.
+- hasArray(): backing array가 있는지 확인한다.
+- array(): backing array를 반환한다. (없다면 UnsupportedOperationException이 발생한다.)
 
 
 ## 사용 Pattern
@@ -81,7 +97,7 @@ class HeapBufferExample {
 - 대규모 파일 I/O, 고성능 Network Server/Client 구현에 적합하다.
 
 ```kotlin
-class HeapBufferExample {
+class DirectBufferExample {
     fun main(args: Array<String>) {
       // 1. Direct Buffer 생성
       val directBuffer = Unpooled.directBuffer(10); // Direct 메모리에 할당된 ByteBuf 생성
@@ -133,7 +149,7 @@ class HeapBufferExample {
     First component: UnpooledDuplicatedByteBuf(ridx: 0, widx: 5, cap: 5, unwrapped: UnpooledByteBufAllocator$InstrumentedUnpooledUnsafeHeapByteBuf(ridx: 0, widx: 5, cap: 5))
     Second component: UnpooledDuplicatedByteBuf(ridx: 0, widx: 10, cap: 10, unwrapped: UnpooledByteBufAllocator$InstrumentedUnpooledUnsafeHeapByteBuf(ridx: 0, widx: 10, cap: 10))
  */
-class HeapBufferExample {
+class CompositeBufferExample {
     fun main(args: Array<String>) {
         // 1. CompositeByteBuf 생성
         val compositeBuffer = Unpooled.compositeBuffer();
@@ -165,7 +181,42 @@ class HeapBufferExample {
 }
 ```
 
-## Byte 폐기
+## ByteBufAllocator 인터페이스
+- ByteBuf를 생성하는 팩토리
+- Heap, Direct, Composite 버퍼를 생성할 수 있다.
+- Channel에서 얻거나, ChannelHandlerContext에서 얻을 수 있다.
+
+### 구현체
+1. PooledByteBufAllocator (Default)
+   - Pooling을 사용하여 ByteBuf를 생성한다.
+     - 같은 ByteBuf를 여러군데서 재사용 가능하게한다.
+     - ReferenceCount를 사용하며, ReferenceCount가 0이 되면 Pool로 반환한다.
+   - jemalloic이라는 기법을 사용한다.
+2. UnpooledByteBufAllocator
+   - Pooling을 사용하지 않고, 새로운 ByteBuf를 생성한다.
+   - Unpooled 유틸리티 클래스를 통해서 생성가능하다.
+   - 다른 NettyComponent가 필요없는, Network와 무관한 프로젝트에서 ByteBuf를 쉽게재공해주는 API이다.
+
+## ByteBufHolder 인터페이스
+- 주로 Network 프로그래밍에서 사용된다.
+- 내부적으로 ByteBuf를 가지는 컨테이너이다.
+- MetaData를 캡슐화하고 관리할 때 유용하다.
+
+### 지원 Method
+- content(): ByteBuf를 반환한다.
+- copy(): ByteBuf를 복사한다.
+- duplicate(): ByteBuf를 복사한다. (원본에 영향을 미친다.)
+
+
+## ByteBufUtil 클래스
+- ByteBuf 조작과 관련된 유틸리티 클래스
+- Pooling과는 상관없으며, ByteBufAllocator 인터페이스와 별개로 범용적으로 사용된다.
+- hexdump(): 16진수로 표현
+- equals(): ByteBuf 비교
+- ...
+
+
+## Byte Compact
 ```text
 +---+---+---+---+---+---+---+---+---+---+
 | X | X | X |   |   |   |   |   |   |   |
