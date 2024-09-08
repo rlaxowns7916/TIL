@@ -80,3 +80,28 @@ class ReadAndWriteMode{
     }
 }
 ```
+
+## ZeroCopy
+- Channel간의 데이터를 전송할 때 사용한다.
+- transferTo(), transferFrom()을 사용하여 zeroCopy를 구현할 수 있다.
+- OS Level에서 데이터를 직접 SocketBuffer로 전송하기 때문에, Kernel 공간에서만 전송이 이루어진다. (UserMode로 복사 (X))
+```java
+public class ClientExample {
+    public static void main(String[] args) {
+        try (
+            // 클라이언트 소켓 채널 생성
+            SocketChannel socketChannel = SocketChannel.open(new InetSocketAddress("localhost", 9000));
+            FileInputStream fis = new FileInputStream("source.txt");
+            FileChannel fileChannel = fis.getChannel();
+        ) {
+            System.out.println("Connected to server. Sending file...");
+
+            // transferTo 메서드를 사용하여 데이터를 파일 채널에서 소켓 채널로 전송
+            long transferredBytes = fileChannel.transferTo(0, fileChannel.size(), socketChannel);
+            System.out.println("Sent " + transferredBytes + " bytes to server.");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+}
+```
