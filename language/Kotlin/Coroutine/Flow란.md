@@ -1,8 +1,16 @@
 # Flow
 - Kotlin에서 사용할 수 있는 순차적 + 비동기 Stream
   - StreamAPI는 동기로 동작한다.
+  - 한번에 하나씩 처리하도록 한다.
 - emit을 통해서 Stream에 Data를 흘려보낸다.
+  - emit시에 Blocking되지 않는다.
 - Coroutine내부에서만 호출되어야 한다.
+- BackPressure를 다루는 방법을 제공한다.
+  - 코드상으로 구현하지 않아도 되고, Consumer의 처리속도에 맞춰서 emit(produce)가 suspend된다.
+- 최종연산이 수행될 때, 어떻게 수행해야할지 정의한 것에 불과하다.
+  - 최종연산은 suspend function이기 떄문에, Blocking이 발생하지 않는다.
+- FlowBuilder는 suspendfunction이 아니다.
+  - 종결연산이 수행될 떄 실행(ColdStream) 되기 때문에, 종결연산 수행 시에만 coroutineScope에 있으면 된다.
 
 ## Flow의 특징
 1. 비동기적으로 데이터를 생성한다.
@@ -10,6 +18,7 @@
 3. Cold Stream
    - 종결연산이 선언됐을 떄만 시작한다.
 4. 취소 가능 (Coroutine이 취소되면 같이 취소된다.)
+5. BackPressure 기능 제공
 
 ```kotlin
 fun flowSomething() : Flow<Int> = flow{
@@ -23,6 +32,16 @@ fun main() = runBlocking {
     flowSomething().collect {value -> println(value)}
 }
 ```
+## BackPressure
+- Flow는 BackPressure를 다루는 방법을 제공한다.
+  - Subscriber의 속도에맞춰서 Publisher가 emit한다.
+- conflation()을 통해서 Subscriber측이 다룰 수 없는 상태라면 최신값을 제외하고 버릴 수 있다.
+
+- 동일한 Coroutine에서 실행될 때
+  - emit부터 collect까지 동기적으로 수행되므로, colect가 완료되기전까지 emit이 수행되지 않는다.
+- 다른 Coroutine에서 실행될 때 (ex. launchIn)
+  - 기본적으로 BackPressure가 동작하지 않는다.
+  - buffer를 두는 것으로 해결 할 수 있다.
 
 ## Flow Builder
 - builder를 통해서 Flow를 만들어낼 수 있다.
@@ -121,6 +140,19 @@ fun main() = runBlocking{
         a+b
     } 
 }
+```
+
+### [8] launchIn
+- Flow를 수행하는 Coroutine을 생성한다.
+- 해당 Coroutine에서 자동으로 수행된다.
+- ```kotlin
+    val scope = SupervisorJob() + Dispatchers.IO
+    fun main() = runBlocking{
+        (1..20).asFlow().transform{
+            emit(it)
+            emit(it * 2)
+        }.drop(5)
+         .launchIn(scope)
 ```
 
 ## Flow Context
@@ -251,4 +283,22 @@ fun simple(): Flow<Int> = flow{
         emit(i)
     }
 }.onCompletion{ cause -> if (cause != null) println("Exception!")  else println("Complete")  }
+```
+
+```kotlin
+fun Flow<*>.counter() = flow{
+    var count = 0
+    collect{
+        count++
+        println("Count: $count")
+    }
+}
+
+fun Flow<*>,counter = flow{
+    var counter = 0
+    return this.map{
+        counter++
+        it
+    }
+}
 ```

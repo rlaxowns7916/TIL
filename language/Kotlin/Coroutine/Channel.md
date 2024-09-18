@@ -2,9 +2,15 @@
 - Coroutine간 데이터를 전달하는 방법이다.
   - 한쪽에서 Send하고, 반대편에서 Receive 한다.
   - send, receive 모두 Suspend Point이다.
+- 송신자 / 수신자 수에 제한이 없다.
+- 데이터는 한번만 받을 수 있다.
 - 일종의 Pipe 이다.
   - 항상 대기상태가 아니다.
   - 실제 Call이 발생 했을 떄 동작한다.
+- HotStream이다.
+  - 항상 활성 상태이다.
+  - Consumer가 없어도 데이터 생산이 계속된다.
+  - Buffering이 가능하다. (가득차면 데이터 생산 중단 혹은 Consumer 대기 가능)
 
 ## Channel의 사용 이유
 1. PubSub 패턴
