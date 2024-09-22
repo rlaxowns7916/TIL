@@ -30,12 +30,28 @@ fun main() = runBlocking{
 - HotStream이다.
   - Subscriber가 있든 없든 데이터를 Emit한다.
   - 이미 방출된 데이터는 Subscribe 할 수 없다. (Buffer, Replay 설정이 있다면 받을 수 있음)
+- ThreadSafe하다. 
 - SharedFlow를 통해서 데이터를 내보내면, 대기중이던 수신 Coroutine 들이 수신하게 된다.
   - 일종의 BroadCasting이 가능하다.
   - 하나의 Stream을 공유한다.
 - BackPressure를 제공하지 않는다.
   - Buffer와 Replay를 통해서 일정부분 달성 할 수는 있다.
 - Flow와 다르게 하나의 Stream을 여러 Subscriber가 공유한다.
+
+### ReplayCache & Buffer
+- SharedFlow는 일정된 수의 최근 값을 ReplayCache에 저장한다. 
+  - Subscriber는 ReplayCache에서 먼저 값을 가져온 후에 최신 값을 받을 수 있다.
+  - replay() 파라미터를 통해서 replayCache의 Size를 지정 할 수 있다.
+- Buffer는 Producer가 값을 방출할 때, Subscriber의 상황을 판단하지 않고, Buffer에 바로 저장한다.
+  - BackPressure 발생에 따른 Producer의 suspend를 방지 할 수 있다.
+  - extraBufferCapacity() 파라미터를 통해서 Buffer의 크기를 지정 할 수 있다.
+
+### Buffer가 없을 떄 SharedFlow
+```text
+기본 생성자로 생성된 SharedFlow의 경우, Buffer와 Replay가 없다.
+SharedFlow의 경우 emit은 모든 Subsriber가 값을 받을 때까지 suspend되고 구독자가 없으면 즉시 반환한다.
+tryEmit()의 경우, Buffer가 없다면 subscriber가 없을 때만 true를 리턴한다.
+```
 
 ## [2] StateFlow
 ```kotlin

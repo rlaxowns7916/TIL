@@ -68,7 +68,7 @@ val deferred = CoroutineScope(Dispatchers.Default).async(Dispatchers.IO) {
 val result = deferred.await()  
 ```
 
-## coroutinescope
+## coroutineScope
 - 임시 Scope를 만들고싶을 때 사용한다.
   - 여러 suspend를 묶어 병렬처리를 하는 가교역할의 함수를 따로 뺄 때 주로 사용한다.
 - 내부의 Block이 바로 실행된다.
@@ -93,12 +93,13 @@ val result = deferred.await()
 - CorutineScope의 확장함수이다.
 - 내부의 Block이 바로 실행된다.
 - Corutine내에서 Context를 일시적으로 변경할 수 있게 한다.
-  - 잠시 변경한 후, 원래의 Context로 복귀한다.
 - 지정한 Context내에서 Coroutine을 실행하고, 결과 값을 반환 후 원래의 Context로 복귀한다.
   - Deferred<T>가 아닌 실제 반환값 T를 리턴한다.
-- **Corutine의 LifeCycle이나 Exception Handling에는 영향을 미치지 않는다.
+  - withContext 실행하는 동안, 호출한 Coroutine은 Block된다.
+  - withContext 내부의 예외는 호출한 Coroutine으로 전파된다.
 - withContext내에서 실행된 자신 Coroutine들은, withContext에서 지정된 CoroutineContext를 그대로 상속받는다.
   - withContext내의 Coroutine들이 실행될 때 까지 대기한다.
+- 호출한 Coroutine은 withContext의 실행이 완료될 때 까지 suspend된다.
 
 ```kotlin
 suspend fun loadData(): Data {
@@ -148,7 +149,7 @@ suspend fun getRandom2(): Int {
   - 내부적으로 CorutineScope를 생성한다.
   - 내부에서 launch, async와 같은 Builder의 사용이 가능하다.
     - 내부에서 사용시 this(암묵적) 사용으로 StructuredConcurrency를 통해서 순차적인 실행을 가능하게 한다.
-- 생성한 Corutine로직(내부에서 생성된 자식 Coroutine 까지)이 모두 실행될 때 까지 대기(Blocking) 한다.
+- 생성한 Corutine로직(내부에서 생성된 자식 Coroutine 까지)이 모두 실행될 때 까지 쓰레드를 대기(Blocking) 한다.
 - runBlocking을 실행시키는 Thread를 Blocking시키는 것이다.
   - MainThread에서의 사용을 조심해야 한다. (Android의 경우, UI를 뿌려주는 MainThread에서 사용할 경우 UI가 차단된다.)
 - Blocking을 하기 때문에, 대량의 병렬작업을 수행할 때는 사용을 하지 않는 것이 좋다.
@@ -191,15 +192,12 @@ fun <T> customCoroutineBuilder(
 - suspend함수에도 corutineScope를 명시해야한다.
 ```kotlin
 import kotlinx.coroutines.*
-fun main() {
-    runBlocking{
+fun main() = runBlocking{
         launch{
             makeNewCoroutine()
             println("Main Inner coroutine")
         }
         println("Main Outer Coroutine")
-    }
-    
     println("Finished")
     
 }

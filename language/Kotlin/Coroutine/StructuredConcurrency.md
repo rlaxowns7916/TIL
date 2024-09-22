@@ -1,5 +1,7 @@
 # Structured Concurrency
-- Coroutine 코드 내에서, Exception이 유실되지 않고 적절하게 전파될 수 있도록 보장한다.
+- Coroutine은 구조화된 동시성을 제공한다.
+  - 자식 Coroutine이 모두 종료될 때까지 부모 Coroutine이 종료되지 않는다.
+- Coroutine 코드 내에서, Exception이 유실되지 않고 적절하게 전파될 수 있도록 보장한다. (async, launch 제외)
 - 여러 Coroutine들이 일관된 상태와 생명주기를 가지게 한다.
 
 ## 부모의 취소
