@@ -19,11 +19,23 @@
 3. accept를 통해서 클라이언트의 접속을 받아들인다.
 
 
+**Server NIC -> OS TCP 수신 버퍼 -> Application**
+
 ## Client Socket
 1. Socket을 열고(연결 당 새로운 Port 할당), Connect를 통해서 Server에 접속한다.
 2. Server와 통신을 한다. (하나의 ClientSocket은 하나의 ServerSocket과 연결된다.)
 3. 통신이 끝나면 Socket을 닫는다.
 
+**Application -> OS TCP 송신 버퍼 -> Client NIC**
+
+### BackLog Queue
+- OS에서 관리하는 Connection 관리 Queue
+  - Syn Queue
+    - Syn 패킷을 받게되면 이 Queue에 Append 된다.
+  - Accept Queue
+    - 3Way HandShake가 완료되면, Accept Queue에 Append 된다.
+    - ServerSocket이 accept()를 호출하면, Queue에 있는 Connection이 반환된다.
+- ServerSocket이 accept()를 통해서 클라이언트의 접속을 받아들일 때, BackLog Queue에 저장된다.
 
 ## File
 - Socket은 File이다. (File과 일관된 인터페이스를 통해서 사용이 가능하다.)
@@ -38,3 +50,14 @@
 - socket 자체는 KernelLevel 이다.
   - bind(), listen(), accept()와 같은 SystemCall을 통해서 UserLevel에서 접근이 가능해진다.
 - Kernel은 NIC와 상호작용하며, 무결성 검증 및 실제 데이터를 주고받는다.
+
+
+## Socket 상태
+- CLOSED: 초기상태, Socket이 열려있지 않거나 닫힌 상태
+- LISTEN: ServerSocket이 클라이언트의 연결 요청 (Syn 패킷)을 기다리는 상태
+- SYN-SENT: ClientSocket이 ServerSocket에게 Syn 패킷을 보내고 응답을 기다리는 상태
+- SYN-RECEIVED: ServerSocket이 ClientSocket에게 Syn + Ack 패킷을 보내고 응답을 기다리는 상태
+- ESTABLISHED: 3Way HandShake가 완료되어 데이터를 주고받을 수 있는 상태 (데이터 통신이 가능한 상태)
+- FIN-WAIT-1: 연결 종료 요청을 보내고 응답을 대기하는 상태
+- FIN-WAIT-2: 연결 종료 요청을 보낸 후 상대방의 ACK를 수신 후, FIN 요청을 대기하는 상태
+- CLOSE-WAIT: 상대방의 FIN 응답을 받고, 자신의 Socket이 닫히기를 기다리는  상태

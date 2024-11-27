@@ -1,6 +1,7 @@
 # I/O Stream
 - Java에서는 I/O Stream을 통해 데이터를 주고 받는다.
   - 데이터가 이동하는 통로이다.
+  - Byte 단위로 데이터가 흐른다.
 - Data를 읽고 쓰는 표준화된 방법을 제공
   - 순차적으로 Data를 순차적으로 읽는 추상화된 방법
 - **단방향 흐름이며, 일회용이다.**
@@ -52,12 +53,17 @@
 ### [3] Read
 - 하나의 Byte 씩 읽어온다.
 - 파일의 끝에 도달하거나, 읽어올 Byte가 없다면 -1을 리턴한다. (EOF)
-  - java의 read()가 int를 반환하는 이유 -> Java의 Byte는 -128 ~ +127의 값을 표현 가능(EOF를 위한 특별한 값 할당이 어려움) // Int로 표현하면 0~255로 표현하고, 표현할 것이 없으면 -1로 표현하면됨
+  - java의 read()가 int를 반환하는 이유 -> Java의 Byte는 -128 ~ +127의 값을 표현 가능(EOF를 위한 특별한 값 할당이 어려움) // Int(자료형은 4Byte지만) 로 표현하면 0~255로 표현하고, 표현할 것이 없으면 -1로 표현하면됨
 - readBytes vs readAllBytes
   - readBytes: 1M단위로 나누어서 데이터를 읽어온다. (대용량에 적합) // read() 한번 == SystemCall 한번 이기 떄문에, 최적화가 필요하다
     - Buffer를 통해서 최적화 할 수 있다.
   - readAllBytes: 한번에 모두 읽어오기 때문에, OOM이 발생 할 수 있다. (한번에 모든 내용을 데이터에 올려서 사용해야 할 때)
     - 읽어 들일 때는 내부적으로 4KB, 혹은 8KB로 읽어들여 최적화한다.
+
+### [4] Charset의 특성 고려하기
+- Charset에 따라 문자를 표현하는 방식은 가변 길이(UTF-8, UTF-16 등) 또는 고정 길이(ISO-8859-1, ASCII 등)가 다르다. (1Byte != 1문자)
+- 해당 특성을 고려하지 않고, 1Byte씩 Read하여, Char로 변환 할 경우, 문자가 깨질 수 있다. (ex: 한글 - 3Byte)
+- InputStreamReader를 사용하여 Charset을 넘겨주거나, readAllBytes()를 통해서 한번에 읽어올 경우 해당 문제를 해결 할 수 있다.
 
 ## example
 ```java
@@ -78,3 +84,13 @@ class Main{
     }
 }
 ```
+
+### Byte I/O vs String I/O
+1. Byte I/O
+   - 모두 ***InputStream, OutputStream*** 을 상속하여 사용한다.
+   - Class의 마지막에 보통 Stream이 붙어있다.
+2. String I/O
+   - Java의 기본 String표현은 UTF-16(메모리 내부)이며, Charset 지정에 따라서 변환 할 수 있다.
+   - 보통 String이나 Char을 다룬다.
+   - Charset에 대한 정의가 필요하다. 
+   - Class의 마짐가에 보통 Reader, Writer가 붙어있다.
