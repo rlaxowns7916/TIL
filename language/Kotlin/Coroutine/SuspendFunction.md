@@ -1,8 +1,12 @@
 # SuspendFunction
 - Coroutine이 중지되었다가(중지가 될 수도 있고, 안될 수도 있다.) 재개 될 수 있는 지점이다.
+  - 해당 suspend function 내부에 중단 지점이 없다면, 중단이 되지 않는다. (Caller가 호출한 Callee 내부에 suspend function이 있다면 suspend)
 - 함수앞에 suspend 키워드를 통해서 사용가능하다.
   - Coroutine 내부에서 실행 가능하다.
   - 또 다른 Suspend 함수 내에서 실행 가능하다.
+- **suspend function 그 자체는 Coroutine이 아니다.**
+  - 일시중단이 가능한 함수 블록일 뿐이다. 
+- 일시중단(suspend) 되지 않는다면, 실행 Thread가 변경되지 않는다.
 - 같은 Coroutine 내에서는 기본적으로 순차적으로 실행되며, Suspend가 걸린시점에서 실행 할 수 있는 다른 로직을 실행한다.
   - 실행할 다른 로직이 suspend 일 경우, launch(), async()를 통해서 병렬적으로 실행한다.
   - 실행할 다른 로직이 모두 suspend인데, 별도의 Corutine을 생성해주지 않는다면 Blocking과 같이 동작한다.

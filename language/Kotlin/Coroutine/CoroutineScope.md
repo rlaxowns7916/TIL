@@ -88,6 +88,8 @@ supervisorScope {
 
 #### [1] superVisorScope
 - superVisorScope 함수를 통한 생성
+- superVisorJob을 가지는 scope를 생성한다.
+  - 이 superVisorJob은 supervisorScope를 호출한 Job을 부모로 가진다.
 - 계층구조를 유지하는 방법이다.
 ```kotlin
 supervisorScope {

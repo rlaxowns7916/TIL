@@ -6,7 +6,9 @@
 - Job,Dispatcher와 CoroutineExceptionHandler,ThreadLocl 모두 환경의 일부이다.
 - Interface가 존재한다.
   - Map과 같은 형식으로, get을 통해서 CoroutineContext를 가져오거나 없다면 null을 반환한다.
+  - 같은 Key에 대해서 나중에 들어온 값이 최신 값이 된다.
   - plus()를 통해서 Context를 합칠 수 있다.
+  - minusKey()를 통해서 Context를 제거할 수 있다. (새로운 CoroutineContext가 반환되며, 기존 CoroutineContext는 유지된다.)
 
 ## CoroutineContext의 전파
 - 부모 Coroutine의 CoroutineContext는 자식Coroutine으로 전파된다.

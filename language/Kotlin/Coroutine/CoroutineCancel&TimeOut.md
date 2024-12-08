@@ -5,10 +5,15 @@
   - **새로운 Coroutine 호출은 무시된다.**
   - **새로운 Suspension(중지) 호출 시 Exception을 던진다.**
 - CoroutineCooperative(협조적)이어야 한다.
-  - **suspend(중단) 지점이 있어야 한다.**
-  - 중단지점에서 외부의 신호를 받으면 (cancel) Coroutine을 종료한다.
-  - **사용할 중단지점이 없다면 yield()를 사용하면 된다.**
-    - yield()는 중단 후 바로 재개한다.
+    - cancel 함수는 단순히 Flag를 세우는 역할 (취소예정) 
+    - **suspend(중단) 지점이 있어야 한다.**
+    - 중단지점에서 외부의 신호를 받으면 (cancel) Coroutine을 종료한다.
+    - **사용할 중단지점이 없다면 yield()를 사용하면 된다.**
+      - yield()는 중단 후 바로 재개한다.
+    - cancel() 이후에 실행되야 하는 작업이 있다면, cancelAndJoin()을 사용하면 된다.
+      - cancelAndJoin()은 cancel()과 join()을 동시에 호출하는 함수이다.
+      - cancel()이 될 때 가지 Caller를 suspend 시킨다.
+    - suspend function은 결국 Coroutine의 Switching을 유발하기 떄문에, isActive를 사용하면 성능상으로 유리 할 수 있다.
 - **직계 자식 Coroutine 또한 함꼐 종료된다.**
 
 ### 방법 1 - Exception

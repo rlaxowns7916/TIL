@@ -8,12 +8,25 @@
   - 3Way-HandShake를 통한 통신 연결을 하고, 4way-HandShake로 연결을 해제한다.
 - Byte Stream
    - 연속적인 Byte 열을 보낸다.
+   - EOF(End Of File)를 통해 데이터의 끝을 알린다.
+     - FIN Fla == 프로그래밍에서 EOF와 같은 역할을 한다. 
+     - TCP는 Stream(연속적인) 프로토콜 이기 때문에 송신함에 있어서 아래의 2가지 방법을 채탤 할 수 밖에 없다.
+       - 고정길이(N Byte) 전송
+       - 구분자(Delimiter) 정의
 - 데이터의 순차적인 전송을 보장한다.
   - 순서보장을 위한 **가상회선 방식**을 사용한다.
   - 각 패킷에 가상회선 식별자가 포함되며, 모두 전송될 경우 가상회선이 해제된다.
 - 오류를 제어한다.
 - 흐름을 제어한다.
 - 혼잡을 제어한다.
+
+## TimeOut
+
+### [1] ConnectionTimeOut
+- 3Way-HandShake를 통해서 연결을 맺는 과정에서 TimeOut이 발생한다.
+
+### [2] ReadTimeOut (= SocketTimeOut)
+- read()를 시작 한 후 , 일정 시간 이상 Response를 받지 못할 경우 발생한다.
 
 ### TCP 연결은 진짜 연결인가?
 ```text
@@ -75,6 +88,14 @@ sudo tcpdump -i any -lA -nn tcp and port 1234
       - <img width="498" alt="없는 포트에 보냈을 때" src="https://github.com/user-attachments/assets/38f909b6-5132-49ef-bf14-48e7b4f19565">
     2. SEQ가 잘못 되었을 때
     3. 비정상적 연결 종료 (정상적이라면 FIN)
+    4. (Optional) 정당한 사용자가 아닐 경우
+  - **Java기준**
+    - 상대방이 FIN을 보냈을 때
+      - RST 수신 후, read() 호출 시 ==> SocketException: Connection Reset
+      - RST 수신 후, write() 호출 시 ==> SocketException: Broken Pipe
+    - 내가 FIN을 보냈을 때
+      - RST 송신 후, read() 호출 시 ==> SocketException: Socket is closed
+      - RST 송신 후, write() 호출 시 ==> SocketException: Socket is closed
 - **PSH**
   - 데이터를 전송하겠다는 Flag이다.
   - 데이터를 전송하겠다는 쪽에서 보내는 Flag이다.

@@ -1,4 +1,7 @@
 # Coroutine
+- 함께 실행되는 Routine이라는 의미로 Co + Routine 이다.
+  - Routine & SubRoutine: SubRoutine이 실행되는 동안 다른 SubRoutine이 실행될 수 없으며, SubRoutine이 모두 종료되야 Routine도 종료된다.
+  - Coroutine: 서로간의 Thread 사용을 양보하며 함께 실행된다. (Coroutine 자신이 Thread의 제어권을 양보한다.)
 - 비동기 코드를 쉽게 작성(동기 방식으로) 할 수 있게 한다.
   - 비동기코드를 순차적으로 실행될 수 있게 도와준다.
 - I/O, Network 요청등 시간이 오래걸리는 작업에 유용하다.

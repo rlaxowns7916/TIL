@@ -26,6 +26,8 @@
 
 - Compile시점에 확인 가능
 - 에러 처리를 하지 않으면 Compile불가
+  - override 메소드는 부모의 CheckedException의 하위 Exception들 을 던져야하며, 더 큰 예외(상위 예외) 는 던질 수 없다. (일관성 보호 측면)
+  - 원래 Method (부모의 Method)가 CheckedException을 던지지 않는다면, Override한 Method도 던질 수 없다.
 - IOException,ClassNotFoundException ...
     - RuntimeException을 제외한 Exception의 하위 클래스들이다.
 - Exception 클래스는 CheckedException의 범주에 속한다.

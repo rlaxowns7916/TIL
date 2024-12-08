@@ -1,12 +1,14 @@
 # CoroutineExceptionHandling
 - Coroutine에서의 예외
-  - CcanellactionException인 경우 --> **취소로 간주하고, 부모에게 전파하지 않는다.**
+  - CanellactionException인 경우 --> **취소로 간주하고, 부모에게 전파하지 않는다.**
   - 그 외 다른 Excpetion --> **취소로 간주하고, 부모에게 전파한다.**
-
+    - Coroutine 계층구조에 따라서 부모 Coroutine이 적절하게 Exception을 Handling하지 않으면, root까지 전파되고 전체취소에 이르게 된다.
+- try-catch로도 Exception Handling이 가능하다.
 ## [0] ExceptionHandler
 - Corutine에서 Exception을 Handling하는 방법 중 하나
   - launch에만 적용 가능하다.
   - 최상위 Root Coroutine에서만 동작한다. (자식 Coroutine에 지정해도 의미없다.)
+    - 예외가 전파되면 (자식 -> 부모) Handling 됐다고 판단하기 때문이다. (전파 될 곳이 없는 root에서 작동하는 이유)
 ```kotlin
 fun main() = runBlocking{
     val exceptionHandler = CoroutineExceptionHandler { _, exception ->

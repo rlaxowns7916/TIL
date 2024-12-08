@@ -5,6 +5,7 @@
 - 하나의 Domain에 여러개의 IP가 지정 될 수 있다.
   - 기본적으로 Round-Robin으로 지정된다.
   - Weighted(가중치)-Round-Robin, Sticky-RoundRobin도 있다. 
+- Tree구조의 분산 데이터베이스이다.
 
 ## Domain
 - IP주소를 대신해서 사용하는 주소이다.
@@ -54,6 +55,10 @@ example1   .    example2     .    com      .     (생략)
 | MX    | 메일 서버 매핑                            |
 | PTR   | 역방향 질의 (IP -> Domain)               |
 
+
+## DNS Cache
+
+## .host 파일
 
 
 ## DNS - TTL
