@@ -18,7 +18,6 @@
 2. Listen을 통해서 클라이언트의 접속을 기다린다. (다수의 클라이언트를 받을 수 있다.)
 3. accept를 통해서 클라이언트의 접속을 받아들인다.
 
-
 **Server NIC -> OS TCP 수신 버퍼 -> Application**
 
 ## Client Socket
@@ -29,19 +28,22 @@
 **Application -> OS TCP 송신 버퍼 -> Client NIC**
 
 ### BackLog Queue
-- OS에서 관리하는 Connection 관리 Queue
-  - Syn Queue
-    - Syn 패킷을 받게되면 이 Queue에 Append 된다.
+- Server의 OS에서 관리하는 Connection 관리 Queue
+  - SYN Queue
+    - Client로부터 Syn 패킷을 받게되면 이 Queue에 Append 된다. (추적 목적)
+    - 이 대기열이 꽉차게 되면, (e.g: SYN Flood Attack) 이후의 연결이 Drop 될 수 있다.
   - Accept Queue
     - 3Way HandShake가 완료되면, Accept Queue에 Append 된다.
-    - ServerSocket이 accept()를 호출하면, Queue에 있는 Connection이 반환된다.
-- ServerSocket이 accept()를 통해서 클라이언트의 접속을 받아들일 때, BackLog Queue에 저장된다.
+    - ServerSocket이 Accept를 할 경우, Queue에서 제거된다.
 
 ## File
 - Socket은 File이다. (File과 일관된 인터페이스를 통해서 사용이 가능하다.)
   - File Descriptor를 통해서 File을 읽고 쓴다.
   - read(), write()를 통해서 데이터를 읽고 쓴다.
+    - Blcking I/O
+    - read()는 Blocking이다. (per Thread)
   - select(), poll(), epoll() 등을 통해서 File의 상태를 모니터링 할 수 있다.
+    - Non-Blocking I/O (이벤트를 감지 한 후, NonBlocking Mode read(), write() ==> 바로반환 (있으면 처리, 없으면 에러코드)
 - ```text
     A way to speak to other programs using standard Unix file descriptors
   ```
