@@ -1,4 +1,5 @@
 # ReentrantLock
+- java 1.5 > java.util.concurrent 부터 패키지가 추가되었다.
 - Java에서 제공하는 Lock이다.
 - 하나의 Thread만 Lock을 잡을 수 있다.
   - lock()과 unlock()메소드를 제공한다.
@@ -6,7 +7,10 @@
     - fair: 들어온 순서대로의 실행을 보장한다.
     - unfair: 우수한 성능을 보이나, 공정성이 보장되지 않는다.
 - Lock을 획득하지 못했다면 Blocking이 되며, Sleep & Wake 방식이다.
-
+- **내부적으로 LockSupport를 사용한다.**
+- 내부적으로 Queue(AbstractQueuedSynchronizer) 를 사용한다.
+  - UnFairMode여도 사용된다,
+  - Lock획득을 시도하는 사이에, 새로운 요청이 Lock을 가로 챌 수도 있다.
 ## Reentrant
 ```text
 하나의 Thread가 이미 Lock을 소유한 상태에서, 다시 Lock을 요청하면
@@ -41,7 +45,6 @@ public class Example {
 
 
 ## Vs Synchronized
-1. 락 미 획득시 로직 정의 가능 (synchronized는 획득 하기 전까지 Blocking) 
-2. 공정성의 보장 (synchronized는 보장되지 않는다.)
+1. Lock 미 획득시 로직 정의 가능 (synchronized는 획득 하기 전까지 Blocking) 
+2. FairMode 사용 시, 공정성의 보장 (synchronized는 보장되지 않는다.)
 3. Lock의 해제 (ReentrantLock은 Lock의 소유자만 unLock이 가능하나, Synchronized는 아니어도 가능하다.)
-4.

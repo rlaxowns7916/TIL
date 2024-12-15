@@ -13,7 +13,9 @@
   - MultiThread환경에서, 이러한 CacheMemory를 참조하게 될 때 각 Thread간의 데이터값이 상이하게 된다.
   - 각 Thread에서의 값의 변경은 다른 Thread에 즉시 전파되지 않는다.
 - **JMM(Java Memory Model) 최적화를 위해서 명령어의 순서를 변경하는 재정렬을 수행한다.**
-  - **이러한 재정렬은 순서가 뒤바뀔 가능성이 있기 때문에, volatile을 통해서 happens-before를 보장한다.** 
+  - **이러한 재정렬은 순서가 뒤바뀔 가능성이 있기 때문에, volatile을 통해서 happens-before를 보장한다.**
+  - **volatile 변수에 대한 Write는, 그 이전에 수행된 모든 명령어가 실행 된 후 반영된다.**
+  - **volatile 변수에 대한 Read는, 그 이후에 수행될 모든 명령어가 실행되기 전에 반영된다.**
 - MainMemory에 접근하게 되므로, 일관적인 값을 얻을 수 있다.
 
 ## Volatile은 동시성문제를 완벽하게 해결하는가?
@@ -24,7 +26,31 @@
 ```java
 /**
  * Double Check Locking
- */
+ * 
+ * synchronized를 사용하였는데 왜 추가적으로 volatile를 사용하는가?
+ *  - vaolatile을 사용하여, 명령어 재정렬을 바잊 할 수 있다.
+ *  - valatile이 없다면, JMM이 명령어 재정렬을 수행하여, 초기화되지 않은 객체를 반환 할 수도 있다.
+ *  
+ * Thread 1:
+ *  getInstance()를 호출하고 if (instance == null)을 통과.
+ *  synchronized 블록에 들어가 instance = new Singleton() 실행.
+ *  명령어 재정렬이 발생하여 instance에 메모리 참조가 먼저 저장됨.
+ *  하지만 생성자가 아직 실행되지 않은 상태.
+ * 
+ * Thread 2:
+ *  동시에 getInstance()를 호출.
+ *  첫 번째 if (instance == null) 체크에서 instance가 이미 할당된 것을 확인.
+ *  synchronized 블록을 건너뛰고 return instance 실행.
+ *  초기화되지 않은 객체를 반환.
+ *
+ * [생성자 호출 이전에 참조만 먼저 저장 될 수 있는 이유]
+ * 1. Memory allocation (메모리 할당): 객체 메모리 생성
+ * 2. Constructor invocation (생성자 호출): 생성자를 호출하여 객체 초기화
+ * 3. Reference assignment (참조 저장): instance가 객체의 메모리 주소를 가리킴
+ * 
+ * 
+ * 재정렬이 발생하여, 위 순서가 변경되면 초기화 되지 않은 객체를 참조할 위험성이 있다.
+ * /
 
 public class Singleton{
     private static volatile Singleton instance;

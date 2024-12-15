@@ -51,16 +51,20 @@ Thread t = new Thread(new MyRunnable());
   - 실제로 CPU에서 실행 가능한 상태이며, OS의 Scheduler에 의해 실행된다. 
 ### [3] BLOCKED
   - Thread가 동기화 Lock을 기다리는 상태
+    - synchronized를 통해서 Lock을 획득하지 못한 상태 (다른 Lock 객체는 WATING 상태에서 대기한다.)
   - CPU를 사용하지 않는 상태
+  - interrupt가 발생해도 꺠어나지 않는다.
 ### [4] WAITING
   - Thread가 무기한으로 다른 Thread의 작업을 기다리는 상태
   - CPU를 사용하지 않는 상태
   - wait(), join() 메소드를 통해서 발생한다.
+  - interrupt를 통해서 깨울 수 있다.
   - notify(), notifyAll() 메소드를 통해서 깨우거나, join()이 끝날 때 까지 디라니다. 
 ### [5] TIMED_WAITING
   - Thread가 일정 시간동안 다른 Thread의 작업을 기다리는 상태
-  - sleep(mills), wait(mills), join(mills) 메소드를 통해서 발생한다.
-  - CPU를 사용하지 않는 상태
+    - interrupt를 통해서 깨울 수 있다.
+    - sleep(mills), wait(mills), join(mills) 메소드를 통해서 발생한다.
+    - CPU를 사용하지 않는 상태
 ### [6] TERMINATED
   - Thread의 실행이 완료 된 상태
     - 한번 실행이 종료되면, 다시 시작 될 수 없다.
