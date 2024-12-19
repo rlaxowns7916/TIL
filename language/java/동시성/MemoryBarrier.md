@@ -1,6 +1,7 @@
 # Memory Barrier
 - **Memory Barrier는 H/W와 S/W 레벨에서 CPU와 메모리 간의 동작을 제어하여 명령어 재정렬과 메모리 가시성 문제를 방지하는 도구이다.**
   - 다중쓰레드 환경에서의 동작 동기화 및 가시성 문제 해결
+- MainMemory 로 강제 Flush 하거나, 다른 코어가 캐시된 데이터를 최신 상태로 유지하도록 보장합니다.
 - CPU 수준의 MemoryBarrier 명령이다.
 - CPU 아키텍쳐에 따라 차이가 있다.
   - x86 아키텍처
@@ -28,3 +29,10 @@
 - JMM(JavaMemoryModel)에서의 happens-before 관계는 실제 CPU의 MemoryBarrier 명령어를 사용하여 구현된다.
 - **Java에서는 volatile, synchronized, final을 통해서 Memory Barrier를 사용한다.**
 - **JIT 컴파일러가 생성한 바이트코드는 CPU 메모리 배리어 명령어를 포함한다.**
+
+### MemoryBarrier가 사용되는 명령어
+1. volatile
+2. synchronized
+3. final
+4. Lock (java.util.concurrent)
+5. UnsafeAPI (LowLevel Memory 제어 API)
