@@ -26,18 +26,17 @@
   - 각 자료구조 별로 Key에 동일하게 들어가는 것이아니라, 여러가지의 자료구조가 동일 Key에 들어갈 수 있다.
     - 모든 Value가 다 들어가 있는 것이 아니고, 시작하는 값이 들어가 있다.
 
-```text
-메모리 기반의 작업이기 떄문에, CPU가 병목현상이 아니다.
-Redis의 병목현상은 메모리 또는 네트워크 대역폭 크기일 가능성이 크다.
-```
-
 
 ## 2. Single-Thread
-- 4개의 쓰레드로 동작한다.
-  - 1개의 Main Thread, 3개의 Sub Thread
-  - 사용자의 명령어를 처리하는건 Main Thread의 역할이다.
-  - 3개의 Sub Thread는 시스템 명령어를 수행한다.
-  - UserLevel = SingleThread, Kernel Level = Multi Thread
+- 명령(Command)을 수행하는 Thread가 1개이다. (전체로보면 Single (X))
+  - 2.4 이상부터는 2개의 BIO Thread가 추가되어 아래의 작업을 수행한다.
+    - AOF Fsync (AOF File을 Disk에 Write할 때)
+    - RDB File Close (새로운 File을 Write하고, 기존 File을 Close 할 때)
+  - 4.0 이상부터는 1개의 BIO Thread가 추가되어 아래의 작업을 수행한다.
+    - UNLINK, FLUSHALL과 같은 무거운 비동기 Command
+  - 6.0 이상부터는 N개의 Sub Thread가 Client Network I/O를 수행한다.
+    - 설정을 통해서 별도의 활성화가 필요하다.
+    -  io-threads와 io-threads-do-reads 설정을 통해서 활성화가 가능하다.
 - 동시성 프로그램이에서 이점을 얻을 수 있다.
 - Memcached는 Multi-Thread로 동작한다.
 - SingleThread이기 떄문에 많은 부하를 주는 명령어가 있다.
@@ -51,9 +50,14 @@ Redis의 병목현상은 메모리 또는 네트워크 대역폭 크기일 가�
 
 ### 3. I/O Multiplexing
 - Asynchronous-Blocking I/O라고 볼수도 있다고한다. (논란의 여지는 있다.)
-- 하나의 통신채널로 여러개의 통신을 해결
-- 하나의 쓰레드가 여러개의 Socket (파일)을 제어한다.
-- File이 사용가능하게 되기 전까지의 과정이 Blocking되는 것을 막는 것이다.
+- 하나의 Thread로 여러가지 I/O 작업을 처리한다 (OS의 도움을 받음)
+  - Linux: epoll
+- 자체 이벤트 루프를 사용하여 I/O 작업을 처리
+  1. epoll()을 통해 Socket 상태(FD) 감시
+  2. 이벤트 처리
+  3. 명령 처리
+  4. 응답 전송
+- Redis 6.0 부터, Client에 대한 I/O는 MultiThread로 진행되도록 변경되었다.
 
 ## 4. 주요 사용처
 - 캐시

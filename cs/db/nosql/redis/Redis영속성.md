@@ -7,8 +7,11 @@
   - 즉, 두가지 복구옵션 모두 Redis Server 재시작 시점에만 가능하다.
 
 ## [1] RDB (Redis DataBase)
+- Memory를 Disk로 Dump 뜨는 것이다.
 - 일반적으로 dump.rdb라는 파일에 저장된다.
   - binary형식이며, 사람이 읽을 수 있는 형태가 아니다.
+- Copy-On-Write을 사용한다.
+  - fork()를 통해서 자식 Process를 생성하고, 자식 Process가 Disk에 Write한다.
 
 ### 장점
 - 복구가 빠르다.
@@ -23,7 +26,9 @@
   - 다음 Snapshot을 준비하는 과정에서 장애가 발생하면, 데이터 유실이 발생 할 수 있다.
   - 일반적으로 Snapshot은 5분단위로 생성된다.
 - RDB의 수행은 자식 Process가 수행하며, fork()비용이 높다.
+  - memory가 클 수록 비용이 높다. 
   - Snapshot이 클 경우, 병목 현상이 발생 할 수 있다.
+    - 자식 Process로 분리되어 있더라도 빈번한 DISK I/O와 COW로 인한 페이지 복사로 인한 전체 인스턴스의 리소스 경쟁이 발생 할 수 있다.
 
 ## RDB 설정
 - redis.conf 파일에 저장되어있다.
@@ -50,6 +55,8 @@
 
 ### [1] SAVE
 - 동기 방식이다.
+  - Blocking 되어 Command 실행이 불가능해진다.
+- 부모 Process가 직접 수행하기 때문에, 추가 Memory 사용은 없다.
 ```text
 [1] 부모 Process가 임시 RDB파일에 DataSet을 Write 한다.
 [2] 부모 Process의 Write가 끝나면, 이전 RDB파일을 대체한다.
@@ -57,29 +64,34 @@
 
 ### [2] BGSAVE 
 - 비동기 방식이다.
+  - 부모 Process는 Client의 요청에 응답이 가능하다.
 ```text
 [1] Redis 부모 Process가 fork()를 통해서 자식 Process를 생성한다.
 [2] 자식 Process는 임시 RDB파일에 DataSet을 Write한다.
 [3] 자식 Process의 Write가 끝나면, 이전 RDB파일을 대체한다.
 ```
-- SAVE는 동기방식이다.
-  - 다른 Client의 요청을 차단한다.
 
 ### Copy-On-Write
+**Process가 데이터를 복사 할 필요가 있을 때, 데이터를 즉시 복사하는 것이 아닌 변경 될 때만 복사해 최적화 하는 기법**
 - Linux(Unix)에서, 부모가 자식 Process를 fork()할 경우, 같은 메모리 공간을 공유한다.
-- 이 때, 부모 Process의 데이터 수정 (CUD)가 발생하면, 메모리의 공유가 불가능해진다.
-- 이 때, 자식 Process를 위한 Memory Page를 복사해야하기 떄문에, 부하가 발생한다.
+  - 맨 처음 fork()를 했을 때는 읽기 전용으로 공유된다.
+- 부모 Process의 데이터 수정 (CUD)가 발생하면, 부모와 자식간의 메모리 공유가 불가능해진다. 
+  - 이 때, 자식 Process를 위한 Memory Page를 복사해야하기 떄문에, 부하가 발생한다.
+  - Memory Page가 복사된 이후, 수정을 가한다.
+- **변경되지 않은 MemoryPage는 계속 공유된다.**
 
 ## [2] AOF
 - 실행된 Write Command가 Immutable하게 append된 형태이다.
   - RESP형태로 저장된다.
-  - **데이터가 변경된 Command만 저장된다.**
+  - **데이터가 변경된 Command(CUD) 만 저장된다.**
   - BRPOP과 같은 Blocking Command는 RPOP과 같은 NonBlocking Command로 변경된다
     - AOF파일에 Blocking을 굳이 명시할 필요가 없기 때문이다.
 - 시간이 지남에 따라 AOF 파일의 크기가 커질 수 있다.
   - 주기적으로 파일 재작성 (bgrewriteaof)프로세스를 수행한다.
 - 우선적으로 AOF Buffer에 명령어들이 기록된다.
   - 옵션에 따라서 fsync를 수행하며 Buffer를 비운다.
+- RDB에 비해 복구가 느리다. (명령어 하나하나 Replay해야 하기 때문)
+- DISK I/O, File 크기에 따른 관리포인트가 늘어난다.
 
 ### 설정
 ```shell
@@ -119,13 +131,14 @@ aof-use-rdb-preamble yes              # AOF Rewrite 시, AOF파일의 포맷을 
 
 ### Rewrite (압축)
 - AOF를 더 안정적으로 사용하는 기능이다.
+  - **불필요한 명령어를 제거하고, 데이터 상태를 압축하여 새로운 AOF파일을 생성한다.** 
   - 특정 조건에 따라 재구성하게 할 수 있다.
 - 커져가는 파일을 분할하고 압축한다.
   - **압축은 기존에 존재하는 AOF파일을 사용하지 않는다.**
   - 현재 메모리를 읽어와서 새로운 데이터로 저장하는 과정이 발생한다.
-- RDB와 마찬가지로 자식 Process를 fork()하고 자식 Process가 AOF파일을 Rewrite한다.
+- **fork()를 통한 CopyOnWrite 기법을 사용한다.**
+  - RDB와 마찬가지로 자식 Process를 fork()하고 자식 Process가 AOF파일을 Rewrite한다.
 - Rewrite과정은 모두 Sequential I/O로 구성된다.
-- 똑같이 fork()와 COW(Copy-On-Write)의 영향을 받는다.
 
 ### Rewrite 후 AOF 파일의 구조
 ```text
@@ -156,7 +169,7 @@ Manifest File
 ### 수동 Rewrite
 - BGREWRITEOF를 통해서 실행 가능하다.
   - MainThread를 차단하지 않고 백그라운드에서 수행한다.
-- **REWRITEOF는 존재하지 않는다.**
+- **REWRITEOF(동기) 는 존재하지 않는다.**
 
 
 ### Rewrite 수행과정

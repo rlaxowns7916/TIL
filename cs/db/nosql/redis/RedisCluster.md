@@ -32,7 +32,7 @@ redis-cli cluster nodes
 | 필드명        | 설명                                                                   |
 |---------------|----------------------------------------------------------------------|
 | id            | Node가 생성될 떄 자동으로 만들어지는 RandomString ClusterId이다. (Immutable)         |
-| ip:port@cport | Node의 IP 주소 및 Port, ClusterPort (RedisPort + 10000으로 자동설정된다)         |
+| ip:port@cport | Node의 IP 주소 및 Port, ClusterBusPort (RedisPort + 10000으로 자동설정된다)      |
 | flags         | Node의 상태를 나타내는 Flag                                                  |
 | master        | MasterNode 일 경우 '-'가, ReplicaNode일 경우 'MasterNode의 ID'가 표시된다.        |
 | pingsent      | 마지막으로 PING 메시지를 보낸 시간, 보류중인게 있다면 0                                   |
@@ -58,7 +58,7 @@ redis-cli cluster nodes
   - StandAlone에서는 모든 Key가 한 Node에 존재하지만, Cluster는 그렇지 않다.
 - Cluster의 모든 Node는 해당 Key에 맞는 Node를 알고있다. (HashSlot)
   - 자신이 담당할 데이터가 아니라면, 해당 Node에게 Redirect 시킨다.
-  - 내부적으로 HashSlotMap을 가지고 있고, Redirect를 반영하고 어떤 HashSLot이 어떤 Node에 있는지를 저장한다.
+  - 내부적으로 HashSlotMap을 가지고 있고, Redirect를 반영하고 어떤 HashSlot이 어떤 Node에 있는지를 저장한다.
     - ```shell
         # 일반모드
         redis-cli
@@ -152,9 +152,10 @@ Moving 2831 slots from 192.168.112.3:6379 to 192.168.112.4:6379
   - 각 Key가 여러개의 HashSlot (= 여러개의 MasterNode)에 분산되어 저장되어 있을 수 있기 때문이다.
   - 해당 Node는 그 Key를 처리할 수 있는 다른 Node로 Redirect시키는데, Redirect 대상이 여러개이면 동작할 수 없다.
   - 다중 Key의 경우, 해당 Key들이 모두 같은 HashSlot에 위치해야 한다.
-    - 같은 MasterNode에 위치하는 복수의 HashSlot들 이더라도, 복수 KeyCommand는 동작하지 않는다.
+    - **같은 MasterNode에 위치하는 복수의 HashSlot들 이더라도, 복수 KeyCommand는 동작하지 않는다.**
     - 다른 HashSlot에 분산되어있으면 원자성 보장이 어렵기 떄문에 간략화하기 위함이다.
-- 위와 같은 다중 Key Command의 제약을 극복하는 방법이다.
+  - **Client(Lettuce, Jedis)에서 Multi 명령어를 지원하는건, Slot에 맞게 Partition하여 병렬로 Multi명령 실행 후 취합하는 것이다.**
+- HashTag를 통해서, 같은 HashSlot에 위치하도록 할 수 있다.
   - ```shell
       # {} 사이에 있는 값을 해시하여, HashSlot을 배정한다.
       users:{123}:profile
