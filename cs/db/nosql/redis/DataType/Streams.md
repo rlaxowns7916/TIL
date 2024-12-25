@@ -7,6 +7,12 @@
         - ConsumerGroup이라는 개념을 제공한다.
     - 분산처리를 목적으로 한다.
 - Kafka의 Topic == Stream 으로 볼 수 있다.
+- **Unique ID를 Key로 Value를 가진다.**
+  - Unique ID는 Ordering이 가능하다. (millisecond-sequence)
+- Cluster 환경에서도 동작 가능하다. (Key를 통한 Sharding ==> Hashslot)
+  - Stream에 대한 Key이다. (Data의 UniqueId 기반 아님)
+  - **Cluster 환경에서 균일하게 데이터를 소비하게하려면, 다중 Stream을 생성해야 한다.**
+  - Cluster에서는 글로벌 순서가 보장 불가능하다. (해당 Node에서만 Local 보장)
 
 ### PubSub과의 비교
 - 영속성
@@ -45,7 +51,10 @@
     - Redis: XADD 시점에 생성 가능
 - Message의 순서
     - Kafka: Partition에서만 보장
-    - Reids: Global하게 보장
+    - Redis: Global하게 보장
+- 유틸성
+    - Kafka: Compression, Retry, SchemaRegistry 등 다양한 기능 제공
+    - Redis: 기본적인 Message 기능만 제공  (Partition 개념이 없다.)
 
 ## 주요 Command
 

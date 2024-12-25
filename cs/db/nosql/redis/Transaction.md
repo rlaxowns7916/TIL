@@ -8,22 +8,25 @@
     - Client레벨에서, Atomic한 단위의 순차적인 실행을 보장한다.
     - 해당 Client에 국한되기 때문에, 다른 Client와의 RaceCondition이 발생될 수 있다.
     - 개별 명령어의 실패시에 Rollback을 하지 않는다.
-- 트랜잭션 안에서의 검증은 실제 명령어가 수행될 때 일어난다.
-    - 모든 검증은 EXEC가 호출될 때 발생한다.
+- 트랜잭션 안에서의 검증은 두 단계로 나뉘어 있다.
+  - Syntax오류 ==> Queue에 쌓일 때 발생
+    - 2.6.5 >= Version: 트랜잭션 전체 실패 (EXECABORT 에러)
+    - 2.6.5 < Version: 성공적으로 Queueing 된 명령어만 실행
+  - DataType오류 ==> Exec시점에 발생 (나머지 명령은 정상 실행)
 - Transaction 중간에 명령이 실패할 수 있다.
-    - Command Syntax오류
+    - Command Syntax 오류
     - DataType 불일치
     - Redis Server의 Memory 및 리소스 부족
     - WATCH Command와의 충돌
-- Transaction이 중간에 실패할 시, 모든 명령어 실행이 중지된다.
 
 ## 롤백?
 ```text
 Redis는 트랜잭션을 지원하지만, 롤백을 지원하지 않는다.
 Transaction 실행 시, 명령어는 Queue에 쌓이게 되고 Exec 시점에 모두 수행된다.
+(버전에 따라서, Queue에 쌓일 때 Syntax오류가 있다면 전체 실패한다)
 
-Exec 실행시점에 Redis는 트랜잭션으로 묶인 명령어들에 대해서 Validation을 수행한다.
-아래와 같은 경우 Validation에 실패하게 되고, 명령어들은 수행되지 않는다.
+Exec 실행시점에 Redis는 트랜잭션으로 묶인 명령어들을 순차적으로 수행한다.
+아래와 같은 경우 트랜잭션 전체가 실패하게 되고, 명령어들은 수행되지 않는다.
 
 1. Watch를 통한 Key 변경 확인
 2. 외부 요인에 의한 오류 (메모리 부족, 서비스 장애 ...)
@@ -54,9 +57,9 @@ SET key3 val3
 
 ### 발생할 수 있는 문제점
 
-- **크로스 슬롯 오류**:
-    - 여러 해시 슬롯에 걸쳐 있는 키들을 사용하려고 하면 '크로스 슬롯' 오류가 발생한다.
-    - 클러스터 환경에서 한 트랜잭션 내에서 여러 노드의 데이터를 동시에 조작할 수 없음을 의미합니다.
+- **Cross-Slot-Error**:
+    - 여러 해시 슬롯에 걸쳐 있는 키들을 사용하려고 하면 'cross slot' 오류가 발생한다.
+    - 클러스터 환경에서 한 트랜잭션 내에서 여러 slot의 데이터를 동시에 조작할 수 없음을 의미
 - **네트워크 지연과 일관성**
     - 네트워크 지연과 노드 간의 커뮤니케이션이 트랜잭션의 성능과 일관성에 영향을 미칠 수 있다.
     - 클러스터 환경에서 트랜잭션을 사용할 때는 이러한 요소들을 고려해야 한다.
@@ -68,9 +71,8 @@ SET key3 val3
 - 트랜잭션을 시작하는 명령어이다.
 - Syntax오류가 있을 경우, Error를 리턴하며 이전까지의 트랜잭션을 버린다.
 - Queue에 담긴 순서대로 명령이 수행된다.
-- Atomic & Blocking이 발생하는 것은 해당 Client 한정이다.
     - MULTI가 입력되고 Queue에 Command가 적재되는 중간에도, 다른 Client는 Command를 수행할 수 있다.
-
+    - EXEC 명령이 실행되면 Queue에 적재된 명령이 순차적으로 수행된다. (다른 Client의 명령은 수행되지 않는다)
 ```bash
 > MULTI
 OK
@@ -102,7 +104,6 @@ OK
 ```
 
 ### [3] WATCH
-
 - WATCH를 통해서, 감시할 대상을 선정한다.
     - CAS (Compare And Set)을 통한 Optimistic Lock을 제공한다
     - 변경이 감지되면 Transaction이 중단되고, NULL을 리턴함으로 하여 Transaction 실패를 알린다.
