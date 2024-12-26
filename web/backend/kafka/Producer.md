@@ -37,12 +37,16 @@
 ## [2] 종류
 
 ## Transaction Producer
+- IdempotentProducer의 확장
 - 다수의 Data를 하나의 Transaction으로 묶어, Atomic하게 처리하는 것을 의미한다.
   - 여러 Topic 혹은 Partition에 Write 할 때, Transaction을 단위로 "all or nothing" 을 보장한다.
-- 사용자가 보낸 Record를 저장할 뿐만 아니라, Transaction의 시작과 끝을 알리는 Record 또한 전송한다.
 - Producer별로, 고유한 ID값을 사용해야한다. 
+  - 기존 idempotentProducer의 문제였던 휘발성(indtance 재 시작시 pid, sequence 초기화)를 해결한다.
+  - **transactional.id에 매핑되는 pid-sequence는 Broker의 TransactionCoordinator가 관리한다.**
   - init -> begin -> commit 순서대로 동작한다.
 - consumer도 isolation_level (read_commited) 을 통한 설정이 필요하다.
+- 여러 파티션에 걸친 Write가 성공하면 Commit, 아니라면 Abort
+   - read_commited기 때문에 Consumer는 commit된 시점에 한번에 해당 데이터 들을 볼 수 있다.
 ```java
 class Example{
     public static void main(String[] args) {
@@ -67,10 +71,10 @@ class Example{
   - Partition 마다 생성된다. 
   - Network오류로 인해서 Message의 중복발송이나, 순서가 변경되는 것을 방지 할 수 있다.
 - 여러번 전송하더라도, KafkaCluster에서는 단 한번만 저장된다.
-- 데이터를 Broker로 전달 할 때, PID(Producer 고유 ID)와 SID(Record Id)를 전달한다.
+- 데이터를 Broker로 전달 할 때, PID(Producer 고유 ID)와 Sequence를 전달한다.
   - PID는 동일한 Session에서만 유효하다.
     - 즉, Producer가 새롭게시작된다면 의미없다.
-  - SID는 순서를 의미하는데, 순서가 역전되거나 꼬이는 현상이 있으면 OutOfOrderSequenceException이 발생한다.
+  - Sequence는 순서가 역전되거나 꼬이는 현상이 있으면 OutOfOrderSequenceException이 발생한다.
   - Producer의 Data가 정확하게 한번 Broker에 저장되도록 동작한다.
   - 이미 저장되어있는 것을 또 저장하려고해도 acks를 보내준다.
 
