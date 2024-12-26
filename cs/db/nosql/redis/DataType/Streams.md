@@ -12,7 +12,6 @@
 - Cluster 환경에서도 동작 가능하다. (Key를 통한 Sharding ==> Hashslot)
   - Stream에 대한 Key이다. (Data의 UniqueId 기반 아님)
   - **Cluster 환경에서 균일하게 데이터를 소비하게하려면, 다중 Stream을 생성해야 한다.**
-  - Cluster에서는 글로벌 순서가 보장 불가능하다. (해당 Node에서만 Local 보장)
 
 ### PubSub과의 비교
 - 영속성

@@ -1,13 +1,16 @@
 ## Partition
-- 물리적인 표현이다.
+- Topic을 이루는 구성요소이며, 논리적인 표현이다.
+  - 하나의 Topic은 병렬처리를 위해서 N개의 Partition을 가진다.
+  - Topic내의 partition끼리는 서로 독립적이다.
+    - offset 조차도 독립적이다.
+- 0번 부터 Indexing 된다.
+- CommitLog(AppendOnly) 방식이며, 저장된 Record는 변경이 불가 (Immutable) 하다.
 - Queue(FIFO) 구조이다.
     - 오래된 순서대로 Consumer가 Message를 가져간다.
     - Consumer가 Consume하여도, 데이터는 삭제되지 않는다.
         - 옵션에 따라 삭제시점을 정할 수 있다.
         - 다른 ConsumerGroup의 Consumer가 재사용 할 수 있다.
 - 병렬처리를 위해서 다수의 Partition을 사용한다.
-- Topic내의 partition끼리는 서로 독립적이다.
-    - offset 조차도 독립적이다.
 - partition에 저장된 파일들은 Immutable하다.
 - 고가용성을 위해서 복제(Replica) 한다.
     - 여러 Broker에 분산된다.
@@ -15,18 +18,24 @@
 - ConsumerGroup내의 하나의 Consumer에 의해서만 사용된다.
 - 여러개의 Consumer를 담당 할 수 없다.
 
+### Commit Log
+- Partition의 물리적 저장 방식 (partition은 논리적인 개념)
+  - Disk에 append-only 개념으로 추가된다.
+  - offset 순서대로 append 된다.
+- 추가만 가능하고 변경이 불가능한 DataStructure
+
+
 ### Segment
 - Record를 저장하는 실제 물리 File이다.
 - 지정된 크기가 커지거나(default 1GB), 오래되면(default 7일) 새로운 파일이 생성되고 추가된다.
 - Active Segment(마지막)에 Write가 이루어진다.
+  - Partition 당 Active Segment 는 하나이다.
 
-### Commit Log
-- Partition은 CommitLog 형식이다.
-- 추가만 가능하고 변경이 불가능한 DataStructure
-- Event들이 추가만된다.
-- offset이라는 것으로 Message에 접근 가능하다.
-  - offset은 계속해서 증가한다.
-  - Consumer Group끼리는 다른 Offset을 갖는다.
+
+### Consumer Lag
+- Consumer가 현재 Read 하고 있는 offset을 **CurrentOffse**이라고 한다.
+- Procuder가 현재 Write 하고 있는 offset을 **LogEndOffset**이라고 한다.
+- **LogEndOffset과  CurrentOffset의 차이를 ConsumerLag 이라고 부른다.** 
 
 ### Partition의 추가와 삭제
 - 추가만 가능하고, 삭제는 불가능하다.
@@ -49,6 +58,7 @@
     - 1인 경우는 Log와 같은 Metric성 정보일 때 주로 사용한다.
 - Partition단위로 동작하며, Broker의 숫자보다 많이 설정 할 수 없다.
 - Follower가 Leader에게 데이터를 가져오기를 요청 (Fetch Request) 한다.
+  - **Leader가 Push해주는게 아님**
 - 미리 원본(Leader) 을 복사한 복제본(Follower)을 준비하여, 장애가 발생했을 때를 미리 대비한다.
 - Replication Factor 옵션은 n(원본 + 복제본) 이다.
   - 최댓값은 Broker 갯수이다.
@@ -72,10 +82,15 @@
   여러 Broker가 통신을 분담하게 된다.
 
 ### HotSpot 방지 (Leader Partition 이 특정 Broker에 몰리는 것)
-- Leader Parition이 특정 Broker에 몰리면 해당 Broker만 Read/Write를 수행하므로 비효율 적이다.
+- Leader Parition이 특정 Broker에 몰리면 해당 Broker만 Read(버전에 따라 Follower에서도 Read 가능) /Write를 수행하므로 비효율 적이다.
 - Leader Partition을 동등하게 Broker들이 나눠가져야 효율이 좋다.
 - ShellScript로 재분배 수행을 제공한다.
   - kafka-reassign-partitions.sh
+- Option
+  - ```text
+      auto.leader.rebalance.enable: (default: enable) # Rebalance 가능 여부
+      leader.imbalance.check.interval.seconds: (default: 300sec) # Rebalance가 필요한지 Check 하는 주기
+    ```
 
 #### 옵션
 - auto.leader.rebalance.enable (default: enable) 

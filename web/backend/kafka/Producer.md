@@ -2,17 +2,31 @@
 - Kafka Topic으로 Record를 보내는 어플리케이션
   - 성공 여부를 확인 할 수 있으며, 재시도 또한 가능하다.
   - 주로 Callback을 통해서 확인한다. (비동기)
+- 성능 최적화를 위해서 Batch 처리를 할 수 있다.
+  - Network I/O를 줄일 수 있다.
+  - ```text
+        linger.ms (default: 0 --> 즉시보냄) // Message가 함께 Batch처리될 때 대기시간
+        batch.size (default: 16KB) // Message를 보내기전 Batch 최대 크기
+    ```
+  - **linger.ms를 자주 쓴다.** (batch.size가 채워질 떄 까지 시간이 걸리면, send가 지연이 되기 떄문)
 
 
 ## [1] 구성
 1. Serializer
     - Message를 직렬화 한다.
+    - Key / Value 형태의 Kafka가 알 수 있는 ByteArray 형태로 변환된다.
 2. Partitioner
     - 어떤 Partition에 보낼지 결정한다.
-    - Batch에 쌓는다.
-3. Sender
-    - 별도의 Thread로 동작한다.
-    - 일정 시점마다 Batch에 있는 것들을 Broker에 전송한다.
+    - 기본적으로 아래와 같은 Rule을 가진다.
+      - Key가 null 일 때   : RoundRobin
+      - Key가 null이 아닐 때: Key의 Hash 값 기반으로 선택 (동일 Key면 동일 Partition으로 가게됨) 
+3. RecordAccumulator
+    - Message를 모아서 효율적으로 Batch로 전송하는 역할을 한다.
+    - Batch처리를 통해서 Network I/O를 줄일 수 있게 된다.
+4. Sender
+    - 별도의 Background Thread로 동작한다. 
+    - 일정 시점마다 RecordAccumulator에 있는 것들(Batch) 을 Broker에 전송한다.
+    - 전송중 에러가 발생하면, Retry로직이 발생한다. (Default: 무한대 (Integer.MAX_VALUE))
     - Buffer가 다 찼는지 확인하지 않는다.
     - **Sender의 주요속성이, 처리량에 영향을 미친다.**
       - batch.size: 한번에 보낼 Buffer의 Size이다.
@@ -24,9 +38,11 @@
 
 ## Transaction Producer
 - 다수의 Data를 하나의 Transaction으로 묶어, Atomic하게 처리하는 것을 의미한다.
+  - 여러 Topic 혹은 Partition에 Write 할 때, Transaction을 단위로 "all or nothing" 을 보장한다.
 - 사용자가 보낸 Record를 저장할 뿐만 아니라, Transaction의 시작과 끝을 알리는 Record 또한 전송한다.
 - Producer별로, 고유한 ID값을 사용해야한다. 
   - init -> begin -> commit 순서대로 동작한다.
+- consumer도 isolation_level (read_commited) 을 통한 설정이 필요하다.
 ```java
 class Example{
     public static void main(String[] args) {
@@ -78,6 +94,7 @@ class Example{
 #### 옵션
 - -1: 모든 Replica에게서 ack응답을 받음
   -  -1의 경우 min.insync.replicas 옵션이 영향을 미친다. (몇개의 ack가 와야 성공인 것인가 (Leader는 필수))
-- 0: 응답을 기다리지않음 (전송보장 (X))
+  - at-least-once(최소한번 전달 보장)
+- 0: 응답을 기다리지않음 (전송보장 (X) ==> 손실이 있더라도 속도를 중요시 할 경우)
 - 1: Leader의 저장 여부 확인 (Leader 장애시 메세지 유실 가능 / Follower 복제 시점 이전에, Leader가 ack를 보내고 죽는다면?)
 

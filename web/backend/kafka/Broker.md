@@ -4,14 +4,23 @@
 - Kafka Cluster를 구성하는 요소이다.
     - 최소 3대이상의 Broker를 사용하는 것을 권장한다.
 - Partition에 Record를 저장 하는 소프트웨어 이다.
+  - Kafka 설계의 단순성을 위해서 각 Record는 ByteArray로 저장된다.
+  - serialize, deserialize 는 Client (producer, consumer)의 책임이다.
 - Topic의 Partition 일부를 가지고 있다.
     - 일부분을 갖고있을 뿐, 전체 데이터를 갖고있지 않다.
-- 하나의 Broker에만 연결해도 Cluster 전체에 접근 할 수 있다.
+- 하나의 Broker에만 연결해도 Cluster(Kafka Broker들의 집합) 전체에 접근 할 수 있다.
     - 하지만 해당 Broker가 장애가 발생하면, 접근 할 곳이 사라지므로 보통 모두 연결한다.
     - 각각의 Broker는 모든 Broker,Topic, Partition에 대해서 알고 있다. (MetaData)
+      - Orchestrator (ZooKeeper, KRaft)를 통해서 동기화한다.
+      - 이러한 데이터의 관리주체는 Controller(역할을 하는 Broker) 이다.
+    - 하지만, 보통 모든 Broker의 주소를 설정한다. (Broker 주소하나만 입력했다가 해당 Broker가 장애난다면?)
+- 기본적으로 Client와 하나의 TCP Connection을 유지하면서 재사용한다.
+  - Client-Broker당 하나인 것이며, Cluster라면 Client는 N개의 Broker와 TCP Connection을 맺게된다.
+
 ### 1. 컨트롤러
 - **Kafka Cluster 내부의 Broker중 하나가 Controller가 된다.**
-- ZooKeeper로 부터 Broker Liveness를 모니터링 한다. (상태 체크)
+- **Cluster내의 Topic, Parittion, Leader, Replica와 관련된 정보를 관리한다.**
+- Orchestrator (ZooKeeper, KRaft)로 부터 Broker Liveness를 모니터링 한다. (상태 체크)
   - Broker가 Cluster에서 이탈하는 경우, 해당 Broker에 존재하는 Leader Partition을 재분배한다.
 - Leader와 Replica 정보를 ZooKeeper로 부터 수신하고, 해당 정보를 Cluster내의 다른 Broker에게 전달한다.
     - **LeaderPartition을 갖고 있는 Broker가 장애시 Controller가 Partition Leader Election을 수행한다.**
@@ -33,10 +42,10 @@
 - COMPACT
   - Key별로 가장 최근의 Key만 남기고 나머지는 삭제한다.
 ### 3. 코디네이터
-- Consumer가 Commit 한 Offset을 저장하는 역할이다. (Consumer가 Topic의 어느 지점 까지 읽었는지 명시 해주는 것)
+- **Consumer가 Commit 한 Offset을 저장하는 역할이다. (Consumer가 Topic의 어느 지점 까지 읽었는지 명시 해주는 것)**
   - _consumer_offsets라는 Topic에 자동으로 저장된다.
       - 기본적으로 생성되는 Topic이다.
-- **Consumer Group의 상태를 체크하고(HeartBeat), Rebalance(재 매칭)를 수행한다.**
+- **Consumer Group의 상태를 체크하고(HeartBeat), Partition Rebalance(Partition - Consumer 재 매칭)를 수행한다.**
   - ConsumerGroup내의 Consumer가 추가되거나 제외 되었을 때
   - Join과 Sync로 나뉘어진다.
     - Join: Consumer가 코디네이터에게 Group에게 가입요청을 하는 것이다.

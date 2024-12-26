@@ -7,7 +7,7 @@
     - 하나의 Topic에 여러 ConsumerGroup이 동시에 Read할 수 있다.
 - 하나의 Consumer가 0개이상의 Partition 사용이 가능하다.
   - 여러개의 Partition의 Record를 가지고 올 수 있다.
-  - Consumer의 갯수가 Partition의 갯수보다 크다면 특정 Consumer는 놀고있을 수 있다.
+  - Consumer의 갯수가 Partition의 갯수보다 크다면 특정 Consumer는 놀고있을 수 있다. (같은 ConsumerGroup에서 N개의 Consumer가 같은 Partition을 Consume 할 수 없음)
 - Commited된 Record만 Read 할 수 있다.
 - **ThreadSafe하지 않기떄문에, MultiThread로 구성해서는 안된다.**
   - MultiThreadConsumer를 지원한다.
