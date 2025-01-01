@@ -41,8 +41,12 @@
 - 추가만 가능하고, 삭제는 불가능하다.
   - 여러 Broker에 저장된 Data를 취합하고 정렬하는 복잡한 과정이 발생하기 때문이다.
   - Partition 삭제시에, 그 안에있던 데이터들 또한 즉시 삭제된다.
-- 추가 또한 Data Rebalancing이 발생하기 때문에 신중하야 한다.
-  - key값이 null일 때는 상관 없다. (RR이기 떄문에(Sticky 포함))
+- 추가 또한 Data Rebalancing이 발생할 수 있다.
+  - Producer의 관점: 보낼 때만 영향, Broker에 저장된 이후에는 영향 (X)
+    - Key: 같은 Key기준 A Partiiton에 들어가던 것이, B Partition에 들어갈 수 있다.
+    - RoundRobin: 애초에 지정된 규칙이 없었기 때문에 영향이 없다.
+  - Conumser의 관점
+    - Partiiton 단위로 Record를 가져오기 때문에 큰 상관 없다. (ConsumerGroup별 할당 전략)
 
 ### Leader Partition & Follower Partition
 - Leader Partition에서 Read와 Write를 담당하며, Consumer와 통신한다.
@@ -72,14 +76,6 @@
 - Follower Partition 중에서 하나가 Leader Partition이 된다.
 - Producer와 Consumer들 또한 새롭게 선출된 Leader로 데이터를 포워딩한다.
 
-### Key Cardinality
-- Message의 Key값의 Hash를 통해서 Partition이 결정된다.
-- 균등하게 분포되어있어야지 효율성이 올라간다.
-
-### Partition이 배치되는 방법
-- 0번 Broker부터 시작하여, Round-Robin 방식으로 Leader Partition이 생성된다.
-- KafkaClient는 Leader Partition과 통신을 주고 받음으로, 특정 서버에 Traffic이 몰리는 것이 아닌,
-  여러 Broker가 통신을 분담하게 된다.
 
 ### HotSpot 방지 (Leader Partition 이 특정 Broker에 몰리는 것)
 - Leader Parition이 특정 Broker에 몰리면 해당 Broker만 Read(버전에 따라 Follower에서도 Read 가능) /Write를 수행하므로 비효율 적이다.
@@ -99,3 +95,16 @@
   - 불균형이 있는지 Check하는 Interval Time이다.
 - leader.imbalance.per.broker.percentage(default: 10)
   - 다른 Broker들보다 LeaderParition을 얼마나 가져가는지를 판단하는 퍼센트이다.
+
+### Flush
+- PageCache(Memory) -> Disk에 쓰는 단계이다.
+  - Flush이전에 Broker의 장애가 발생하면 데이터의 유실이 일어날 수 있다.
+  - 이러한 한계를 보완하기 위해서 나온게 Replication(복제) 이다.
+- **성능을 위해서 Segment는 Os의 PageCache(Memory) 에 먼저 저장된다.**
+  - I/O처리(Disk, Network) 에서의 성능상 이점을 누릴 수 있다.
+- **Segment의 데이터 형식은 Producer로부터 수신한 것, Consumer에게 보내는 것과 정확히 일치하므로, Zero-Copy가 가능하다.**
+  - Copy없이, 그대로 Network에 태울 수 있기 때문이다.
+- 아래와 같은 상황에서 Flush된다.
+  - Broker의 종료
+  - OS의 주기적인 Flush (Kafka와 상관 없음)
+  - 설정에 따른 Background에서의 FlusherThread의 실행

@@ -28,7 +28,7 @@
     - = Partition은 최대 1개의 Consumer를 가질 수 있다.
       - Consumer의 갯수가 더 많다면 노는 Consumer가 존재 할 수 있다.
 ### Consumer Rebalancing
-- Consumer Group에 새로운 Consumer가 투입되거나 제외되면 발생
+- **Consumer Group에 새로운 Consumer가 투입/ 제거 되거나, Partition의 수가 증가되면 발생한다.**
   - Consumer는 지속적으로 HeartBeat를 전송하는데, 일정시간 이상 응답이 없으면(Session TimeOut) Group에서 제외하고 Rebalancing한다.
   - Partition의 제어권이 다른 Consumer에게 넘어 가는 것이다.
 - Group의 관리는 Coordinator(Broker)가, Partition의 분배는 Leader Consumer가 수행한다.
@@ -39,11 +39,21 @@
 - **RebalanceListener를 통해서 Rebalancing이 일어날 때, 로직 처리를 할 수 있다.**
 
 ### Consumer Partition Assigner 
-- Leader Consumer의 수행
+- Broker(Coordinator)와 Consumer(GroupLeader)의 상호작용으로 수행된다.
+  - Coordinator: ConsumerGroup의 정보를 가지고 있는 Broker (groupId의 Hash값 기반)
+  - GroupLeader: Consumer JoinGroup 과정에서 선정된 Consumer 
 - Consumer와 Partition을 매칭시킨다.
-- ConsumerGroup 단위로 설정된다.
+  1. 모든 Consumer가 Coordinator에게 JoinGroup 요청을 보낸다.
+  2. Coordinator는 ConsumerGroup 상태를 기반으로 GroupLeader를 지정하고 Partition 정보와 Consumer리스트를 GroupLeader에게 제공한다.
+  3. GroupLeader가 Partition과 Consumer를 각각 매핑한다.
+  4. 매핑 결과를 Coordinator에게 보고한다. (SyncGroup)
+  5. Coordinator은 각각의 Consumer에게 전파한다.
+- GroupLeader(Consumer)가 매핑을 수행하는 이유는 아래와 같다. 
+  1. Broker의 부하분산
+  2. ConsumerGroup 별 최적화된 할당전략 선택
+- partition.assignment.strategy 를 통해서 할당 방식을 고를 수 있다.
 
-#### 1. Range Assigner
+#### 1. Range Assigner (Default)
 - 파티션을 숫자기준으로 정렬, Consumer의 이름을 사전순으로 정렬
 - 반반씩 나눠 가진다. (반으로 안나뉘면 앞에 위치한 Consumer가 더 가져간다.)
 - Consumer가 Partition보다 수가 많다면? 뒷 번호 Consumer들은 계속해서 처리를 하지 못할 것이다.
@@ -51,10 +61,15 @@
 
 #### 2. RoundRobin Assigner
 - 파티션을 Consumer에 번갈아가며 할당한다.
+- 불균형이 발생 할 수 있다.
+- Rebalancing 시에, 기존 매핑관계는 모두 Reset되며, 처음부터 다시 할당된다.
 
 #### 3. Sticky Assigner
 - Round Robin의 개선된 방법
-- 최대한 기존의 Consumer와 매칭을 시킨다.
+- Rebalancing 시에 최대한 기존의 Consumer와 매칭을 시킨다.
+  - RoundRobin과 다르게, Rebalancing이 필요한 부분만 진행한다.
+- 불균형을 억제한다.
+  - 특정 Consumer가 다른 Consumer들 보다 2개이상 더 적은 Partition이 할당 된 경우, 해당 Consumer에 우선적으로 할당된다.
 
 ### ConsumerLag
 - Producer와 Consumer의 Offset 차이를 Consumer Lag라고 부른다.

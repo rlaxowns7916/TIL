@@ -9,6 +9,8 @@
         batch.size (default: 16KB) // Message를 보내기전 Batch 최대 크기
     ```
   - **linger.ms를 자주 쓴다.** (batch.size가 채워질 떄 까지 시간이 걸리면, send가 지연이 되기 떄문)
+- 하나의 Connection에서 여러개의 요청(Multiple in-flight request)을 한번에 보낼 수 있다.
+  - max.in.flight.requests.per.connection (default: 5)
 
 
 ## [1] 구성
@@ -32,52 +34,7 @@
       - batch.size: 한번에 보낼 Buffer의 Size이다.
       - linger.ms: Message를 Batch에 유지하는 시간이다. 이 시점이 지나면 Send한다.
       - buffer.memory: Buffer의 크기를 지정한다.
-
-
-## [2] 종류
-
-## Transaction Producer
-- IdempotentProducer의 확장
-- 다수의 Data를 하나의 Transaction으로 묶어, Atomic하게 처리하는 것을 의미한다.
-  - 여러 Topic 혹은 Partition에 Write 할 때, Transaction을 단위로 "all or nothing" 을 보장한다.
-- Producer별로, 고유한 ID값을 사용해야한다. 
-  - 기존 idempotentProducer의 문제였던 휘발성(indtance 재 시작시 pid, sequence 초기화)를 해결한다.
-  - **transactional.id에 매핑되는 pid-sequence는 Broker의 TransactionCoordinator가 관리한다.**
-  - init -> begin -> commit 순서대로 동작한다.
-- consumer도 isolation_level (read_commited) 을 통한 설정이 필요하다.
-- 여러 파티션에 걸친 Write가 성공하면 Commit, 아니라면 Abort
-   - read_commited기 때문에 Consumer는 commit된 시점에 한번에 해당 데이터 들을 볼 수 있다.
-```java
-class Example{
-    public static void main(String[] args) {
-        configs,put(ProducerConfig.TRANSACTIONAL_ID_CONFIG, UUID.randomUUID());
-        Producer<String,String> producer =new kafkaProducer<>(configs);
-
-        producer.initTransactions();
-
-        producer.beginTransaction();
-        for (int i = 0; i < 100; i++){
-            producer.send(new ProducerRecord<>("my-topic", Integer.toString(i),Integer.toString(i)));
-        }   
-    }
-}
-```
-
-## Idempotent Producer
-- Exactly-Once-Delivery(정확하게 1번) 를 지원한다. (default: false, Kafka 3.0.0 부터는 true)
-  - **true로 변경 시, acks=all로 변경된다.**
-  - enable.idempotence=true로 설정한다. 
-- 제한적으로나마 중복 메세지 전송이나 메세지 순서변경과 같은 일을 방지하기 위해서 있는 Producer이다.
-  - Partition 마다 생성된다. 
-  - Network오류로 인해서 Message의 중복발송이나, 순서가 변경되는 것을 방지 할 수 있다.
-- 여러번 전송하더라도, KafkaCluster에서는 단 한번만 저장된다.
-- 데이터를 Broker로 전달 할 때, PID(Producer 고유 ID)와 Sequence를 전달한다.
-  - PID는 동일한 Session에서만 유효하다.
-    - 즉, Producer가 새롭게시작된다면 의미없다.
-  - Sequence는 순서가 역전되거나 꼬이는 현상이 있으면 OutOfOrderSequenceException이 발생한다.
-  - Producer의 Data가 정확하게 한번 Broker에 저장되도록 동작한다.
-  - 이미 저장되어있는 것을 또 저장하려고해도 acks를 보내준다.
-
+    
 ### 과정
 1. 각 메시지에 고유한 일련번호(PID, Sequence Number)를 할당한다.
 2. Kafka Broker는 이 일련번호를 이용하여 중복 메시지를 감지하고 거부한다.
@@ -92,6 +49,7 @@ class Example{
 ***
 
 ### Acks
+- Produce 요청이 성공할 때를 정의하는데에 사용되는 Parameter
 - Producer가 Broker에 Message를 보내고 받는 리턴 값이다.
 - Acks 수준을 관리함으로 해서, Message 유실 가능성과 성능사이에서 조절하게 된다.
 
@@ -102,3 +60,14 @@ class Example{
 - 0: 응답을 기다리지않음 (전송보장 (X) ==> 손실이 있더라도 속도를 중요시 할 경우)
 - 1: Leader의 저장 여부 확인 (Leader 장애시 메세지 유실 가능 / Follower 복제 시점 이전에, Leader가 ack를 보내고 죽는다면?)
 
+### Retry
+- Network 혹은 System의 일시적인 오류를 보완하기 위해서 사용된다
+- ACK를 받지못하면 재수행한다.
+
+#### 옵션
+- retries: 재시도 횟수 (default: MAX_INT)
+- retry.backoff.ms: 재시도 사이의 대기시간 (default: 100)
+- request.timeout.ms: Producer가 응답(ACK)를 기다리는 최대 시간 (default: 30,000 (30초))
+- delivery.timeout.ms: retry를 포함하여 하나의 Record에서 성공 또는 실패륿 보고하는 시간의 상한 (default: 120,000 (2분))
+
+**보통 retries를 조정하는 대신에 delivery.timeout.ms를 통해서 설정을 조정하는 경우가 많다.**

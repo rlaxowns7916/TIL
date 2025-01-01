@@ -17,21 +17,25 @@
 - 기본적으로 Client와 하나의 TCP Connection을 유지하면서 재사용한다.
   - Client-Broker당 하나인 것이며, Cluster라면 Client는 N개의 Broker와 TCP Connection을 맺게된다.
 
-### 1. 컨트롤러
+### 1. Controller
+- 크게 4가지 역할을 한다.
+  - **Partition Leader Election: Partition Leader 선출**
+  - **Partition Rebalancing: Broker간 Partition을 분배하여 균형있게 Cluster 운영**
+  - **Repliication Management: Partition의 복제본, ISR 관리**
+  - **MetaDataBroadcast: Orchestrator(ZooKeeper, KRaft)로 부터 Broker, Topic, Partition의 정보를 수신하고, Cluster내의 다른 Broker에게 전달한다.**
 - **Kafka Cluster 내부의 Broker중 하나가 Controller가 된다.**
+  - **Orchestrator(ZooKeeper, KRaft)를 통해서 선출된다.**
+  - **Controller장애시 ActiveBroker중 하나가 Controller가 된다.**
 - **Cluster내의 Topic, Parittion, Leader, Replica와 관련된 정보를 관리한다.**
 - Orchestrator (ZooKeeper, KRaft)로 부터 Broker Liveness를 모니터링 한다. (상태 체크)
   - Broker가 Cluster에서 이탈하는 경우, 해당 Broker에 존재하는 Leader Partition을 재분배한다.
-- Leader와 Replica 정보를 ZooKeeper로 부터 수신하고, 해당 정보를 Cluster내의 다른 Broker에게 전달한다.
-    - **LeaderPartition을 갖고 있는 Broker가 장애시 Controller가 Partition Leader Election을 수행한다.**
-    - **Controller장애시 ActiveBroker중 하나가 Controller가 된다.**
 - Topic의 생성 삭제를 처리한다.
   - Partition의 추가 혹은 변경도 처리한다.
 
-### 2. 데이터 삭제
+### 2. Data Remove
 - DELETE와 COMPACT로 나뉜다.
 - DELETE
-  - Log Segment 단위로 데이터를 삭제한다.
+  - **Log Segment 단위로 데이터를 삭제한다.**
     - Partition을 다시 Segment단위로 나눈다. 
     - 파일 단위이기 때문에, 개별 Record 단위의 삭제는 불가능하다.
   - 옵션에 따라서 삭제되는 기준을 변경 할 수 있다.
@@ -41,17 +45,18 @@
     - log.retention.check.interval.ms: 세그먼트가 삭제 영역에 들어왔는지 확인하는 간격 (default 5분)
 - COMPACT
   - Key별로 가장 최근의 Key만 남기고 나머지는 삭제한다.
-### 3. 코디네이터
+### 3. Coordinator
 - **Consumer가 Commit 한 Offset을 저장하는 역할이다. (Consumer가 Topic의 어느 지점 까지 읽었는지 명시 해주는 것)**
   - _consumer_offsets라는 Topic에 자동으로 저장된다.
       - 기본적으로 생성되는 Topic이다.
 - **Consumer Group의 상태를 체크하고(HeartBeat), Partition Rebalance(Partition - Consumer 재 매칭)를 수행한다.**
   - ConsumerGroup내의 Consumer가 추가되거나 제외 되었을 때
   - Join과 Sync로 나뉘어진다.
-    - Join: Consumer가 코디네이터에게 Group에게 가입요청을 하는 것이다.
-            Consumer의 Client정보와, Group 메타데이터를 수집한다.
-    - Sync: Leader Consumer의 파티션할당 결과를 Consumer에 전파한다.
-### 4. 데이터 저장
+    - Join: Consumer가 코디네이터에게 Group에게 가입요청을 하는 것이다. 
+      - Consumer의 Client정보와, Group 메타데이터를 수집한다.
+      - Consumer중 하나를 ConsumerGroup리더로 지정하고, ConsumerGroupLeader로 부터 Parition 매핑 결과를 받는다.
+    - Sync: ConsumerGroupLeader 로 부터 받은 Partition 매핑 결과를 ConsumerGroup의 각 Consumer에 전파한다.
+### 4. Data Save
 - config/server.properties의 log.dir에 명시된 디렉토리에 데이터를 저장한다.
     - Topic이름, Parition번호의 조합으로 하위디렉토리를 생성하여 데이터를 저장한다.
 - Segment로 구성된다.
