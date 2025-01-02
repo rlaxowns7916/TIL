@@ -11,6 +11,7 @@
   - **linger.ms를 자주 쓴다.** (batch.size가 채워질 떄 까지 시간이 걸리면, send가 지연이 되기 떄문)
 - 하나의 Connection에서 여러개의 요청(Multiple in-flight request)을 한번에 보낼 수 있다.
   - max.in.flight.requests.per.connection (default: 5)
+  - **in-flight-request는 요청은 보냈지만 아직 응답을 받지 못한 요청을 나타낸다.**
 
 
 ## [1] 구성

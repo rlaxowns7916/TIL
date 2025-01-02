@@ -30,12 +30,10 @@
 - Kafka에 내부 토픽을 생성하여 schema를 저장한다.
   - "_schemas"
 
-
 ## 순서
 1. Producer가 Message를 보내기전에, Local Cache에 Schema 정보가 있는지 확인한다.
-2. 없으면 SchemaRegistry에 Send한다.
+2. 없으면 SchemaRegistry에 요청을 보낸다.
    - Schema Registry는 새로운 Schema가 등록되면 producer에게 id를 내려준다.
 3. producer는 Message에 Schema ID를 동봉해서 Produce 한다.
-4. Consumer는 avro schmea의 ID를 보고 Local Cache에서 Schema 정보를 확인한다.
+4. Consumer는 schmea의 ID를 보고 Local Cache에서 Schema 정보를 확인한다.
 5. 없으면 Schema Registry에서 정보를 갱신한다.
-6. 

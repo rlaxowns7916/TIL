@@ -40,8 +40,8 @@
     - 파일 단위이기 때문에, 개별 Record 단위의 삭제는 불가능하다.
   - 옵션에 따라서 삭제되는 기준을 변경 할 수 있다.
   - 디스크의 크기를 고려해야한다.
-    - retention.ms(minutes,hours: 세그먼트를 보유할 최대기간 (deafult 7일)
-    - retention.byres: 파티션 당 로그 적재 byte 값 (default -1 (지정하지 않음))
+    - log.retention.ms(minutes,hours: 세그먼트를 보유할 최대기간 (deafult 7일)
+    - log.retention.bytes: 파티션 당 로그 적재 byte 값 (default -1 (지정하지 않음))
     - log.retention.check.interval.ms: 세그먼트가 삭제 영역에 들어왔는지 확인하는 간격 (default 5분)
 - COMPACT
   - Key별로 가장 최근의 Key만 남기고 나머지는 삭제한다.
