@@ -76,6 +76,7 @@
   - Consumer Lag는 성능을 모니터링 하는 중요 지표이다.
   - Produce되는 양보다, Consumer가 Consume하는 양이적은 것이 문제이다.
   - Partition과 Consumer의 숫자를 늘려 병렬처리 양을 늘리는 것이 중요하다.
+- Partition 단위이기 때문에 여러개 존재 할 수 있다. (Partition 내부에서의 offset 차이이기 떄문)
 
 ### Consumer TimeOut
 - 2가지의 TimeOut이 존재한다.

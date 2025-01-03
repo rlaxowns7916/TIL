@@ -24,7 +24,8 @@
 
 ### [2] I/O
 - 많은 Thread를 가지는 ThreadPool을 생성한다.
-  - Thread수: max(64, CPU Core수)
+  - I/O 작업이 몰리면, ThreadPool의 Thread 숫자가 늘어난다.
+  - 최대 Thread수: max(64, CPU Core수)
 - I/O작업은 CPU를 덜 소모하기 때문이다.
   - I/O Bounded Job에 유리하다.
 
@@ -81,9 +82,9 @@ val job = launch(single){
   - ThreadPool에 있는 모든 Thread는 두 Dispatcher에게 공유된다.
 - 두 Dispatcher의 차이는, ThreadPool에 Thread를 가변적으로 추가할 수 있는지 여부의 차이이다.
   - I/O: 가변, 새로운 Thread의 추가가 가능하다.
-    - I/O Dispatcher는 내부적으로 Thread를 늘리는 임계치가 존재한다.
+    - I/O Dispatcher는 내부적으로 Thread를 늘리는 임계치가 존재한다. (max: 64)
     - 늘어난 ThreadPool의 크기는 다시 줄어들지 않는다.
-    - limit parallelism: 기존 I/O가 사용하던 ThreadPool 이외에, 공유ThreadPool에서 새로운 Thread를 사용한다. (다른작업에 방해를 받지 않게 하기 위해서이다.)
+    - limit parallelism: 기존 I/O가 사용하던 ThreadPool 이외에, 새로운 Thread를 사용한다. (다른작업에 방해를 받지 않게 하기 위해서이다.)
   - Default: 고정, 이미 ThreadPool이 모두 사용중이면 대기에 걸린다.
     - limited parallelism: 작업을 수행하는 최대 Thread수를 설정하여, 아예 작업을 못하게 되는 경우를 방지한다.
 - 왜 이러한 설계를 가지게 되었는가?
