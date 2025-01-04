@@ -1,6 +1,7 @@
-# FileChannel
+# Channel
 - Java NIO(1.4부터 포함)에 의해서 제공된다.
-- File에서 ByteBuffer 사이에 있는 데이터 파이프라인
+- 실제 I/O 대상(File, Socket)과의 연결을 표현한다.
+- ThreadUnsafe
 - 일반적인 I/O와 다르게 Buffer를 사용하여 비동기적으로 파일에 접근한다.
   - File의 특정부분에 대한 Read / Write
   - File을 다른 File로 복사
@@ -8,7 +9,11 @@
 - 일반적인 I/O에 비해서, 큰 파일을 읽을 때 장점이 있다.
 - 회수되어야 하는 자원이다. (try-with-resources)
   - Network, FileHandler, Socket 등에 연결되어 있는 경우가 많기 때문이다.
-- 내부적으로 FilePointer 를 가지고 있다.
+- 양방향 Read/Write를 지원한다.
+  - inputStream(), outputStream()처럼 별도로 필요하지않다.
+- BlockingI/O NonBlocking I/O 모두지원한다.
+  - NonBlockingI/O는 Selector와 함께 사용되며, Data Read / Write 를 할 준비가 되어있지 않다면 바로 반환한다.
+- 데이터를 ByteBuffer 단위로 주고받는다.
 
 ## 특징
 

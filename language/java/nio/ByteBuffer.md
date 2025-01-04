@@ -1,15 +1,20 @@
 # ByteBuffer
 - Java NIO 라이브러리 (1.4버전부터 포함)에 의해서 사용 가능하다.
+- Buffer Class의 일종 (ByteBuffer, LongBuffer, CharBuffer, ...)
+  - Array Class들에 편리한 Method들이 더 추가 된 개념이다.
+- NonBlockingI/O 컴포넌트 (Selector, Channel) 등과 함께 사용 가능하다.
 - 특정 Position (Index)에서 Read와 Write를 수행한다.
   - capacity (Buffer의 총 크기)
   - limit(Buffer를 Read/Write 할 수 있는 범위)
   - position(현재 Read/Write가 발생하는 위치)
-  - mark(편의를 위해서 임의로 마킹 할 수 있는 위치)
+  - mark(편의를 위해서 임의로 마킹 할 수 있는 위치 // reset()을 통해서 mark 위치로 돌아갈 수 있다.)
 - File을 Read하거나 Write하는 시점에 임시로 데이터를 들고 있다.
 - File을 Memory에서 바로 읽어들인다. (효율적)
   - 읽어들이는 부분에 Lock을 걸어 다른 파일의 접근을 제한 할 수 있다.
   - DataLoss를 방지하기 위해서, File에 즉시 Write를 할 수 있다.
-
+- 절대적 /  상대적 위치에 해당하는 Read/Write를 지원한다.
+  - 절대적: Parameter로 들어온 Index를 통해 Buffer에 직접 접근
+  - 상대적: 현재 Positio에 해당하는 Index를 통해 Buffer에 접근 / **position이 자동으로 증가**
 
 ## ByteOrder
 - ByteBuffer에서 Byte의 순서(endian)을 지정하는데 사용된다.
@@ -31,6 +36,7 @@
 - HeapMemory에 저장하는 것은 결과적으로 Copy가 필요로 하기 때문에, DirectByteBuffer에 비해서 성능이 좋지않다.
 - allocate()를 통해서 HeapByteBuffer를 생성한다.
   - 기본구현 내부적으로는 DirectBuffer를 사용한다고 한다 (아래 블로그 글 참조)
+- **GC가 HeapByteBuffer를 관리하기 떄문에, 개발자가 메모리 해제에 대한 관리를 하지 않아도 된다.**
 
 ## DirectByteBuffer
 - MappedByteBuffer도 DirectByteBuffer에 포함된다.
@@ -96,14 +102,19 @@ ByteBuffer는 기본적으로 Overwrite이다.
    - 기존 Buffer에 있던 데이터가 삭제되는 것이 아닌, Position에 의해서 Overwrite된다.
 7. compact()
     - position과 limit 사이에 있는 데이터를 앞으로 당긴다. (아직 읽지 않은 데이터를 앞으로 땡긴다.)
-    - position은 limit - position 만큼 증가한다.
+    - position은 limit - position이 된다. (e.g: position(2) limit(10) ==> position(8), limit(10))
+    - Overwrite 되지 않은 것들은 Buffer에 그대로 남아있다.
 8. wrap()
    - byte[]를 ByteBuffer로 만든다.
    - capacity와 limit은 byte[]의 크기를 따라간다.
+   - 원본 byte[]의 변경이 byteBuffer에 영향을 미친다.
+9. remaining()
+    - limit - position
+    - 현재 position을 기준으로 buffer에서 읽을 수 있는 데이터의 갯수를 나타낸다.
 
 ### SampleCode
 ```java
-public class NIoPlayground {
+public class NioPlayground {
     
     public static void main(String[] args) throws IOException {
         try(
