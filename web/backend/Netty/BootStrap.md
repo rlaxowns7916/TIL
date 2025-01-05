@@ -21,7 +21,7 @@
 - ThreadSafe하며, 설정과 관련된 여러가지 Method를 제공한다.
 
 #### [2] EventLoopGroup
-- I/O작업을 처리하는 ThreadGroup
+- I/O작업을 처리하는 EventLoop(단일 Thread) 들의 Group
 - Netty에서 다양한 EventLoopGroup을 제공한다.
   - 대표적으로는 **NioEventLoppGroup** 이 있다.
 
@@ -57,14 +57,11 @@ EventLoopGroup은 I/O를 수행하는 Thread들을 관리하는 집합이다.
 이 EventLoop들이 Channel의 I/O작업을 수행하게 된다.
 하나의 EventLoop는 여러개의 Channel과 관계를 맺는다.
 
-각 Channel마다 Thread를 할당하는 것이 아닌, 하나의 EventLoop가 여러개의 Channeel을 관리하기 때문에
-자원 효율적이다.
+각 Channel마다 Thread를 할당하는 것이 아닌, 하나의 EventLoop가 여러개의 Channeel을 관리하기 때문에 자원 효율적이다.
+하나의 EventLoop(Thread)에서 수행되기때문에 아래와 같은 장점이 있다.
+- 각 Channel은 ThreadSafe
+- ContextSwitching이 발생하지 않는다.
 
-각 Channel의 Event는 동일한 EventLoop에서 순차적으로 수행되기 때문에 
-Channel의 Event는 병렬적으로 수행되지 않고 RaceCondition에서 자유롭다.
-
-하나의 EventLoop(Thread)에서 수행되기때문에, ContextSwitching에서 자유롭고
-성능향상을 야기한다.
 
 ```
 
