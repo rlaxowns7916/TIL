@@ -16,6 +16,12 @@
   - EpollEventLoopGroup, 
   - KQueueEventLoopGroup 
   - ...
+- ServerBootStrap의 경우 2개가 필요하다.
+  - BossGroup (Server Binding / Listen)
+  - WorkerGroup (Socket I/O, Event 처리)
+- BootStrap의 경우 1개가 필요하다.
+  - Socket I/O, Event 처리
+
 
 ## Event 감지의 주체
 ```text

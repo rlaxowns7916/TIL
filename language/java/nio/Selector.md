@@ -19,6 +19,12 @@
 - 해당 Channel에 대한 어떤 Event를 Monitoring 할 것인지의 정보가 들어있다.
 - Selector에게 Monitoring을 취소하게 할 수 있다.
 
+### Register Option
+1. OP_ACCEPT: 연결이 수락되고, Channel이 생성되면 알린다.
+2. OP_CONNECT: 연결이 생성되면 알린다.
+3. OP_READ: Channel에서 데이터를 읽을 수 있으면 알린다.
+4. OP_WRITE: Channel에 데이터를 쓸 수 있으면 알린다.
+
 ## 주요 메소드
 1. select()
     - 이벤트가 발생하지 않으면, Thread는 대기한다.
