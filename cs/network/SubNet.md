@@ -1,5 +1,8 @@
 # SubNet
 - 말 그대로, Network를 다시 쪼개는 행위
+  - IP주소를 기반으로 Network를 구분
+  - Broadcast는 Subnet간에 공유되지 않는다.
+- VLAN과 보통 함께 사용된다. (일반적으로 1:1 매핑)
 - CIDR의 개념과 연동된다. (IP주소를 효율적으로 사용하기 위해)
 - Class 개념을 그대로 사용하는 것이 아닌, Host영역을 Network영역에 포함시켜서 사용한다.
 - Subnet을 나누면 나눌수록 사용할 수 있는 갯수가 줄어든다.

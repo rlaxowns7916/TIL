@@ -2,6 +2,7 @@
 - Routing Table에 계산해놓고 Routing 할 대상을 결정한다.
   - Metric(비용) 기반으로 경로를 결정한다.
 - Routing 대상으로 패킷을 전송한다.
+- Router와 L3Switch는 다르다.
 
 ## Routing 정보 갱신 방식
 
@@ -22,7 +23,7 @@
 - 같은 관리하의 있는 내부 네트워크 집합 사이의 Routing 방법이다.
 - RIP, IGRP, OSPF, EIGRP
 
-### 2. Exterir Gateway Protocol (외부 네트워크)
+### 2. Exterior Gateway Protocol (외부 네트워크)
 - 다른 관리자의 관리하에 있는 외부 네트워크 사이의 Routing 방법이다.
 - BGP, EGP
 
