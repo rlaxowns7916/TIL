@@ -46,14 +46,32 @@
     - DoS/DDoS 같은 것들
 - 비싸다.
 
-## GSLB (Global Server Load Balancing)
-- 각 회사나 집단에서 자사 서비스에 대한 LoadBalancing을 하기 위해서 사용한다.
-  - 단일 Instance들에 대한 LoadBalancing이라기 보다는, Region, DataCenter 같은 더 큰 단위의 LoadBalancing 이다.
-- DNS 기반의 LoadBalancing 이다.
-  - DNS와 다르게 상태에 따른 모니터링이 가능하다. (Health-Check)
-  - DNS와 다르게 지역별 서버에 따른 Latency를 갖고있기 떄문에, Latency가 적은 IP를 리턴해준다.
-- DNS의 프록시 형태로 동작한다.
-- H/W일수도 있고, S/W일 수도 있다.
+## GSLB(Global Server Load Balancing)
+
+### 개념
+- 물리적으로 분산된 여러 데이터센터나 클라우드 리소스에 걸쳐 **트래픽을 분산**하여, 고가용성(HA)과 최적 성능을 달성하는 기술이다.
+- 단일 서버나 단일 IDC 수준이 아니라, **Region, DataCenter** 같은 **더 큰 단위**로 트래픽을 조정한다.
+
+### 동작 방식
+- 주로 **DNS 레벨**에서 **도메인 요청에 대한 응답(IP)을 동적으로 제어**하여, **사용자의 위치(Geolocation)**, **네트워크 상태**, **서버 상태(HealthCheck)** 등을 바탕으로 최적의 데이터센터 IP를 반환한다.
+- GSLB 솔루션은 각 IDC/서버 상태를 모니터링(HealthCheck)하고, 장애 시 해당 리소스를 DNS 응답에서 제외한다.
+
+### 특성 및 이점
+1. **HealthCheck & Failover**: 실시간 헬스 체크로 장애 지점 우회.
+2. **지연시간(레이턴시) 최적화**: 사용자에게 가장 가까운 IDC로 라우팅.
+3. **부하 분산**: 특정 IDC에 트래픽이 몰리지 않도록 균형 분산.
+4. **DR(Disaster Recovery)**: 한 지역에 재해 발생 시 다른 지역으로 즉시 전환.
+
+### 콘텐츠 동기화
+- 정적 콘텐츠(이미지, JS 등)는 보통 **CDN**을 사용하여 전 세계 PoP로 배포한다.
+- 동적 데이터(세션, DB)는 **별도의 동기화/복제**가 필요할 수 있다.
+
+### 주의 사항
+- **DNS TTL** 설정에 따른 트래픽 재분배 속도 vs. DNS 요청 증가의 트레이드오프.
+- **Session Stickiness** 필요 시, GSLB와 로컬 LB의 세션 관리 전략 고려.
+- **보안**: DNS 공격, DDoS 대응, 인증서 관리 등.
+
+--- 
 
 ### DR (Disaster Recovery)
 - 서버의 상태를 지속적으로 모니터링 한다.
