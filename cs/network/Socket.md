@@ -11,22 +11,21 @@
     - dstPort
 - ServerSocket과 ClientSocket 모두 자신의 Socket만 관리하면 된다.
   - read() 시, OS가 Socket의 수신버퍼에 저장해둔 데이터를 읽어갈 수 있다.
-  - write()시, Osrk Socket의 송신버퍼에 데이터를 저장해두고, NIC를 통해서 패킷으로 분할되어 전송된다.
+  - write()시, Os가 Socket의 송신버퍼에 데이터를 저장해두고, NIC를 통해서 패킷으로 분할되어 전송된다.
 
 ## Server Socket
-(Netty에서의 bossGroup 역할은 OS가 수행한다.)
-1. Socket을 열고, Bind를 통해서 IP와 Port를 할당한다.
+1. Socket을 생성하고, Bind를 통해서 IP와 Port를 할당한다.
 2. Listen을 통해서 클라이언트의 접속을 기다린다. (다수의 클라이언트를 받을 수 있다.)
 3. accept를 통해서 클라이언트의 접속을 받아들인다.
 
-**Server NIC -> OS TCP 수신 버퍼 -> Application**
+**NIC -> OS TCP 수신 버퍼 -> Application**
 
 ## Client Socket
 1. Socket을 열고(연결 당 새로운 Port 할당), Connect를 통해서 Server에 접속한다.
 2. Server와 통신을 한다. (하나의 ClientSocket은 하나의 ServerSocket과 연결된다.)
 3. 통신이 끝나면 Socket을 닫는다.
 
-**Application -> OS TCP 송신 버퍼 -> Client NIC**
+**Application -> OS TCP 송신 버퍼 -> NIC**
 
 ### BackLog Queue
 - Server의 OS에서 관리하는 Connection 관리 Queue
@@ -51,7 +50,8 @@
 
 ## Kernel Level
 - socket 자체는 KernelLevel 이다.
-  - bind(), listen(), accept()와 같은 SystemCall을 통해서 UserLevel에서 접근이 가능해진다.
+  - bind(), listen(), accept()와 같은 Interface를 통해서 UserLevel에서 접근이 가능해진다.
+  - 이러한 Interface들은 내부적으로 SystemCall을 통해서 구현됨
 - Kernel은 NIC와 상호작용하며, 무결성 검증 및 실제 데이터를 주고받는다.
 
 

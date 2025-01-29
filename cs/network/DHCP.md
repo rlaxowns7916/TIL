@@ -46,7 +46,8 @@
    - 이 메시지는 L2 브로드캐스트(255.255.255.255)로 같은 브로드캐스트 도메인 내 모든 장치에게 전송된다.
 2. Offer
    - DHCP 서버는 클라이언트의 요청을 받고, 사용 가능한 IP 주소와 설정 정보를 포함한 DHCP Offer 메시지를 브로드캐스트로 전송한다.
-   - Client는 아직 IP를 할당받지 못한 상태이기 때문에, Server는 BroadCast로 응답 할 수 밖에 없다.
+   - Unicast 일 수도 있고, BroadCast일 수도 있다.
+     - Discover 메세지의 BroadCastFlag의 값에 따라 달라진다. (1 = BroadCast, 0 = Unicast)
 3. Request
    - 클라이언트는 제공받은 IP 주소 중 하나를 선택하고, DHCP Request 메시지를 보내 요청을 확인한다.
    - 클라이언트는 기존에 사용했던 IP 주소가 있다면 이를 요청할 수도 있다.

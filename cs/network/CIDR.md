@@ -9,6 +9,8 @@
   - 나머지 0의 개수는 Host 영역 이다.
 
 ### SubnetMask (서브넷 마스크)
+- 해당 IP의 Network주소를 알아내기 위해서 사용한다.
+  - IP주소와 SubnetMask를 &연산을 하면 Network 주소를 얻을 수 있다.
 - Network 영역을 모두 1로, Host영역을 모두 0으로 표시한다.
 - /이후에 Network영역을 가지는 비트의 숫자를 표기하는 것으로도 표현한다.
 

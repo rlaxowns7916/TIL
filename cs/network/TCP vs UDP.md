@@ -9,7 +9,7 @@
 - Byte Stream
    - 연속적인 Byte 열을 보낸다.
    - EOF(End Of File)를 통해 데이터의 끝을 알린다.
-     - FIN Fla == 프로그래밍에서 EOF와 같은 역할을 한다. 
+     - FIN Flag == 프로그래밍에서 EOF와 같은 역할을 한다. 
      - TCP는 Stream(연속적인) 프로토콜 이기 때문에 송신함에 있어서 아래의 2가지 방법을 채탤 할 수 밖에 없다.
        - 고정길이(N Byte) 전송
        - 구분자(Delimiter) 정의
@@ -124,6 +124,9 @@ A TCP connection may terminate in two ways:
   - MSS(Maximum Segment Size)를 교환한다.
     - TCP 옵션 필드에 포함되어 있다.
     - 각자 수신 할 수 있는 최대 Segment Size를 교환한다.
+    - 협상이 되지 않으면 Default값을 사용한다.
+      - ipv4: 536B
+      - ipv6: 1220B
 - 아래와 같은 순서이다.
   - -> syn
   - <- syn + ack
@@ -135,15 +138,34 @@ A TCP connection may terminate in two ways:
 
 ### 4way-CloseHandShake
 - TCP에서 연결을 끊는 과정이다.
-- 아래와 같은 순서이다.
-  - -> fin
-    - 클라이언트가 서버에 연결을 끊겠다는 신호를 보낸다. (FIN flag)
-  - <- ack
-    - 서버가 연결을 CLOSE-WAIT로 변경하고, 클라이언트에게 ACK를 보낸다.
-  - <- fin
-    - 서버가 클라이언트에게 연결을 끊겠다는 신호를 보낸다.
-  - -> ack
-    - 클라이언트가 서버에게 ACK를 보낸다.
+  - 아래와 같은 순서이다.
+    - -> fin
+      - 클라이언트가 서버에 연결을 끊겠다는 신호를 보낸다. (FIN flag)
+    - <- ack
+      - 서버가 연결을 CLOSE-WAIT로 변경하고, 클라이언트에게 ACK를 보낸다.
+    - <- fin
+      - 서버가 클라이언트에게 연결을 끊겠다는 신호를 보낸다.
+    - -> ack
+      - 클라이언트가 서버에게 ACK를 보낸다.
+    - 4번 보내는 이유는 half-close를 지원하기 때문이디.
+      - 보내는 측에서는 남은 데이터를 마저 보낼 수 있어야 하기 떄문이다.
+      - 만약 Client가 FIN을 보낸다면, 서버는 즉시 Fin을 보내지 않고, 데이터를 모두 보낸 후 Fin을 보낸다.
+      - ```text
+          [1] 클라이언트 → 서버 (FIN)
+            - 클라이언트가 데이터를 보낼 게 없기 떄문에 FIN을 보냄.
+            - 하지만 서버는 아직 클라이언트에게 보낼 데이터가 남아 있을 수도 있음.
+
+          [2] 서버 → 클라이언트 (ACK)
+            - 서버는 ACK를 보내면서 클라이언트의 종료 요청에 대해 수신했다고 응답함.
+            - 서버는 연결을 완전히 닫지 않고, 남은 데이터를 계속 보낼 수 있는 상태.
+    
+          [3] 서버 → 클라이언트 (FIN)
+            - 서버도 데이터를 다 보내고 나면 연결을 종료해도 된다고 FIN을 보냄.
+    
+          [4] 클라이언트 → 서버 (ACK)
+            - 클라이언트가 서버의 FIN을 확인하고 ACK를 보냄.
+            - 이후 클라이언트는 TIME_WAIT 상태로 일정 시간 대기 후 연결 종료.
+        ```
 ![4way handshake](https://user-images.githubusercontent.com/57896918/167259506-05d908f8-4b1d-43ac-8adf-2c0073e33b53.png)
 
 ### Active Close vs Passive Close
