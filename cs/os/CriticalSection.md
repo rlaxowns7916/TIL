@@ -1,9 +1,10 @@
 # CriticalSection
 - RaceCondition(경쟁상황)이 일어나는 영역이다.
 - 여러개의 프로세스 혹은 쓰레드가 공유하는 영역을 의미한다.
-- 동시에 접근 할 수 없다.
+- 동시에 접근하면 문제가 발생하는 영역을 의미한다.
 
 ## 해결 요구조건
+**아래 3가지의 조건을 모두 만족해야 CriticalSection 문제를 해결 할 수 있다.**
 ### 1. MutualExclusion (상호 배제)
 - 특정 프로세스 혹은 쓰레드가 CriticalSection에서 실행되는 동안 다른 프로세스 혹은 쓰레드가 접근 할  수 없다.
 
@@ -15,37 +16,48 @@
 - 특정 프로세스 혹은 쓰레드가 CriticalSection을 독점해서는 안된다.
 - 계속해서 우선순위에 밀려나서 Starvation 상태인 프로세스 혹은 쓰레드가 있어서는 안된다.
 
-**위 3가지의 조건을 모두 만족해야 유효한 알고리즘이 된다.**
+# Synchronization (동기화)
+- 여러 Process 혹은 Thread가 안전하게 CriticalSection 에 접근가능하게 하는 방법
 
+## H/W 기반 해결
+### 1. TestAndSet (TAS)
+- 단순 Lock획득을 위해서 주로 사용한다.
+  - 유연성이 낮다. (0/1 로만 관리)
+  - 빠르다. (Kernel의 개입이 없다.)
+- XCHG 명령어 (x86)
+- SpinLock
 
-## 해결법
+### 2. CompareAndSet
+- 조건부 메모리 업데이트를 위해서 사용한다.
+  - Lock-Free 알고리즘 구현에 주로 사용된다. 
+  - 유연성이 높다 (모든 값 비교 및 설정 가능)
+- CMPXCHG 명령어(x85)
+
+## S/W 기반 해결
 
 ### 1. Mutex Lock
-#### 특징
-- 동기화 대상이 하나이다.
-- CriticalSection에 들어가는 시점에 Lock을 획득
-- CriticalSection에서 나가는 시점에 Lock을 반환
-- Lock이 걸려있기 때문에, MutalExclustion을 만족한다.
-- Lock을 소유한 대상만이 Release가 가능하다.
+- Lock을 획득한 Thread만 해제 가능하다.
+- 이미 점유된 경우, 요청 Thread는 Queue에 등록되어 슬립(sleep) 상태로 전환됩니다 (Busy Waiting 방지).
+- 0 혹은 1로 상태를 관리한다.
 
-#### 한계점
-- BusyWaiting (SpinLock)
-  - CriticalSection의 Lock을 획득하기 전까지 계속 진입하려고 시도한다.
-  - CPU 자원을 낭비한다.
-- Lock 방식이기 떄문에 동시성이 결여된다.
 
 ### 2. Semaphore
-#### 특징
-- 동기화 대상이 하나 이상이다. (Counting Semaphore)
-  - Mutex처럼 하나의 동기화 대상만 가질 수 도 있다. (Binary Semaphore)
-- 자원에 접근할 때 Semaphore-- , 나갈 떄 Semaphore++ 연산을 진행한다.
-  - Semaphore가 음수면 접근 할 수 없다.
-- Mutext의 BusyWaiting을 **Block & WakeUp**으로 해결하였다.
-  - CriticalSection에 진입하려 했던 프로세스는 Block 시킨 후 PCB를 Waiting Queue에 넣고, 자리가 생기면 다시 WakeUp시키고, ReadyQueue에 넣는다.
-- Starvation을 유의해야한다.
-  - Semaphore WaitingQueue에서 빠져나가지 못하는 경우가 존재한다.
-  - FIFO나 오래기다린 순으로 우선순위를 주는 방법을 고려해야 한다.
-- Semaphore를 가진 대상이 아니어도 Release가 가능하다.
+- 접근제어를 Counter를 통해서 수행한다.
+- Lock을 획득한 Thread와 무관하게 임의의 스레드가 해제 가능하다.
+- 두가지로 나뉜다. 
+  - Binary Semaphore: 이진 상태 (Mutex와 유사하나 소유권 없음). 
+  - Counting Semaphore: N개의 동시 접근 허용 .
+
+
+### 3. Monitor
+- CriticalSection과 Synchronization을 캡슐화한다.
+  - Method, Variable 등을 제공한다.
+- Monitor내의 Method는 동시 실행 되지 않는다. (MutualExclusion 보장)
+  - ex) Java Synchronization
+- 2개의 Queue를 가지고 있다.
+  - MutualExclusionQueue: 상호배제를 보장하기 위한 Queue
+  - ConditionalSynchronizationQueue: 특정조건이 만족되면 대기상태의 Thread를 꺠울 Queue
+
 ## BusyWait VS Block & WakeUp
 - 일반적으로는 Block & WakeUp이 CPU 소모를 줄일 수 있다.
   - 하지만 WakeUp과정, ReadyQueue에 배치하는 과정 모두 CPU 리소스를 소모한다.

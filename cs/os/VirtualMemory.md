@@ -2,8 +2,9 @@
 - 물리적인 Memory(RAM)보다 더 많은 Memory를 사용가능하게 해주는 기술
   - 물리적인 Memory가 부족해도, Disk(SSD/HDD)를 이용하여 Memory를 확장하는 개념이다. (**RAM + Swap**)
   - 각 Process가 독립적으로 더 큰 Memory공간을 갖는 것 처럼 보이게 한다.
-- MMU(MemoryManagementUnit)가 Page 테이블을 이용하여, PhysicalAddress와 VirtualAddress의 변환을 지원한다.
-
+- MMU(MemoryManagementUnit)가 PageTable(or SegmentationTable)을 이용하여, PhysicalAddress와 VirtualAddress의 변환을 지원한다.
+    - PageTable: Page - Frame 매핑 테이블
+    - SegmentationTable: BaseAddress(Physical Address 시작점), Offset
 # 주요 개념
 - Demand Paging: 페이지가 실제로 필요할 때만 로드합니다.
 - 페이지 교체 알고리즘

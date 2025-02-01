@@ -21,16 +21,16 @@ I/O Multiplexing은 주로 NonBlocking I/O와 함께 사용된다.
 ## 주요 방식
 1. select()
 - 오래된 표준 함수 
-- Scanning 기반
-- 고정 크기의 FileDescriptor 집합을 통해 Read/Write 가능 여부를 Monitoring 한다.
+- Linear Scan (순차 탐색)
+- **고정 크기의 FileDescriptor 집합**을 통해 Read/Write 가능 여부를 Monitoring 한다.
 - 모든 FD를 매번 스캔해야 해서, 대규모 연결에 비효율적
   - FD_SET 같은 매크로를 사용하며, 감시할 FD가 많아지면 성능이 저하된다.
 
 
 2. poll()
 - select()의 한계를 개선 
-- Scanning 기반
-- 동적 할당 가능한 pollfd 배열로 FD와 Event를 관리한다.
+- Linear Scan (순차 탐색)
+- **동적 할당 가능한 pollfd 배열**로 FD와 Event를 관리한다. (event에 관계업싱 다 linear scan 해야한다.)
 - select와 유사하게 모든 FD를 매번 스캔해야 해서, 대규모 연결에 비효율적
 
 3. epoll (Linux)

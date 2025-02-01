@@ -1,6 +1,7 @@
 # Interrupt (인터럽트)
 - CPU가 특정기능을 수행하는 도중에 급하게 다른일을 처리하고자 할 때 사용하는 기능이다.
   - 한개의 CPU는 한번에 하나의 일만 할 수 있기 떄문이다.
+  - **CPU에게 급하게 일을 처리해달라고 요청하는 것**
 - Interrupt가 발생하면 InterruptHandler로 넘어간다.
   - InterruptVector(테이블)에 저장된 InterruptHandler의 주소를 통해 찾아간다. 
   - 수행중이던 작업은 PCB에 기록한다. 
@@ -12,7 +13,7 @@
 ### 1. External Interrupt
 - PoserFail: 전원 이상
 - Timer : 일정한 시간 간격으로 Interrupt
-- I/O: I/O 장치가 입출력 준비가 완료되었음을 알림
+- I/O: I/O 장치가 입출력이 완료되었음을 알림
 ### 2. Internal Interrupt
 - 잘못된 명령이나 잘못된 데이터를 사용하려고 할 때 발생
   - Division By Zero

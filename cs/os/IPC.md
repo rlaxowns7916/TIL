@@ -1,7 +1,7 @@
 # IPC (InterProcessCommunication)
 - 프로세스는 독립적인 메모리영역을 가지고 있다.
   - 서로 독립적이기 때문에, 다른 프로세스의 메모리영역에 접근 할수 없다.
-- IPC를 통해서 프로세스간 커뮤니케이션을 진행할 수 있다.
+- IPC를 통해서 OS에서 실행중인 프로세스간 커뮤니케이션을 진행할 수 있다.
 - 프로세스간 통신하는 방법이다.
 
 ## IPC 구현의 주요 개념
@@ -16,34 +16,20 @@
 
 ### 기법
 1. MessagingQueue
-    - FIFO 전략을 따른다.
+    - **OS가 제공하는 Queue를 이용하는 방식**
+    - **Kernel 내부에서 msgsnd()와 msgrcv()연산을 원자적으로 처리하여, 한 번에 하나의 프로세스만 큐를 수정할 수 있다.**
+      - **대기중인 Process 중 하나만 Message를 가져갈 수 있다.**
     - 양방향 통신이 가능하다.
-    - Kernel 메모리영역에 메세지를 전달하는 채널을 만들어서 프로세스들이 Send/Receive를 수행한다.
     - 프로세스간 메모리 공유없이 실행된다.
-2. SharedMemory
-   - Buffer가 SharedMemory 이다.
-   - Kernel에 SharedMemory 생성을 요청한다.
-     - SharedMemory가 생성되면 kernel의 도움없이 통신이 가능하다.
-     - kernel의 도움없이 통신이 실행되기 때문에 빠르다.
-   - SharedMemory에 읽기/쓰기를 수행하면서 통신한다.
-   - Producer가 Buffer를 채우고, Consumer가 Buffer를 소비한다.
-     - Producer는 Buffer가 꽉 찰 때까지 채운다.
-     - Consumer는 Buffer가 빌 때 까지 소비한다.
-     - 메세지 전달방식이 아니기 때문에, 데이터를 읽어야하는 시점을 특정 할 수 없다.
-   - 공유 메모리 Key를 가지고 여러 프로세스가 접근한다.
-   - 데이터 자체를 공유한다.
-3. Pipe
-    - 단방향 통신이다.
-    - 여러개의 프로세스가 사용하는 임시공간 (파일)
-    - 입구와 출구 개념이 없다.
-      - 자신이 발행한 데이터를 자신이 구독 할 수도 있다.
-      - Read-Only Pipe, Write-Only Pipe 두개로 나누어 사용한다.
-4. Signal
-    - 미리 정의된 이벤트이다.
-    - 정의된 이벤트에 해당하는 동작으로 이벤트를 핸들링 한다.
-5. Semaphore
-    - 프로세스간 데이터를 동기화하고 보호하는데 목적을 둔다.
-6. Socket
-    - 파일의 일종이다.
-    - UserMode에서 KernelMode로 접근하기 위한 인터페이스 이다.
-    - OS 내부의 소켓 기술로 IPC를 구현한다.
+2. SharedMemory (RAM 기반)
+   - **특정 Memory를 여러 Process가 공유하도록 설정하는 것이다.**
+   - **Kernel을 거치지 않고 읽고 쓰기 때문에 매우 빠르다.**
+   - **임계영역이기 떄문에, 동기화가 필요하다.**
+3. Pipe (File 기반)
+    - 한 Process가 Write하면 다른 Process가 읽을 수 있는 일종의 Queue
+    - 단방향 (주로 부모/자식 Process 관계에서 사용된다.)
+    - Anonymous Pipe와 Named Pipe로 구분된다.
+4. Socket
+   - Network를 통한 Process간 통신 방식
+   - 파일의 일종이다.
+   - OS 내부의 소켓 기술로 IPC를 구현한다.
