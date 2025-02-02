@@ -25,19 +25,18 @@ opCode | operand
 - CPU상의 임시 기억장치를 의미한다.
 - 데이터 접근속도가 매우 빠르다.
 
-#### 레지스터의 종류
-1. Memory Buffer Register (MBR)
-   - 모든 자료가 거치는 범용 레지스터
-   - 자료 출입용 레지스터
-2. Memory Address Register (MAR)
-   - 기억장치 내의 정보를 호출하기 위한 주소 저장용 레지스터
-3. Instruction Register (IR) 
-   - 현재 수행중인 명령어를 임시로 기억해두는 레지스터
-4. Program Counter (PC)
-   - 다음 실행할 명령어를 저장하는 레지스터
-5. Accmulator 
-   - 연산 값을 임시로 저장하는 레지스터
+### 레지스터의 종류 및 역할
 
+| 레지스터 이름 | 설명 |
+|--------------|------------------------------------------------|
+| **Memory Buffer Register (MBR)** | CPU와 메모리 간 데이터를 주고받는 범용 레지스터 (데이터 레지스터라고도 함) |
+| **Memory Address Register (MAR)** | 접근할 메모리 주소를 저장하는 레지스터 |
+| **Instruction Register (IR)** | 현재 실행 중인 명령어를 저장하는 레지스터 |
+| **Program Counter (PC)** | 다음 실행할 명령어의 메모리 주소를 저장하는 레지스터 |
+| **Accumulator (ACC)** | 연산 결과를 저장하는 레지스터 |
+| **General-Purpose Registers (범용 레지스터)** | 다양한 연산 및 데이터 저장에 사용되는 레지스터 |
+| **Stack Pointer (SP)** | 스택의 최상위 주소를 가리키는 레지스터 |
+| **Status Register / Flags Register (FR, SR, PSW)** | 연산 결과의 상태 (Carry, Zero, Overflow 등)를 저장하는 레지스터 |
 ## Fetch
 **명령어를 가져오는 단계**
 - PC (ProgramCounter)로 부터 실행할 명령어의 메모리주소를 가져온다.
@@ -48,7 +47,6 @@ opCode | operand
 - IR에 저장되어 있는 인코딩된 명령어를 Decoder에 올려서 해석 한다.
 
 ## Execute
-- operand를 통
-- ALU로 보내 연산을 수행한다.
+- operand를 ALU로 보내 연산을 수행한다.
 - 처리 결과는 또다른 레지스터로 보내진다.
 - 이 작업이 끝나면 다시 PC로 돌아가서 위 과정을 반복한다.
