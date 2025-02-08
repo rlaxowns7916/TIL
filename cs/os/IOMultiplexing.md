@@ -40,6 +40,9 @@ I/O Multiplexing은 주로 NonBlocking I/O와 함께 사용된다.
   - 최초에 넣고 Monitoring 주체가 Loop를 돌면서 확인하는 구조가 아니다.
   - 해당 Socket의 Event를 감지해 READY 자료구조에 넣는 구조
 - 이벤트 기반(EPOLLET), 레벨 기반(EPOLLLT) 등 다양한 모드를 지원.
+- 내부적으로 사용되는 자료구조는 RB(RedBlack)-Tree
+  - 모든 케이스에 o(logN)으로 접근 가능하다.
+  - hashMap안쓰는 이유는  hashCollision 발생시 O(N)이라서..?  
 
 4. kqueue (BSD, macOS)
 - BSD 계열, macOS에서 사용되는 고성능 Event 통지 메커니즘

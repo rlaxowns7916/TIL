@@ -6,6 +6,8 @@
   - 조금의 Input만 달라져도 매우 다른 Output을 발생시킨다.
 - Hash Collision이 적게 일어나야 좋은 Hash 함수 이다.
 - 단방향이다. (복호화가 불가능 하다.)
+- Rainbow Table을 통한 공격에 취약하다.
+  - Salt나, Key Stretching(Hash N번 수행)을 통해 보완할 수 있다.
 
 ## Hash Collision (해시 충돌)
 - 다른 Input이지만 동일한 Output이 나올 때를 의미한다.
@@ -19,6 +21,23 @@
 1. **선형 탐색**: 해시 충돌 시, 다음 혹은 N개 후의 버킷에 데이터를 넣는다.
 2. **제곱 탐색**: 해시 충돌 시, 제곱만큼 멀리 떨어진 버킷에 데이터를 넣는다.
 3. **이중 해시**: 해시 충돌 시, 다른 해시함수를 적용한다.
+
+## MDC vs MAC
+### MDC (Message Digest Code)
+- 무결성 Check만 수행한다.
+- Message의 변경 여부는 알 수 있으나, 변경자는 알 수 없다.
+- 동장방식
+  1. 사용자가 Message를 입력
+  2. Hash함수를 사용해 MDC(Hash값)를 생성한다.
+  3. Message를 검증할 때, Hash값을 다시 계산하여 원래값과 비교한다.
+
+### MAC (Message Authentication Code
+- 무결성 Check + 인증 (비밀 키 기반)을 수행한다.
+  - 전송자도 검증 가능하다.
+- 동작방식
+  1. 송신자가 Message를 입력하고 SecretKey를 사용하여 MAC값을 생성한다.
+  2. 수신자는 SecretKey를 사용하여 MAC값을 검증한다.
+  3. MAC값이 일치하면 무결성이보장되며, MAC값이 다르다면 Message가 변경되었거나, SecretKey를 공격자가 조작했음을 알 수 있다.
 
 ## Hash의 종류 
 
