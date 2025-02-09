@@ -30,5 +30,5 @@
   - RAM이 확보되었음으로, 실행중인 프로세스들은 정상 실행이 가능해진다.
 3. SwapOut 되었던 Process가 다시 필요해짐
   - Swap으로 내려간 Process가 필요해지면 다시 RAM으로 불러들여야한다. (Swap-In)
-  - Memory가 부족하다면 다시 Ready or Waiting 상태로 복귀하여 Scheduling 대상이 된다.
+  - Memory가 충분해진다면 다시 Ready or Waiting 상태로 복귀하여 Scheduling 대상이 된다.
 

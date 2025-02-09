@@ -21,6 +21,7 @@
 
 ### 1. Working Set Model
 - 지역성을 활용한다.
+  - Process가 실행되는 동안 참조지역이 특정 부분에 집중되는 현상을 이용한다.  
 - 가장 많이 사용되는 페이지를 메모리공간에 계속 상주시켜 Thrashing을 예방한다.
 
 ### 2. Page Fault Frequency

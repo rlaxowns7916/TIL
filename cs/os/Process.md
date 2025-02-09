@@ -11,11 +11,17 @@
 - **stack**: 함수안에 선언된 지역변수, 매개변수 등이 저장
 - **heap**: 프로그래머가 관리하는 메모리영역, 동적을 할당된 메모리들이 존재한다.
 
-## Multi-Process
-- 한 개의 프로그램으로 여러개의 Process를 구성하여 병렬적인 작업을 실행 하는 것
+## MultiProgramming
+- 하나의 CPU가 시분할과 같은 기법으로 여러개의 Process를 실행하는 것.
+  - 하나의 CPU는 한번에 하나의 일만 할 수 있으나, 시간을 나누어 빠르게 실행하기 떄문에, 동시에 실행되는 것 처럼 보임
+- Scheduling이 필요하다.
+- 병렬성은 없으나, CPU의 활용도는 높일 수 있다.
+  - ContextSwitching이 발생한다.
+
+## MultiProcessing
+- 여러개의 CPU로 각자 독립적으로 여러개의 Process를 실행하는 것
 - 각각의 Process는 독립적이기 때문에, 한개의 Process에서 일어난 문제점이 다른 Process로 전이 되지 않는다.
-- 각 Process가 자원을 소유하기 때문에, 경제적이지 못하다. 
-- ContextSwithcing으로 인한 오버헤드가 자주 발생한다.
+
 ***
 
 ## Process의 생명주기
@@ -68,10 +74,10 @@
 
 ***
 ## PCB (Process Control Block)
+- Memory에 유지하고 있으며, Process 종료 시 소멸
 - Process의 메타데이터를 가지고 있다.
   - Process가 가지고 있어야 할 정보를 저장한 블록
 - OS는 PCB를 통해서 Process를 구분하고 관리한다.
-- TCB(Task Control Block)이라고도 불린다.
 
 ### 가지고 있는 정보
 1. ProcessID

@@ -14,8 +14,9 @@
 - 응답성이 좋다.
   - Blocking 작업 (I/O)에서 유리하다.
 - 경제적이다.
-  - Resource Sharing이 필요 없다.
+  - Process의 공유Resource(code, data, heap)을 공유한다. 
   - ContextSwitching 비용이 적다.
+  - Process보다 생성이 빠르다.
 - 확장성이 좋다.
   - 병렬처리가 가능하다.
   
@@ -24,9 +25,13 @@
 
 ## UserThread
 - UserMode에서 동작
+  - Kernel이 인식하지 못한다.
+  - ContextSwitching이 Kernel의 개입이 없어 빠르다.
+  - OS의 Scheduling 개입이 없기 떄문에, 어떤 UserLevelThread가 실행될지 예측 할 수 없다.
 - 라이브러리 형태로 제공된다.
+  - pThread, (개념적으로는 다르지만 Coroutine 같은 느낌)
 - 동일한 메모리에서 쓰레드가 관리되므로 빠르다.
-- 하나의 쓰레드가 SystemCall등으로 호출되면 나머지 쓰레드도 중단된다.
+- 하나의 쓰레드가 Blocking되면 나머지 쓰레드도 중단된다.
 
 ## KernelThread
 - KernelMode에서 동작

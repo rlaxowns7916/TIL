@@ -8,8 +8,11 @@
 ### 1. MutualExclusion (상호 배제)
 - 특정 프로세스 혹은 쓰레드가 CriticalSection에서 실행되는 동안 다른 프로세스 혹은 쓰레드가 접근 할  수 없다.
 
-### 2. Progress (진행)
+### 2. Progress (진행 조건)
 - CriticalSection이 사용되고 있지 않다면, 접근 할 수 있어야한다.
+- CriticalSection에 들어갈 Process는 공정하게 선택되어야 한다.
+  - 어떠한 Process도 Starvation 상태가 유지되어서는 안된다.
+  - 우선순위가 있는 경우에는 높은 우선순위의 Process가 먼저 실행될 수 있다.
 - 다음 CriticalSection에 접근할 수 있는 대상은 유한시간 이내에 결정되어야 한다.
 
 ### 3. BoundedWaiting (한정 대기)
