@@ -16,6 +16,8 @@
 - 경제적이다.
   - Process의 공유Resource(code, data, heap)을 공유한다. 
   - ContextSwitching 비용이 적다.
+    - VirtualMemory 관련 ContextSwitching이 생략되기 떄문이다. (Process의 ContextSwtiching에 비해서)
+      - MMU가 새로운 PageTable로 교체 + 기존 TLB 무효화 및 새로운 VirtualMemory Mapping
   - Process보다 생성이 빠르다.
 - 확장성이 좋다.
   - 병렬처리가 가능하다.

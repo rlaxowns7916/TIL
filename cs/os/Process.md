@@ -14,9 +14,14 @@
 ## MultiProgramming
 - 하나의 CPU가 시분할과 같은 기법으로 여러개의 Process를 실행하는 것.
   - 하나의 CPU는 한번에 하나의 일만 할 수 있으나, 시간을 나누어 빠르게 실행하기 떄문에, 동시에 실행되는 것 처럼 보임
-- Scheduling이 필요하다.
+- **한 Program의 I/O가 수행되면 ContextSwitching을 한다.**
+  - Starvation이 발생 할 수 있다.
 - 병렬성은 없으나, CPU의 활용도는 높일 수 있다.
   - ContextSwitching이 발생한다.
+
+## MultiTasking
+- **하나의 CPU에서 여러개의 작업(Task)를 빠르게 전환(Time Slice)하여 실행하는 방식**
+- CPU가 빠르게 ContextSwitching을 하여 동시에 실행되는 것처럼 보이게 한다.
 
 ## MultiProcessing
 - 여러개의 CPU로 각자 독립적으로 여러개의 Process를 실행하는 것

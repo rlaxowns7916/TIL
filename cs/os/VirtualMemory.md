@@ -7,6 +7,9 @@
   - H/W 부품이다.
   - PageTable: Page - Frame 매핑 테이블
   - SegmentationTable: BaseAddress(Physical Address 시작점), Limit (길이)
+- VA(VirtualAddress) = <P,D> Page + Offset
+  - PageTable을 이용하여 Page에 해당하는 Frame을 찾고, 거기서 Offset만큼 이동한다
+
 # 주요 개념
 - Demand Paging: 페이지가 실제로 필요할 때만 로드합니다.
 - 페이지 교체 알고리즘
