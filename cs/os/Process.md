@@ -115,10 +115,11 @@
 ### 선점 기법 (Preemptive)
 - 한 Process가 CPU를 할당 받아 실행중이더라도, 우선순위가 높은 Process가 CPU를 강제로 뱃을 수 있다.
 - 긴급하고 우선순위 높은 Process들이 빠르게 실행 될 수 있다.
-FCFS(FirstComeFirstServe), SJF(ShortJobFirst) 등의 알고리즘이 사용된다.
+- RoundRobin, SRT(ShortRemainingFirst) 등의 알고리즘이 사용된다.
+
 
 ### 비선점 기법 (NonPreemptive)
 - CPU를 할당 받으면 다른 Process가 CPU를 강제로 뺏을 수 없다.
 - 모든 Process에 대한 공정한 처리가 가능하다.
-- RoundRobin, SRT(ShortRemainingFirst) 등의 알고리즘이 사용된다.
+- HRN(HighestRatioresponseNext), FCFS(FirstComeFirstServe), SJF(ShortJobFirst) 등의 알고리즘이 사용된다.
 ***
