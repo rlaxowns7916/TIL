@@ -7,7 +7,7 @@
 ### [1] Control Plane, Data Plane 분리
 - 기존 Network 장비(Router, Switch, ...)는 제어기능과 데이터전달기능이 함께 존재한다. (개별 장비에 파편화)
 - SDN은 제어기능과 데이터전달기능을 분리한다.
-  - **Control Plane**: 네트워크의 상태를 모니터링하고, 네트워크 장비에게 전달할 명령을 생성 및 관리 (중앙관제)
+  - **Control Plane**: 네트워크의 상태를 모니터링하고, 네트워크 장비에게 전달할 명령을 생성 및 관리 (중앙관제=SDNController)
   - **Data Plane**: 단순 패킷전달만을 수행한다.
 
 ### [2] SDN Controller
