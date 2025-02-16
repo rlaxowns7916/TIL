@@ -47,7 +47,7 @@
 ### 1. Distance Vector Algorithm
 - RIP, EGP
 - 분산형 알고리즘이다.
-- 이웃 Router끼리의 정보를 교환하여 정보를 갱신한다. (Bellman-Ford Algorithm)
+- 이웃 Router끼리의 정보를 주기적으로 교환하여 정보를 갱신한다. (Bellman-Ford Algorithm)
   - Hop Count를 기반으로 최적의 경로를 계산한다.
   - 주기적으로 Routing 데이터를 교환한다.
   - Network 크기가 커지면 느려질 수 있다.
@@ -55,8 +55,10 @@
 
 ### 2. Link State Algorithm
 - OSPF
+  - HopCount제한이 없다.
 - 중앙 집중형 알고리즘이다.
 - Router가 전체 Network에 대한 정보를 가지고 있으며, Dijkstra Algorithm을 통해서 최적의 경로를 계산 할 수 있다. 
+  - 지역내의 모든 Router에 변경이 발생했을 때 Flooding하고, Routing테이블을 구성, 계산한다.
 - 대규모 Netowkr에 적합하며, 트래픽변화에 신속하게 대응 가능하다.
 
 ### 3. Path Vector Algorithm

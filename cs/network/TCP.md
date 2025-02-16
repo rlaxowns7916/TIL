@@ -28,14 +28,14 @@
         - TCP에서는, TCP 헤더의 32 비트 ACK 필드에서 이를 구현 
      - 중간 세그먼트 만 손실이면, 수신측은 그 뒤 세그먼트는 보관하고,
         - 현재까지 수신된 세그먼트 중 연속된 세그먼트로써 마지막 만 누적 확인응답 함
-     - 만일, 비 연속적으로 수신된 세그먼트(여러 중간 손실)이면,
-        - 처음 중간 손실부터 다시 재전송 시작되는 등 심각한 성능 저하 발생
+     - 만일, 비 연속적으로 수신된 세그먼트(여러 중간 손실)이면,  처음 중간 손실부터 다시 재전송 시작되는 등 심각한 성능 저하 발생
 
 - SACK (Selective Acknowledgement)
      - 여러 세그먼트 중 손실된 세그먼트 만 선택적으로 확인응답하는 방식
      - TCP에서는, TCP 옵션으로 구현됨
         - 3way-handshake 송수신간에 SACK 사용 합의
         - TCP 세그먼트에 SACK 범위 목록을 포함시킴
+
 ### (1) 오류 제어(Error Control)
 - **Checksum 으로 데이터 손상을 감지**
 - ACK 기반으로 수신 성공 여부를 송신 측에 전달.
@@ -85,7 +85,7 @@
 
 ## TCP Header
 ![TCP Header](https://user-images.githubusercontent.com/57896918/159167310-845174f6-cf7a-47cc-86cf-b8cc2be6246c.png)
-
+- 20Byte ~ 60Byte (Option 다 사용 시)
 ### TCP Flag
 
 - **SYN**
