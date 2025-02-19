@@ -53,6 +53,8 @@
 
 
 ### 3. Monitor
+- OS에서 직접적으로 제공하는 기능이 아닌, 동기화 원리를 활용하여 구현된 **고수준 동기화 메커니즘**
+  - Mutex, ConditionVariable, Semaphore 등을 사용하여 JVM과 같은 Runtime환경에서 구현
 - CriticalSection과 Synchronization을 캡슐화한다.
   - Method, Variable 등을 제공한다.
 - Monitor내의 Method는 동시 실행 되지 않는다. (MutualExclusion 보장)

@@ -5,13 +5,23 @@
   - **CPU에게 급하게 일을 처리해달라고 요청하는 것**
 
 
-## Interrupt 판별 과정
-1. Interrupt 발생 (IRQ)
-2. InterruptController가 관리
-   - Priority에 따라 가장 중요한 Interrupt 먼저 처리
-3. Interrupt Vector Table (IVT)에서 Handler 검색
-4. ISR(Handler의 Interrupt Service Routine) 수행
-5. 처리 완료 후 원래 작업으로 복귀
+## Interrupt 판별 방식
+
+### [1] S/W에 의한 Interrupt Polling
+- CPU가 모든 장치를 순차적으로 검사하여, Interrupt 요청을 감지하고 처리하는 방식
+- 각 장치에는 Interrupt 요청을 나타내는 Flag가 존재하고, CPU가 이것을 감시한다.
+- Poling방식은 속도가느리지만, 단순하고 비용이 절며하다.
+  - 우선순위 변경이 어렵고, 모든 장치를 확인해야 하므로 성능이 떨어진다.
+
+### [2] H/W vector에 따른 판별 (IVR)
+- IVR방식은 각 장치가 고유한 Vector를 가지고 있고, CPU가 Interrupt를 받을 때 해당 Vector를 참조하여 ISR를 수행하는 방식이다.
+- **CPU와 Interrupt 장치 사이에, DataBus 또는 AddressBus가 존재하여 IVR을 전달 받을 수 있게 한다**
+- Polling보다 속도가 빠르며, 우선순위 관리도 용이하지만 H/W 비용이 증가한다.
+
+### [3] 데이지 체인 (Daisy Chain)
+- 모든 장치가 하나의 Interrupt 요청 선을 공유하며 Chain 형태로 연결하는 방식
+- CPU와 가까운 장치가 우선순위가 더 높아진다.
+- H/W가 간단하고 비용이 저렴하지만, 우선순위가 낮은 장치가 Starvation이 발생할 수 있다.
 
 ## Interrupt의 종류
 ### 1. External Interrupt (=H/W Interrupt)
@@ -32,14 +42,15 @@
 3. InterruptVector: InterruptServiceRoutine의 시작주소
 
 
-## 동작순서
-1. IRQ (인터럽트 요청)
+## 동작순서 (IVR)
+1. 외부 장치가 IRQ (인터럽트 요청)
 2. Program 실행 중단 (현재 실행중이던 Mirco Operation 까지는 수행한다.)
-3. 현재의 Program 보존 (PCB, PC 등)
+3. 상태저장 - Context Save (특정 Memory 영역에 저장 // PCB 아님)
+   - Register 값, Stack, ...
 4. Interrupt Service  Routine (ISR) 실행
    - Interrupt 원인을 파악하고 실질적인 작업을 수행한다.
    - ISR 수행중에 우선수위가 더 높은 Interrupt 발생 시, 재귀적으로 1~5 수행
-5. 상태복구 (PCB, PC 등)
+5. 상태복구 (Context Restore) 
 6. 중단된 Program 재개
 
 ## Interrupt 우선순위
