@@ -33,6 +33,7 @@
 - SACK (Selective Acknowledgement)
      - 여러 세그먼트 중 손실된 세그먼트 만 선택적으로 확인응답하는 방식
      - TCP에서는, TCP 옵션으로 구현됨
+        - 옵션필드에 구성, cAck와 배타적 개념 아님
         - 3way-handshake 송수신간에 SACK 사용 합의
         - TCP 세그먼트에 SACK 범위 목록을 포함시킴
 
