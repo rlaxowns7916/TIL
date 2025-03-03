@@ -1,8 +1,11 @@
 # DMA (Direct Memory Access)
 - **CPU의 개입 없이, 주변장치와 메모리(RAM)간의 데이터 전송을 수행하는 기능이다.**
   - 전용 DMA Controller가 수행한다.
+  - H/W이다.
+- **CPU는 DMAC에게 데이터 전송을 요청한다. (이 Memory 주소로 데이터를 전송하라)**
+  - 완료되면 DMAC가 Interrupt로 알린다.
 - CPU의 부담을 줄이고, 데이터 전송 속도를 높이기 위해 사용한다.
-  - Interrupt발생 회수를 최소하여 효율성을 높인다.
+  - Interrupt발생 횟수를 최소하여 효율성을 높인다.
     - CPU에 의해서만 작업이 이루어질 경우, 주변장치가 메모리접근을 할 떄마다 Interrupt가 발생
 - 누가 Disk에서 kernel memory buffer로 올리냐가 차이이다.
    - cpu: 일반적인 I/O
