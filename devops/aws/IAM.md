@@ -1,3 +1,15 @@
+# 공동 책임모델
+- IAM은 사용자의 책임이다. 
+  - Users, 
+  - Groups, 
+  - Roles, 
+  - Policies,
+  - Management
+  - Monitoring
+  - Key Rotation
+  - ...
+- 그 외의 Infra, 설정, 취약점 분석, 컴플라이언스 준수 등은 AWS의 책임이다.
+
 # IAMUser (Identity And AccessManagement User)
 - RootAccount는 계정이 생성될 떄 자동으로 만들어진다.
   - 사용되어서는 안된다.
@@ -51,4 +63,19 @@
 - AWS Service, 또는 어플리케이션이 특정 작업을 수행할 수 있도록 부여하는 역할(Role)
 - AWS 서비스 (EC2, Lambda) 또는 외부사용자애게 부여가능
   - ex) EC2에서 S3 접근, Lambda에서 DynamoDB 접근
+  - Ec2 Instance에 aws configure를 통해서 정보를 입력하는 것이 아닌 IAM Role을 주어야한다.
 - **Service가 AssumeRole을 사용하여 역할을 위임받아 인증하는 것**
+
+# IAM 보안 도구
+- IAM Credential Report
+  - AWS 계정에 대한 IAM 사용자 보안 현황을 알 수 있음
+  - CSV파일의 형태를 제공하며, 아래와 같은 데이터가 있다.
+    - user
+    - arn
+    - password 관련정보
+    - mfa 관련 정보
+    - accessKey 관련 정보
+- IAM Access Advisor
+  - 특정 IAM 사용자의 AWS 서비스 접근기록을 볼 수 있다.
+  - Role을 통해 부여된 권한과 실제 사용권한을 비교하여, 불필요한 권한을 회수 가능하다. (최소 권한 유지)
+  
