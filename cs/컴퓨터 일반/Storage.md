@@ -42,14 +42,17 @@
 ## 저장방식
 
 ### [1] Block Storage
+- HDD, SSD
 - Data를 일정한 Block으로 나누어 저장하는 방식
-  - **정형화된 데이터를 빠르게 처리 할 수 있다.**
-  - 비용이 많이든다.
+  - **Block주소를 기반으로 읽고쓴다.**
+  - H/W자체는 FileSystem을 이해하지 못하기 때문이다.
 - Block들은 각각의 주소를 가지고 있고 논리적으로 연결되어 있으며, 재조합하여 파일을 만들어 낼 수 있다.
 - 주로 SAN 또는 VM의 Disk로 사용한다.
 - OS나 App에서 Block단위로 데이터를 관리 할 수 있어 고속 I/O에 적합하다.
 
 ### [2] FileStorage
+- OS가 Block Storage를 FileSysetm으로 변환한다.
+  - ext4(Linux), NTFS(Windows), ...
 - 일바적인 파일을 계층구조(Tree)로 저장하는 방식
   - 데이터가 늘어날수록 성능이 저하된다.
 - 일반적으로 NAS에 사용된다.

@@ -55,7 +55,7 @@ m5.2xlarge
 - **초기 비용이 없으며, 필요할 때마다 생성 가능하다**
 
 ### [2] Reserved Instance
-- 1년~3년 단위로 특정 Instance를 예약하여 비용을 절감할 수 있다.
+- 1년, 3년 단위로 특정 Instance를 예약하여 비용을 절감할 수 있다.
 - 선결제, 혹은 월 정액방식으로 지불한다.
 - 장기적으로 예측가능한 워크로드에 적합하다.
 - **On-Demand에 비해서 최대 75%절약이 가능하며, 정해진 용량을 보장하지만 Instance유형과 Region에 제한된다.**
@@ -80,3 +80,29 @@ m5.2xlarge
 - 규제가 요구하는 물리적 격리에 사용 가능하다. (금융, 헬스케어, ...)
 - Instnace비용 + 물리서버당 추가비용이 발생한다.
   - 다른 AWS계정과 사용이 불가능하게 구성이되어있기 때문에, 어찌되었든 물리서버를 독점하는 것이기 때문이다.
+
+
+## AMI (Amazon Machine Image)
+EC2 인스턴스를 생성할 때 사용하는 이미지.
+
+### AMI의 종류
+- **공용 AMI**: AWS에서 기본 제공하는 이미지 (Amazon Linux, Ubuntu, Windows Server 등)
+- **마켓플레이스 AMI**: AWS Marketplace에서 제공하는 상용 AMI (Red Hat, SUSE, Windows Server 등)
+- **커스텀 AMI**: 사용자가 직접 만든 AMI (보안 패치, 애플리케이션 포함 가능)
+
+
+### AMI의 구성 요소
+| 구성 요소 | 설명 |
+|----------|------|
+| **Root Volume** | OS 및 소프트웨어 설정을 포함하는 기본 볼륨 |
+| **Launch Permissions** | 특정 AWS 계정과 AMI 공유 가능 |
+| **Block Device Mappings** | AMI에 포함될 EBS 볼륨 설정 |
+| **Virtualization Type** | HVM 또는 PV (현재는 HVM이 주로 사용됨) |
+
+
+###  AMI의 주요 활용 사례
+1. **동일한 환경의 EC2 인스턴스를 빠르게 배포**
+2. **OS 및 애플리케이션을 사전 설치하여 운영 효율성 향상**
+3. **백업 및 복원 용도로 활용 (스냅샷 기반)**
+4. **다른 리전에 동일한 환경을 배포할 때 유용**
+
