@@ -9,6 +9,8 @@
 - ChannelPipeLine을 통해서 IO를 처리한다.
   - Inboud > read(), channelActive()
   - Outbond > write(), channelInactive()
+- Channel은 고유하다.
+  - Comparable을 구현하고있고, 같은 hash값이 나오면 compareTo에서 Error가 발생한다.n
   
 
 ## LifeCycle

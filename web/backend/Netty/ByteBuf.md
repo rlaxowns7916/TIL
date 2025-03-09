@@ -1,17 +1,22 @@
 # ByteBuf
 - Netty의 ByteWrapper
-  - Java NIO - ByteBuffer에 비해 풍부한 기능을 제공한다.
+    - Java NIO - ByteBuffer에 비해 풍부한 기능을 제공한다.
+    - Netty에서 사용하는 데이터 컨테이너이다.
 - 사용자 정의로 확장 가능하다.
 - 최대용량을 지정 가능하다.
-  - Integer.MAX_VALUE보다 크게 잡으려고 하면 Exception이 발생한다.
+    - Integer.MAX_VALUE보다 크게 잡으려고 하면 Exception이 발생한다.
+- Pooling(메모리 재사용) 지원
+- ByteBufAllocator를 통해 힙 또는 다이렉트 버퍼를 손쉽게 생성할 수 있다.
+- duplicate(), slice() 등을 사용해 파생(derived) 버퍼를 생성할 수 있으며, 원본과 내부 데이터를 공유한다.
+- copy()는 원본 데이터 내용을 완전히 복사하여 독립적인 버퍼를 만든다.
+- PooledByteBufAllocator를 사용하면 내부적으로 메모리 풀을 이용해 성능을 높일 수 있다.
 - ZeroCopy 사용가능 (내장 복합 버퍼형식 사용)
 - Read / Write 마다 각각 고유한 Index 소유
 - Method Chain 지원
-- Reference Counting을 통한 메모리 관리 (내부구현)
-  - allocator에 의해서 할당 될 때, Reference Counting이 증가한다.
-  - retain()을 통해서 Reference Counting을 증가시킨다. // 비동기 사용시, Memory 해제를 막기위함
-  - release()를 통해서 Reference Counting을 감소시킨다.
-- Polling 지원
+- **Reference Counting을 통한 메모리 관리 (내부구현)**
+    - allocator에 의해서 할당 될 때, Reference Counting이 증가한다.
+    - retain()을 통해서 Reference Counting을 증가시킨다. // 비동기 사용시, Memory 해제를 막기위함
+    - release()를 통해서 Reference Counting을 감소시킨다.
 
 ## Read / Write Index
 - 각각 고유한 Index를 가지고 있다.
@@ -25,8 +30,8 @@
 ## 주요메소드
 - get(index): 특정 Index의 Byte를 가져온다. (rIndex를 증가시키지 않는다.)
 - set(index): 특정 Index에 Byte를 쓴다. (wIndex를 증가시키지 않는다.)
-- read():     rIndex 위치의 값을 가져온다. (자료형 별로 파생 메소드가 존재한다.)
-- write():    wIndex 위치에 값을 쓴다. (자료형 별로 파생 메소드가 존재한다.)
+- read():     rIndex 위치의 값을 가져온다. (자료형 별로 파생 메소드가 존재한다. / rIndex 증가)
+- write():    wIndex 위치에 값을 쓴다. (자료형 별로 파생 메소드가 존재한다. / wIndex 증가)
 - isReadable(): 읽을 수 있는 데이터가 있는지 확인한다. (읽을 수 있는 Byte가 하나 이상이면 true를 반환한다.)
 - isWritable(): 쓸 수 있는 공간이 있는지 확인한다. (쓸 수 있는 Byte가 하나 이상이면 true를 반환한다.)
 - readableBytes(): 읽을 수 있는 Byte의 수를 반환한다.
@@ -202,11 +207,6 @@ class CompositeBufferExample {
 - 내부적으로 ByteBuf를 가지는 컨테이너이다.
 - MetaData를 캡슐화하고 관리할 때 유용하다.
 
-### 지원 Method
-- content(): ByteBuf를 반환한다.
-- copy(): ByteBuf를 복사한다.
-- duplicate(): ByteBuf를 복사한다. (원본에 영향을 미친다.)
-
 
 ## ByteBufUtil 클래스
 - ByteBuf 조작과 관련된 유틸리티 클래스
@@ -242,6 +242,8 @@ class CompositeBufferExample {
 - Index를 지정해주면 해당 Index부터 복사가 시작된다. (rIndex는 증가하지 않는다.)
 
 ### [2] 파생 Buff
+- 원본에 영향을 미치기 때문에 위험하지만 성능때문에 사용되는 측면이 크다.
+  - **데이터는 공유되지만 rIndex와 wIndex는 별도로 관리된다.**
 - 아래와 같은 명령어로 파생 ByteBuff 생성이 가능하다.
   - duplicate()
   - slice()

@@ -1,4 +1,5 @@
 # ChannelHandler
+- **Network 이벤트에 의해서 Trigger 된다.**
 - Inbound / Outbound를 처리하는 Handler이다.
   - Inbound: channelRead(), channelActive(), exceptionCaught()
   - Outbound: write(), flush()
@@ -32,6 +33,11 @@ public class MyOutboundHandler extends ChannelOutboundHandlerAdapter {
 }
 ```
 
+## Encoder & Decoder
+- **Decoder, Encoder 모두 ChannelHandler의 구현체**
+- Decoder: Inbound의 ByteArray -> Java객체로 Decoding (ex: ByteToMessageDecoder)
+- Encoder: Outbound의 Java객체 -> ByteArray로 Encoding (ex: MessageToByteEncoder)
+
 ## 예외처리
 - exceptionCaught를 통해서 예외처리가 가능하다.
 - Netty는 Exception이 발생하면, 현재 Pipeline에서 예외를 처리하기 위해서 exceptionCaught를 호출한다.
@@ -58,3 +64,5 @@ public class MyOutboundHandler extends ChannelOutboundHandlerAdapter {
   - **InboundHandler는 Chain 앞 -> 뒤로 흐른다**
   - **OutboundHandler는 Chain 뒤 -> 앞으로 흐른다**
 - intercepting-filter 구조를 통해서 개발자가 자유롭게 Handler를 추가 가능하다.
+- ServerBootStrap은 주로 ChannelInitializer (init()을 override) 를 통해서 pipeLine에 등록한다.
+  - ChannelInitializer도 ChannelHandler이기 떄문에, initChannel에서 handler들을 등록한 후 자신을 제거한다.
