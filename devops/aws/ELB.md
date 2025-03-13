@@ -23,8 +23,6 @@
 - 다양한 Routing, Redirection을 지원한다.
   - Port, Path 기반 라우팅
 
-  
-
 ### [3] NLB (Network LoadBalancer)
 - 신 버전이다. (2017)
 - AZ마다 고정 IP하나를 가지고 있으며, ElasticIP를 할당 할 수 있다. (DNS기반, IP기반 모두 사용가능)
@@ -39,3 +37,63 @@
 ### [4] GWLB (Gateway LoadBalancer)
 - Layer3에서 동작한다. (IP Protocol)
 - 주로 보안, 침입감지, 방화벽에 사용한다.
+- GENEVE Protocol(port: 6081)을 사용한다. / 최대 8500 MTU
+
+
+### Sticky Session
+- ALB, CLB에서만 지원 (NLB는 L4이기 떄문)
+- Cookie를 사용해서 구현
+- Application-based
+  - custom
+    - Taget(EC2, ECS)에서 자체 생성
+    - Custom하게 Applciation에서 필요한 데이터를 담을 수 있음
+    - 예약어 (AWSALB, AWSALBAPP, AWSALBTG)를 사용해서는 안됨
+  - application
+    - LB에 의해서 만들어짐
+    - Cookie의 이름은 AWSALBAPP
+- Duration-based
+  - LB에 의해서 만들어짐
+  - Cookie의 이름은 AWSALB(ALB), AWSELB(CLB)
+  - 세션의 유지시간을 설정하기 떄문에 일정시간이 지나면 해제된다.
+
+## CrossZone LoadBalancing
+- AZ간의 인스턴스 갯수 불균형을 해소한다.
+- AZ마다 공평하게 분배가 아니라 Instance별로 비율을 분배한다.
+- **ALB는 기본적으로 Enable 되어있다.**
+  - **AZ간의 통신이어도 비용이 부과되지 않는다. (보통 AWS는 AZ간의 통신에 비용을 부과한다.)**
+  - CLB는 기본적으로 disable이며, enable 가능하고 AZ간 통신에 비용이 부과되지 않는다.
+- NLB와 GWLB는 기본적으로 Disable 되어잇다.
+  - AZ간의 통신에 요금이 부과된다.
+```text
+/**
+  * LB는 AZ마다 공평하게 트래픽을 분배
+  * AZ에 있는 인스턴스의 갯수가 차이나면 부하가 제대로 분산되지 않음
+  * CrossZone LoadBalancing은 이 문제를 해결
+  */
+        ┌───────────────────┐
+        │   Load Balancer   │
+        └────────▲──────────┘
+                │
+        ┌───────┴──────────────┐
+        │                      │
+┌──────────────┐   ┌──────────────┐
+│      AZ1     │   │      AZ2     │
+├──────────────┤   ├──────────────┤
+│   EC2        │   │  ️ EC2       │
+│  ️EC2        │   │  ️ EC2       │
+└──────────────┘   │  ️ EC2       │
+                   │  ️ EC2       │
+                   │  ️ EC2       │
+                   └──────────────┘                        │
+```
+### Before CrossZone LoadBalancing
+| AZ  | EC2 개수 | AZ별 트래픽 분배(%) | 1개 인스턴스당 트래픽(%) |
+|-----|---------|-------------------|--------------------|
+| AZ1 | 2개     | 50%               | 25%               |
+| AZ2 | 5개     | 50%               | 10%               |
+
+### After CrossZone LoadBalancing
+| AZ  | EC2 개수 | AZ별 트래픽 분배(%) | 1개 인스턴스당 트래픽(%) |
+|-----|---------|-------------------|--------------------|
+| AZ1 | 2개     | 28.6%             | 14.3%              |
+| AZ2 | 5개     | 71.4%             | 14.3%              |

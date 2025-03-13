@@ -41,6 +41,14 @@
 - array(): backing array를 반환한다. (없다면 UnsupportedOperationException이 발생한다.)
 
 
+## ReferenceCount
+- Netty4 버전부터 도입 (ReferenceCounted 인터페이스 도입)
+  - 기본적으로 ReferenceCount 1을 가지고 시작
+  - ReferenceCount가 0으로 감소하면 instance 해제
+- **ByteBuf와 ByteBufHolder에 도입되었다.**
+- ByteBuf.release()는 referenceCount를 1 감소시키며, 0이되어 해제되면 true를 리턴한다.
+- 해제된 객체는 다시 사용할 수 없다.
+
 ## 사용 Pattern
 
 ### [1] HeapBuff
@@ -191,6 +199,43 @@ class CompositeBufferExample {
 - Heap, Direct, Composite 버퍼를 생성할 수 있다.
 - Channel에서 얻거나, ChannelHandlerContext에서 얻을 수 있다.
 
+### PooledByteBufAllocator
+- **Netty ChannelPipeLine, ChannelHandler에서 사용된다.**
+- ByteBuf의 재사용이 가능해진다.
+- 메모리 재사용을 통해 GC부담이 감소한다.
+  - jemalloc이라는 고효율 메모리 할당 방식을 사용한다.
+- Buffer의 release()에 대한 관리가 필요하다.
+  - **MemoryLeak이 발생하는 주요 원인이다.**
+  - ReferenceCount가 0이되면 다시 Pool로 들어간다.
+
+```kotlin
+val allocator = PooledByteBufAllocator.DEFAULT
+
+val buffer: ByteBuf = allocator.buffer(256) // default: DirectByteBuf
+buffer.writeBytes(byteArrayOf(1, 2, 3, 4, 5))
+
+println("Buffer capacity: ${buffer.capacity()}") // 256 출력
+
+buffer.release() // Reference Count 감소 (메모리 반환)
+```
+
+### UnpooledByteBuf
+- Unpooled라는 유틸리티 클래스로도 접근 가능하다.
+- Pooling을 사용하지 않는다.
+- 매번 새로운 ByteBuf 객체를 생성
+- 작은 크기의 단기적인 버퍼를 사용할 때 유리
+- 명시적인 release() 호출이 아니어도 GC의 대상이 된다. (Pool에 들어가지 않기 때문)
+```kotlin
+val allocator = UnpooledByteBufAllocator.DEFAULT
+
+val buffer: ByteBuf = allocator.directBuffer(128) // Direct 메모리에 128바이트 크기의 ByteBuf 할당
+buffer.writeBytes(byteArrayOf(10, 20, 30, 40))
+
+println("Buffer capacity: ${buffer.capacity()}") // 128 출력
+
+buffer.release() 
+```
+
 ### 구현체
 1. PooledByteBufAllocator (Default)
    - Pooling을 사용하여 ByteBuf를 생성한다.
@@ -206,7 +251,11 @@ class CompositeBufferExample {
 - 주로 Network 프로그래밍에서 사용된다.
 - 내부적으로 ByteBuf를 가지는 컨테이너이다.
 - MetaData를 캡슐화하고 관리할 때 유용하다.
-
+  - ex) 실제 컨텐츠와 함께 상태코드, 쿠키도 같이 저장
+- 주요 메소드
+  - content(): ByteBufHolder에 저장된 ByteBuf를 반환
+  - copy(): 포함된 ByteBuf 데이터와 **공유되지 않는 복사본**이 들어있는 ByteBufHolder 복사본을 반환
+  - duplicate(): 포함된 ByteBuf 데이터의 **공유된 복사본**이 들어있는 ByteBufHolder의 복사본을 반환
 
 ## ByteBufUtil 클래스
 - ByteBuf 조작과 관련된 유틸리티 클래스
