@@ -2,6 +2,7 @@
 - managed LB이다.
   - AWS가 동작할 것이라는걸 보장한다.
   - 업그레이드, 관리, HA를 보장한다.
+- **static DNS 이름을 제공한다.**
 - 자체 LB를 가지는 것보다 저렴하고 적은 노력이 들기떄문에 사용하는것이 권장된다.
 - EC2, ASG, ECS,CloudWatch, Route53 등 다른 AWS 서비스와 통합 될 수 있다.
 - TargetGroup을 통해서 AWS 서비스들에 대한 LoadBalancing이 가능하다.
@@ -11,17 +12,23 @@
 - 구 버전이다. (2009)
   - 더이상 사용할 수 없다.
 - HTTP, HTTPS, TCP, SSL
+- 하나의 SSL 인증만을 지원한다.
+  - ACM (AmazonCertificateManager)와 연동 가능하다.
 
 ### [2] ALB (Application LoadBalancer)
 - 신 버전이다. (2016)
 - IP주소가 변동된다. (DNS기반)
 - HA(고가용성)을 위해서 AZ를 선택할 수 있다. (최소 2개)
+- Labmda 함수, 
 - L7 LoadBalancer
     - 여러대의 Application의 부하를 분산 할 수 있다.
     - HTTP, HTTPS, WebSocket
         - client의 실제 IP는 X-Fowarded-For를 통해 전달된다. (port: X-Forwarded-Port, protocol: X-Forwarded-Proto)
 - 다양한 Routing, Redirection을 지원한다.
   - Port, Path 기반 라우팅
+- 여러개의 SSL인증서를 제공할 수 있다.
+  - SNI 덕분에 특정 도메인에 해당하는 인증서를 식별 가능하다.
+  - ACM (AmazonCertificateManager)와 연동 가능하다.
 
 ### [3] NLB (Network LoadBalancer)
 - 신 버전이다. (2017)
@@ -97,3 +104,13 @@
 |-----|---------|-------------------|--------------------|
 | AZ1 | 2개     | 28.6%             | 14.3%              |
 | AZ2 | 5개     | 71.4%             | 14.3%              |
+
+
+## Connection Draining
+- ELB 버전에 따라서 이름이 달라진다.
+  - CLB       -> ConnectionDraining
+  - ALB & NLB -> Deregistration Delay  
+- In-Flight Request (활성 요청)을 완료할 수 있도록 하는 기능이다.
+  - 기존 요청은 처리하게 둔다.
+  - 새로운 요청은 Drained 된 서버로 가지 않는다.
+- 1 ~ 3600초로 처리 가능하다. (default: 300초)

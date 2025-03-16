@@ -11,20 +11,12 @@
   - Outbond > write(), channelInactive()
 - Channel은 고유하다.
   - Comparable을 구현하고있고, 같은 hash값이 나오면 compareTo에서 Error가 발생한다.n
-  
 
-## LifeCycle
-## [1] 생성 (Channel Created)
-- Channel이 생성되지만 아직 연결되지 않은 상태. 
-- Bootstrap이 Channel을 생성하는 시점 (connect(), bind() 호출 전)
-
-## [2] 활성화 (Channel Active) 
-- connect() 호출 후, Channel이 활성화되어 데이터 송수신이 가능한 상태.
-- 
-- 읽기/쓰기 (Channel Read/Write): 데이터 송수신 작업 수행.
-- 비활성화 (Channel Inactive): 연결이 끊어진 상태.
-- 종료 (Channel Unregistered): 리소스가 해제되고, EventLoop에서 Channel이 제거된 상태.
-
+## 생명주기
+1. ChannelUnregistered: Channel이 생성됨 (EventLoop 등록 이전)
+2. ChannelRegistered: Channel이 EventLoop에 등록됨
+3. ChannelActive: Channel이 활성화됨 (원격 Peer와 연결 성공)
+4. ChannelInactive: Channel 연결이 끊어짐 (원격 Peer와 연결 해제)
 
 ## 주요 구현체
 - NioSocketChannel: NIO 기반 TCP 소켓.
@@ -32,3 +24,33 @@
 - NioDatagramChannel: NIO 기반 UDP 소켓.
 - EmbeddedChannel: 테스트 용도로 사용되는 가상 채널.
 - LocalChannel/LocalServerChannel: JVM 내에서만 통신하는 로컬 채널.
+
+## Event
+- 전체 PipeLine을 통해 전파된다.
+  - ChannelHandlerContext와의 차이점 (ChannelHandlerContext는 현재 Handler를 기준으로 전파)
+
+## Inbound 이벤트
+
+| 이름                             | 설명                                            |
+|----------------------------------|-----------------------------------------------|
+| `fireChannelRegistered()`        | DownStreamHandler의 channelRegistered호출        |
+| `fireChannelUnregistered()`      | DownStreamHandler의 channelUnregistered호출      |
+| `fireChannelActive()`            | DownStreamHandler의 channelActive 호출 (연결 완료)   |
+| `fireChannelInactive()`          | DownStreamHandler의 channelInactive 호출 (연결 종료) |
+| `fireExceptionCaught(Throwable)` | DownStreamHandler의 exceptionCaught 호출         |
+| `fireChannelRead(Object)`        | DownStreamHandler의 channelRead 호출             |
+| `fireChannelReadComplete()`      | DownStreamHandler의 channelReadComplete d호출    |
+
+## Outbound 이벤트
+
+| 이름                            | 설명                                                                |
+|---------------------------------|-------------------------------------------------------------------|
+| `bind(SocketAddress)`           | 로컬주소에 바인딩 / DownStreamHandler의 bind()를 호출한다.                      |
+| `connect(SocketAddress)`        | 원격 주소에 연결 / DownStreamHandler의 connect()를 호출한다.                   |
+| `disconnect()`                  | 연결 끊기      / DownStreamHandler의의 distonnect()를 호출한다.              |
+| `close()`                       | Channel 닫기, / DownStreamHandler의 close()를 호출한다.                   |
+| `deregister()`                  | EventLoop에서 Channel 등록 해제 / DownStreamHandler의 deregister()를 호출한다. |
+| `flush()`                       | 버퍼의 데이터를 네트워크로 전송 / DownStreamHandler의 flush()를 호출한다.             |
+| `write(Object)`                 | 데이터를 버퍼에 기록 / DownStreamHandler의 write()를 호출한다.                   |
+| `writeAndFlush(Object)`         | 데이터를 버퍼에 기록하고 즉시 전송                                               |
+| `read()`                        | 수동으로 데이터 읽기 요청 / DownStrea,Handler의 read()를 호출한다.                 |

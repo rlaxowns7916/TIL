@@ -34,3 +34,9 @@ public static void main(String[] args) {
     });
 }
 ```
+
+## vs ChannelPromise
+- ChannelPromise는 ChannelFuture의 하위 인터페이스이다.
+- **ChannelFuture는 주로 작업의 완료를 확인하거나 Listener를 등록한다.**
+- **ChannelPromise는 성공, 실패를 결정할 수 있는 메소드 (setSuccess(), setFailure())를 제공하여 명시적으로 결좌를 조작 할 수 있다.**
+  - promise의 결과 세팅에 따라서 ChannelFutureListener가 이벤트를 받는다.

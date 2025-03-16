@@ -2,6 +2,7 @@
 - Netty의 ByteWrapper
     - Java NIO - ByteBuffer에 비해 풍부한 기능을 제공한다.
     - Netty에서 사용하는 데이터 컨테이너이다.
+    - **내부적으로 Unsafe를 이용하여 NativeMemory를 직접 할당하던가, ByteBuffer를 Wrapping 한다.**
 - 사용자 정의로 확장 가능하다.
 - 최대용량을 지정 가능하다.
     - Integer.MAX_VALUE보다 크게 잡으려고 하면 Exception이 발생한다.
@@ -43,11 +44,18 @@
 
 ## ReferenceCount
 - Netty4 버전부터 도입 (ReferenceCounted 인터페이스 도입)
+  - ReferenceCounted 인터페이스를 상속
   - 기본적으로 ReferenceCount 1을 가지고 시작
   - ReferenceCount가 0으로 감소하면 instance 해제
 - **ByteBuf와 ByteBufHolder에 도입되었다.**
-- ByteBuf.release()는 referenceCount를 1 감소시키며, 0이되어 해제되면 true를 리턴한다.
+- retain()을 통해서 ReferenceCount를 1 증가시킨다.
+- release()를 통해서 ReferenceCount를 1 감소시키며, Memory해제가 되었을 시 true를 리턴한다.
+  - release() 후 referenceCount가 0이되면 nativeMemory를 해제시킨다.
 - 해제된 객체는 다시 사용할 수 없다.
+  - ReferenceCount가 0인 객체에 접근을 시도하면 `IllegalReferenceCountException` 가 발생한다.
+
+### 왜 도입했는가?
+- GC의 타이밍에 의존하지않고 직접 개발자가 원하는 시점에 release() 하기 위함이다.
 
 ## 사용 Pattern
 

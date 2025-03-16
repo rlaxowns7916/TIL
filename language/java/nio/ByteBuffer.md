@@ -16,6 +16,14 @@
   - 절대적: Parameter로 들어온 Index를 통해 Buffer에 직접 접근
   - 상대적: 현재 Positio에 해당하는 Index를 통해 Buffer에 접근 / **position이 자동으로 증가**
 
+## DirectByteBuffer의 Memory 해제
+- DirectByteBuffer는 MemoryLeak이 자주 일어남 (Native Memory를 할당 받기 떼문)
+  - GC가 직접 해제할 수 없다. (Native Memory이기 떄문)
+- 내부적으로 Cleaner (PhantomReference)를 가지고 있으며, GC가 발생할 때, NativeMemory 도 free() 시킴
+  - PhantomReference는 GC 이벤트를 알 수 있게한다.
+- GC가 발생하지 않고 계속 쌓이면 -> MemoryLeak
+- GC 타이밍에 다라, Memory 점유시간 예측이 불가능 하기 떄문에, 메모리 누수 위험이 있다.
+
 ## ByteOrder
 - ByteBuffer에서 Byte의 순서(endian)을 지정하는데 사용된다.
   - 다중바이트 데이터타입 (int, long, float, double)을 바이트 배열에 저장하여 읽을 때, 순서를 결정하는데 중요한 역할을 한다.

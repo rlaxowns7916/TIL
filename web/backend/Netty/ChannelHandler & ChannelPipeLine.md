@@ -7,6 +7,11 @@
 - 같은 PipeLine에 InboundHandler, OutboundHandler가 포함 될 수 있으나, 내부적인 구현으로 구분하여 슌서대로 전달한다. (같은 타입일 때만)
 - **Unix의 PipeLine과 같이 ChannelPipeLine에 있는 선행 Handler의 Output은 후행 Handler의 Input이 된다.**
 
+## 생명주기
+1. handlerAdded: ChannelHandler가 pipeLine에 추가될 때 호출된다.
+2. handlerRemoved: ChannelHandler가 ChannelPipeLine에서 제거될 때 호출됨
+3. exceptionCaught: ChannelPipeLine에서 처리중에 오류가 발생하면 호출됨
+
 ## Inbound
 ```java
 public class MyInboundHandler extends ChannelInboundHandlerAdapter {
@@ -15,10 +20,19 @@ public class MyInboundHandler extends ChannelInboundHandlerAdapter {
         System.out.println("Inbound: " + msg);
         // 데이터 수정 후 다음 핸들러로 전달
         String modifiedMsg = ((String) msg).toUpperCase();
+        
+        // 다음 Handler가 있다면
         ctx.fireChannelRead(modifiedMsg);
+        
+        // 마지막이라면
+        ReferenceCountingUtil.release(msg);
     }
 }
 ```
+- channelRead()를 재정의하는 경우에는 ByteBuf를 release() 하는 책임을 갖는다.
+  - ReferenceCountingUtil.release()를 통해 해제 가능하다. 
+  - 혹은 다음 Handler로 넘긴다 (ctx.fireChannelRead())
+    - super.channelRead()는 내부적으로 fireChannelRead()를 호출하나, 명시적인 의도를 드러내기 위해서 fireChannelRead()를 권장한다.
 
 ## Outbound
 ```java
@@ -29,9 +43,16 @@ public class MyOutboundHandler extends ChannelOutboundHandlerAdapter {
         // 데이터 수정 후 다음 핸들러로 전달
         String modifiedMsg = ((String) msg).toLowerCase();
         ctx.write(modifiedMsg, promise);
+        
+        // 이 Handler에서 msg를 폐기하고 메세지를 제거할 것 이라면
+        ReferenceCountingUtil.release(msg);
+        promise.setSuccess();
     }
 }
 ```
+- outboundHandler에서 write를 처리하고 Message를 해제하려면 ReferenceCount를 조절해주면 된다.
+- DownstreamHandler로 write를 넘기기만 할 뿐이다.
+  - 실제 Network를 통한 Socket통신은 flush 시점에 발생한다. (writeAndFlush도 가능)
 
 ## Encoder & Decoder
 - **Decoder, Encoder 모두 ChannelHandler의 구현체**
@@ -66,3 +87,19 @@ public class MyOutboundHandler extends ChannelOutboundHandlerAdapter {
 - intercepting-filter 구조를 통해서 개발자가 자유롭게 Handler를 추가 가능하다.
 - ServerBootStrap은 주로 ChannelInitializer (init()을 override) 를 통해서 pipeLine에 등록한다.
   - ChannelInitializer도 ChannelHandler이기 떄문에, initChannel에서 handler들을 등록한 후 자신을 제거한다.
+
+## 수정 Method
+1. add계열: pipeLine에 새로운 Handler를 추가한다.
+   - addFirst()
+   - addBefore()
+   - addAfter()
+   - addLast()
+2. remove(): pipeLine에서 handler를 제거한다.
+3. replace(): handler를 다른 handler로 교체한다.
+
+# ChannelHandlerContext
+- **ChannelHandler와 ChannelPipeline 사이의 연결고리를 제공한다.**
+- **Runtime에 pipeLine에 대한 조작이 가능해진다.**
+- 각 Handler에 주어지는 Context 객체이며, Handler가 다양한 적업을 수행할 수 있도록 돕는다.
+- 각 Handler가 PipeLine에 추가될 때마다 고유한 ChannelHandlerContext가 생성된다.
+- channelHandlerContext에서 사용할 수 있는 API는 현재 Handler를 기준으로 전파된다.

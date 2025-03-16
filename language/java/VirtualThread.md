@@ -68,6 +68,16 @@ public static void park(Object blocker) {
   3. Virtual Thread가 `unpark()`되면, Continuation을 통해 이전 상태에서 다시 실행됨.
   4. Virtual Thread는 Carrier Thread에 다시 매핑되어 실행을 재개함.
 
+### Continuation는 어떻게 작업을 나눌까 
+```text
+VirtualThread는 LockSupport의 park()와 unpark()에 맞춰서 알아서 ContextSwitching을 수행한다.
+Coroutine의 경우 suspend keyword를 통해서 컴파일 시점에 Continuation 객체가 StateMachine을 만들지만 VirtualThread는 어떻게 가능할까??
+
+우선 JVM은 기존 코드의 수정없이 동작하는게 목적이며, Runtime에 Continuation을 관리한다.
+모든 Blocking Call을 관리하며, LockSupport.park()를 감지하여 yield()를 수행한다.
+이 때, Continuation에는 VirutalThread의 실행상태가 저장되게 된다. (Stack, Register, PC) // stack -> heap
+그리고 LockSupport.unpark()를 감지하여 VirtualThread에 있는 값을 다시 Restore하여 동작을 재개한다. // heap -> stack
+```
     
 ## 주의 할 점
 1. Pinned 상태 주의
