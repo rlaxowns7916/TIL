@@ -18,6 +18,7 @@
 - EBS를 기반으로 구성되어있다.
 - **SSH로 접속 할 수 없다.**
   - AWS가 제공하는 ManagedService이기 떄문에, Underlying EC2에 접근 할 수 없다.
+- Inter-AZ 통신비용이 무료다.
 
 ## Storage Autoscaling
 - RDS 최초 생성 시, 용량을 설정하게 되어있다.
@@ -31,13 +32,15 @@
 
 ## Read Replica
 - 최대 5개까지 생성 가능하다.
-- MultiAZ로 구성 가능하다.
 - Async로 복제가 발생하기 때문에 복제 지연에 따른 일관성문제가 발생할 수 있다.
 - Replica는 Primary로 승격(Promotion) 가능하다.
+- Multi-Region옵션이 설정 가능하다. (Master-Node는 불가)
+  - Region간 통신은 비용이 부과된다.
 - **동일한 Region, 다른 AZ여도 비용이 발생하지 않는다.** (Managed Service에 대한 AZ간 통신비용 예외정책)
-  - region간 통신에는 비용이 추가된다.
+  - region간 통신에는 비용이 부과된다.
 
 ## Multi-AZ (DR)
+- 동일한 Connection문자열을 유지한다.
 - **Active-Standby로 구성된다.**
   - 하나의 DNSName으로 접근 가능하다.
   - Stand-by에는 읽거나 쓸 수 없으며, 장애 대기용이다.
