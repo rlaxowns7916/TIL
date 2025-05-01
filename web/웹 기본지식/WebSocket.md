@@ -64,9 +64,22 @@
   - 0x9: Ping
   - 0xA: Pong
 - **MASK(1비트)**: 페이로드 데이터가 마스킹 되었는지 여부
-- **Payload length**: 페이로드 데이터의 길이
-- **Masking-key**: 마스킹된 데이터를 해독하는 키
+- **Payload length(7bit)**: 페이로드 데이터의 길이
+- **Masking-key(4)**: 마스킹된 데이터를 해독하는 키
 - **Payload Data**: 실제 데이터
+
+### Packet 예시
+```text
+00000000  81 A4 12 34 56 78 41 71  18 3C 18 50 33 0B 66 5D  |...4VxAq.<.P3.f]|
+00000010  38 19 66 5D 39 16 28 1B  22 17 62 5D 35 57 71 5C  |8.f]9.(."b]5Wq\|
+00000020  37 0C 18 3E 1E 1D 7E 58  39 78                     |7..>..~X9x    |
+
+
+81 -> 10000001 (FIN=1, RSV=000, Opcode=0001)
+A4 -> 10100100 (Mask=1, Payload length=36 )
+12 34 56 78 -> Masking-key
+나머지 -> MaskingPayload (Stomp  등등)
+```
 
 ### 보안 고려사항
 1. **항상 wss:// 사용**: 민감한 데이터는 반드시 TLS/SSL을 통해 암호화
@@ -86,7 +99,7 @@ Host: server.example.com
 Upgrade: websocket
 Connection: Upgrade
 Sec-WebSocket-Key: x3JJHMbDL1EzLkh9GBhXDw==
-Sec-WebSocket-Protocol: chat, superchat
+Sec-WebSocket-Protocol: v10.stomp, v11.stomp, v12.stomp
 Sec-WebSocket-Version: 13
 Origin: http://example.com
 
@@ -96,16 +109,18 @@ HTTP/1.1 101 Switching Protocols
 Upgrade: websocket
 Connection: Upgrade
 Sec-WebSocket-Accept: HSmrc0sMlYUkAGmm5OPpG2HaGWk=
-Sec-WebSocket-Protocol: chat
+Sec-WebSocket-Protocol: v12.stomp
 ```
 
 #### 핵심 헤더 설명
 - **Upgrade**: WebSocket으로 프로토콜 업그레이드 요청
 - **Connection**: Upgrade 헤더를 사용하기 위한 필수 헤더
-- **Sec-WebSocket-Key**: 랜덤 생성된 키, 서버가 웹소켓 요청을 이해했는지 확인
-- **Sec-WebSocket-Protocol**: 사용하려는 서브프로토콜 명시
+- **Sec-WebSocket-Key**: 무작위 난수 (WebSocket프로토콜을 서버가 이해했는지 확인하기 위한 목적)
+- **Sec-WebSocket-Protocol**: 사용하려는 서브프로토콜 명시 (쉼표로 구분)
+  - Client는 자신이 원하는 sub-protocol 목록을 송신한다.
+  - Server는 Client가 제시한 목록 중 하나를 골라서 응답한다.
 - **Sec-WebSocket-Version**: 웹소켓 프로토콜 버전
-- **Sec-WebSocket-Accept**: 클라이언트 키에서 파생된 해시, 웹소켓 표준에 맞게 생성
+- **Sec-WebSocket-Accept**: 클라이언트 키에서 파생된 해시, 웹소켓 표준에 맞게 생성 (클라이언트에서 요청에 대한 응답인지 확인하기 위함)
 
 ### 2. 데이터 전송
 - Frame 단위로 데이터를 전송한다.
