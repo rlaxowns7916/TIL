@@ -82,8 +82,16 @@ Coroutine의 경우 suspend keyword를 통해서 컴파일 시점에 Continuatio
 ## 주의 할 점
 1. Pinned 상태 주의
     - `synchronized` 블록이나 네이티브 코드에서 Virtual Thread가 Platform Thread에 고정(Pinned)될 수 있음.
+      - synchronized 블록 진입시, JVM은 objectMonitor를 획득해야하는데 이것이 native하게 구현되어 있음
+      - JVM은 Monitor소유자를 CarrierThread를 기준으로 함
+        - **VirtualThread aware하지 않은 것이 문제의 원인**
+    - 동시성문제를 일으킬 수 있는 SideEffect를 방지하기 위한 의도적인 차단이다.
+      - PlatformThread를 기반으로 Monitor를 획득하는데, 다른 PlatformThread에 ReMount될 경우에는 일관성이 깨질 수 있기 때문 (UnMount됐던 PlatformThread에 다른 VirtualThread가 Mount될 경우 Lock이 정상동작하지 않는 문제도 있음) 
+      - https://techblog.lycorp.co.jp/ko/about-java-virtual-thread-3
     - 이렇게 되면 Virtual Thread의 경량성 장점이 사라지고, Platform Thread를 점유하게 되어 성능 저하 가능.
-    - JDK 25부터 일부 개선될 예정.
+    - JDK 24부터 일부 개선될 예정.
+      - https://openjdk.org/jeps/491?source=post_page-----22de93f51a74---------------------------------------
+      - Monitor 기준을 VirtualThread 기준으로 변경하여, UnMount를 가능하게하고 Mount할 때 Monitor 획득 상태 또한 반영함
 2. Virtual Thread를 풀링(pooling)하지 말 것
     - Virtual Thread는 생성 비용이 거의 없고, 자동으로 스케줄링되므로 재사용할 필요가 없음.
     - 오히려 풀링하면 성능이 저하될 수 있으며, 무한대로 생성하는 것이 더 효율적임.

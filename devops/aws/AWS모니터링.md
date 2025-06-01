@@ -114,7 +114,74 @@
   - AWS Glue와 통합되어 데이터 카탈로그에 스키마를 저장할 수 있다.
 ## X-Ray
 - AWS에서 제공하는 분산 추적 서비스
-- 어플리케이션의 성능을 분석하고, 문제를 진단하는 데 도움을 준다.
+- 어플리케이션의 성능을 분석하고, 문제를 진단하는 데 도움을 준다. (시각적 분석 제공)
+  - bottleneck
+  - latency
+  - error/exception
+  - SLA 충족 여부
+  - 영향받은 User
+- 다양한 AWS 서비스와 호환된다.
+  - AWS Lambda
+  - Amazon EC2
+  - Amazon ECS
+  - Amazon ELB
+  - Api Gateway다
+
+### Enable하는 방법
+1. SDK
+   - Application(Java, Node.js, Python, Go, .NET)에서 SDK를 사용하여 X-Ray에 데이터를 전송한다.
+   - SDK가 HTTP, DatabaseCall, AWS Call 등을 캡쳐한다.
+2. X-Ray daemon Or X-Raw AWS Integration 설치
+   - Machine에 직접 설치해야 한다. (X-Ray에 쓸 수 있는 IAM 권한(PUT) 도 부여해야한다.)
+   - X-Ray Daemon은 UDP Packet Interceptor로, low-level packet을 통해 X-Ray에 데이터를 전송한다.
+     - 20000/UDP 에서 동작하며, Raw Segment 데이터를 수집하여, 매 초마다(배치로) AWS-X-Ray에 API로 전달한다
+
+### 세부 구성요소
+- Trace: X-Ray에서 수집한 데이터의 집합 (Segments의 집합)
+- Segments: X-Ray에서 수집한 데이터의 기본 단위
+- SubSegments: Segment의 하위 단위 (Segment에 디테일 추가)
+- Sampling: X-Ray에서 수집할 데이터의 비율을 설정하는 기능
+  - 코드를 변경하지 않고, Rule을 통해 비율을 조정할 수 있다.
+  - Reservoir: 1초동안 샘플링할 데이터의 수
+  - Rate: Reservoir를 초과 한 이후 샘플링할 데이터의 비율 (0~1)
+- Annotations: Segment에 정보를 추가하는 기능 
+  - Key-Value 쌍으로 저장
+  - **Indexing되어, 검색이 가능하다.**
+- Metadata: Segment에 정보를 추가하는 기능
+  - Key-Value 쌍으로 저장
+  - **Indexing되지 않으며, 검색이 불가능하다.**
 
 ## CloudTrail
 - AWS 계정의 API 호출을 기록하는 서비스
+  - Console
+  - SDK
+  - CLI
+  - AWS Services
+
+### Cloud Trail Event
+- Management Event
+  - AWS Management Console, AWS CLI, AWS SDK를 통해 발생하는 API 호출을 기록한다.
+  - AWS 서비스의 관리 작업을 기록한다. (ex. IAM, EC2, S3)
+  - Read/Write API 호출을 모두 기록한다.
+- Data Event
+  - 기본적으로는 수집하지 않는다.
+  - S3, Lambda, DynamoDB와 같은 AWS 서비스의 데이터 작업을 기록한다.
+    - S3 Object-Level API 호출을 기록한다. (ex. GetObject, PutObject)
+    - Lambda Function Invocation을 기록한다.
+    - DynamoDB Table에 대한 API 호출을 기록한다.
+- Cloud Trail Insight Event
+  - 유료
+  - 일종의 AuditLog
+  - Management Event의 비정상적인 API 호출을 분석하고 기록한다.
+    - 부정확한 리소스 프로비저닝
+    - 서비스 제한 초과
+    - AWS IAM 작업 폭주
+- CloudTrailEvent는 기본적으로 90일의 보관기간을 가진다.
+  - 장기보관 하려면 S3로 넘기고, Athena로 분석한다.
+
+
+
+## ADOT (AWS Distro for OpenTelemetry)
+- AWS에서 제공하는 OpenTelemetry 배포판
+- OpenTelemetry는 애플리케이션의 메트릭, 로그 및 트레이스를 수집하고 전송하는 오픈 소스 프로젝트
+- AWS Distro for OpenTelemetry는 AWS 서비스와 통합되어, AWS에서 제공하는 모니터링 및 로깅 서비스에서 사용할 수 있도록 지원
