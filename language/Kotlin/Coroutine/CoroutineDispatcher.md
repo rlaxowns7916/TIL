@@ -7,8 +7,13 @@
 
 
 ## 내부구조
-- 작업 대기열을 가지고 있다.
-- 작업을 수행할 수 있는 ThreadPool을 가지고 있다.
+- Default, IO의 경우 내부적으로 하나의 CoroutineScheduler를 공유한다.
+  - Thread사용 한도는 각각 다르기 때문에, 하나의 Dispatcher가 과도하게 사용하더라도, 다른 Dispatcher에 영향을 주지 않는다.
+- **CoroutineScheduler가 ThreadPool (여러개의 Worker Thread)을 관리한다.**
+  - 각각의 WorkerThread별로 WorkQueue를 가지고 있다.
+  - 각각의 Worker들은 Work-stealing 방식으로 동작한다.
+- Dispatcher는 Scheduler에게 일종의 힌트를 주는것이라고 볼 수 있다.
+  - Blocking 여부, parallelism, ...
 
 ### [0] Main
 - 일반적으로 사용불가능하다.
