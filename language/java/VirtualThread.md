@@ -94,7 +94,10 @@ Coroutine의 경우 suspend keyword를 통해서 컴파일 시점에 Continuatio
       - Monitor 기준을 VirtualThread 기준으로 변경하여, UnMount를 가능하게하고 Mount할 때 Monitor 획득 상태 또한 반영함
 2. Virtual Thread를 풀링(pooling)하지 말 것
     - Virtual Thread는 생성 비용이 거의 없고, 자동으로 스케줄링되므로 재사용할 필요가 없음.
-    - 오히려 풀링하면 성능이 저하될 수 있으며, 무한대로 생성하는 것이 더 효율적임.
+      - Pooling은 Virtual Thread의 설계철학인 TaskPer-Thread에 어긋남
+    - 오히려 Pooling이 성능을 더 저하시킬 수 있음
+      - 복잡성증가, ThreadLocal문제, ...
+      - Pooling을 사용할 큰 유인이 없다고 보는게 맞는 것 같음
 3. ThreadLocal 사용 최소화
     - Virtual Thread는 매우 빠르게 생성/소멸되므로, ThreadLocal을 많이 사용하면 관리가 어렵고 메모리 누수가 발생할 가능성이 있음.
     - 대신 JDK 21에서 도입된 `ScopedValue`를 사용하면 Virtual Thread 환경에서 더 효율적으로 상태를 관리할 수 있음.
@@ -102,3 +105,6 @@ Coroutine의 경우 suspend keyword를 통해서 컴파일 시점에 Continuatio
    - Virtual Thread는 I/O-Bound 작업에 최적화되어 있다.
      - 낮은 컨텍스트 스위칭 비용과 Platform Thread를 블로킹하지 않는 특성 덕분에 I/O 대기 시간 동안 다른 작업을 수행할 수 있음.
    - Virtual Thread가 CPU-Bound 작업을 수행하면 하나의 Platform Thread를 독점하게 됨.
+     - ForkJoinPool은 Preemptive 스케줄링을 지원하지 않기 때문에, CPU-Bound 작업이 장시간 실행되면 다른 Virtual Thread가 실행되지 못하게 됨.
+5. 동시성을 VirtualThread의 숫자세한으로 풀려고 하지 말 것
+   - DB Connection, ApiCall 등의 동시성을 제어해야 하는 자원은 Semaphore, RateLimiter 등을 사용하여 제어할 것.
