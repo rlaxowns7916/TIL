@@ -132,3 +132,16 @@
 - 아래와 같은 방법으로 해결이 가능하다.
   1. Client가 ActiveCloser가 되도록 구현
   2. Connection Pooling 사용
+
+## TIMED_WAIT 상태에서 동일한 4-tuple의 syn 요청이 들어온다면?
+```text
+[선행조건]
+- Server: TIME_WAIT 상태 + SO_REUSEADDR를 통해서 LISTEN을 하는 상태
+- Client: 이전 PassiveClose (Server입장에서는 ActiveClose) 와 똑같은 LocalPort로 다시 Sync 요청
+
+[결과]
+- Server 입장에서는 TIME_WAIT 중인 상태의 Client Socket이 다시 Syn요청을 보내는 것
+- 올바른 Packet이라고 이해하려면, SequenceNumber와 Timestamp 까지 맞아야한다.
+- 올바르지 않음 Packet이라고 인식하며 그냥 무시해버린다.
+- TIME_WAIT이 풀리는 시점 (2MSL 초과) 이후에 ACK를 통해서 3Way Handshake가 맺어진다.
+```
