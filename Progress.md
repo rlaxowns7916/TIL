@@ -8,3 +8,4 @@
 | 2026-02-02 | Docker Build Audit | [FIX] | [REVIEW] | Sent | https://github.com/rlaxowns7916/TIL/pull/1 | BuildKit & Multi-stage optimizations |
 | 2026-02-03 | 분산 트랜잭션 패턴 심화 | [REWORK] | [REVIEW] | Sent | https://github.com/rlaxowns7916/TIL/pull/5 | SAGA, 2PC 메커니즘 및 장애 복구 전략 |
 | 2026-02-03 | Kafka 트랜잭션 및 EOS | [NEW] | [REVIEW] | Sent | https://github.com/rlaxowns7916/TIL/pull/6 | Idempotent Producer, Transaction API 상세 분석 |
+| 2026-02-03 | 쿠버네티스 핵심 개념 및 아키텍처 | [NEW] | [COMPLETED] | - | - | PHASE 3: 14개 문서 완료 (개요 2, 제어평면 5, 노드컴포넌트 3, 기본개념 5) |
