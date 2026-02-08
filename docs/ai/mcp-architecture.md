@@ -50,3 +50,16 @@ MCP는 **Host**, **Client**, **Server**의 3계층 구조로 동작합니다.
 
 ## 4. 결론
 MCP는 LLM 어플리케이션의 확장성을 극대화하는 표준 계층입니다. 커스텀 서버 구현을 통해 보안이 유지된 상태로 내부 지식을 AI와 결합할 수 있습니다.
+
+## MCP vs OpenClaw Skills
+MCP와 OpenClaw Skill은 모두 AI의 기능을 확장하지만, 동작 계층과 역할이 다릅니다.
+
+- **OpenClaw Skills (Client-side)**:
+  - Agent의 "두뇌"이자 "손발" 역할을 하는 **클라이언트 측 로직**입니다.
+  - LLM이 어떤 도구를 언제 사용할지 결정하는 정책(Policy)과 워크플로우를 정의합니다.
+  - 예: `git` skill (git 명령어 조합 로직), `browser` skill (브라우저 제어 로직).
+
+- **MCP (Server-side)**:
+  - 데이터와 도구를 표준화된 방식으로 제공하는 **서버 측 프로토콜**입니다.
+  - 특정 Agent 구현체에 종속되지 않으며, 데이터 소스(DB, API)를 추상화합니다.
+  - **Skill은 MCP를 사용할 수 있습니다**: 예를 들어 `mcp-integration` skill은 MCP 서버에 접속하여 그 서버가 제공하는 도구를 동적으로 로드하고 실행할 수 있습니다.
