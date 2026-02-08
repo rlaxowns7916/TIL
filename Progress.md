@@ -10,3 +10,6 @@
 | 2026-02-03 | Kafka 트랜잭션 및 EOS | [NEW] | [REVIEW] | Sent | https://github.com/rlaxowns7916/TIL/pull/6 | Idempotent Producer, Transaction API 상세 분석 |
 | 2026-02-04 | 분산 트랜잭션 패턴 심화 | [FIX] | [REVIEW] | - | https://github.com/rlaxowns7916/TIL/pull/5 | CONTEXT/README/prd 정리, 참고문헌 기준 강화 |
 | 2026-02-04 | Kafka 트랜잭션 및 EOS | [FIX] | [REVIEW] | - | https://github.com/rlaxowns7916/TIL/pull/6 | 참고문헌을 Kafka 공식 문서/KIP 중심으로 재정렬 |
+| 2026-02-08 | 분산 트랜잭션 (TCC/Saga) 문서화 | [REWORK] | PR #XX | - | Web Backend |
+| 2026-02-08 | K8s Core Concepts (Pod/Node) | [FEAT] | PR #XX | - | DevOps |
+| 2026-02-08 | MCP Architecture & Custom Server | [FEAT] | PR #XX | - | AI/LLM |
