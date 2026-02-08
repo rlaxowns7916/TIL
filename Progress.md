@@ -6,3 +6,10 @@
 | 2026-02-02 | 분산 락 전략 한글화 | [REWORK] | [REVIEW] | Sent | https://github.com/rlaxowns7916/TIL/pull/3 | 지침에 따른 한글화 및 구조 개선 |
 | 2026-02-02 | Distributed Locking Strategies | [NEW] | [DEPRECATED] | - | https://github.com/rlaxowns7916/TIL/pull/2 | 한글화 작업으로 대체됨 |
 | 2026-02-02 | Docker Build Audit | [FIX] | [REVIEW] | Sent | https://github.com/rlaxowns7916/TIL/pull/1 | BuildKit & Multi-stage optimizations |
+| 2026-02-03 | 분산 트랜잭션 패턴 심화 | [REWORK] | [REVIEW] | Sent | https://github.com/rlaxowns7916/TIL/pull/5 | SAGA, 2PC 메커니즘 및 장애 복구 전략 |
+| 2026-02-03 | Kafka 트랜잭션 및 EOS | [NEW] | [REVIEW] | Sent | https://github.com/rlaxowns7916/TIL/pull/6 | Idempotent Producer, Transaction API 상세 분석 |
+| 2026-02-04 | 분산 트랜잭션 패턴 심화 | [FIX] | [REVIEW] | - | https://github.com/rlaxowns7916/TIL/pull/5 | CONTEXT/README/prd 정리, 참고문헌 기준 강화 |
+| 2026-02-04 | Kafka 트랜잭션 및 EOS | [FIX] | [REVIEW] | - | https://github.com/rlaxowns7916/TIL/pull/6 | 참고문헌을 Kafka 공식 문서/KIP 중심으로 재정렬 |
+| 2026-02-08 | 분산 트랜잭션 (TCC/Saga) 문서화 | [REWORK] | PR #XX | - | Web Backend |
+| 2026-02-08 | K8s Core Concepts (Pod/Node) | [FEAT] | PR #XX | - | DevOps |
+| 2026-02-08 | MCP Architecture & Custom Server | [FEAT] | PR #XX | - | AI/LLM |
