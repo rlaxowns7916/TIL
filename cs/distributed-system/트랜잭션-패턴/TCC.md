@@ -131,6 +131,49 @@ public class PaymentTccService implements TccAction {
 }
 ```
 
+## TCC vs 2PC 비교
+
+> 한 줄 요약: **2PC는 트랜잭션 매니저/DB 계층에서 원자성을 강제**하고, **TCC는 애플리케이션 계층에서 의미적(semantic) 예약 + 보상**으로 정합성을 맞춥니다.
+
+| 구분 | TCC (Try-Confirm-Cancel) | 2PC (Two-Phase Commit / XA) |
+|---|---|---|
+| 결정 주체 | 오케스트레이터(애플리케이션) | 코디네이터/트랜잭션 매니저(프로토콜) |
+| 핵심 아이디어 | **자원 예약(Try) → 확정(Confirm) → 해제(Cancel)** | **Prepare(투표) → Commit/Abort** |
+| 격리/잠금 | 예약 상태(Frozen/Reserved)로 **업무적으로 격리** | PREPARED 상태에서 **락/자원 점유**(Blocking 위험) |
+| 장애 시 거동 | Cancel/재시도로 복구 설계(멱등성 필수) | PREPARED에서 결정 미확인 시 **블로킹**(자동 결정 금지) |
+| 구현 위치 | 도메인/서비스 코드 침투 큼 | DB/XA 지원 필요, 인프라 의존 큼 |
+| 장점 | 2PC 대비 성능/가용성 개선 여지, 비즈니스에 맞춘 설계 가능 | 강한 원자성/일관성(정상 조건), 프로토콜 기반 |
+| 단점 | 구현 비용↑, 모든 작업에 T/C/C 필요 | 가용성↓(블로킹), 운영 난이도↑ |
+
+### ASCII 시각화로 본 차이
+
+**2PC (Prepare → Commit/Abort)**
+```
+Coordinator
+  |-- PREPARE ------------------------------> P1
+  |-- PREPARE ------------------------------> P2
+  |<-- VOTE-YES ----------------------------|
+  |<-- VOTE-YES ----------------------------|
+  |
+  |-- COMMIT(or ABORT) ---------------------> P1
+  |-- COMMIT(or ABORT) ---------------------> P2
+
+(P1/P2는 PREPARED에서 결정이 올 때까지 잠금/점유가 발생할 수 있음)
+```
+
+**TCC (Try 예약 → Confirm 확정 / 실패 시 Cancel)**
+```
+Orchestrator
+  |-- Try(예약) ----------------------------> ServiceA
+  |-- Try(예약) ----------------------------> ServiceB
+  |<-- OK/FAIL -----------------------------|
+  |
+  |-- Confirm(확정) ------------------------> A,B   (모두 OK일 때)
+  |-- Cancel(해제/보상) --------------------> A,B   (하나라도 FAIL일 때)
+
+(잠금 대신 '예약 상태'로 업무적으로 격리하고, Cancel/재시도를 설계로 흡수)
+```
+
 ## TCC vs SAGA 비교
 
 | 특성 | TCC (Try-Confirm-Cancel) | SAGA (Choreography/Orchestration) |
