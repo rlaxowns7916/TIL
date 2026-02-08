@@ -28,33 +28,40 @@ TCC는 하나의 비즈니스 작업을 3단계로 명시적으로 나누어 처
 
 ## 동작 흐름 (Workflow)
 
-```mermaid
-sequenceDiagram
-    participant Orchestrator
-    participant ServiceA
-    participant ServiceB
+> TIL 문서에서는 Mermaid 같은 렌더링 의존 도구 대신, **ASCII 다이어그램**으로 흐름을 시각화합니다.
 
-    Note over Orchestrator: 트랜잭션 시작
+### 성공 플로우 (All Try Success → Confirm)
 
-    rect rgb(200, 220, 255)
-    Note right of Orchestrator: 1. Try Phase
-    Orchestrator->>ServiceA: Try (자원 예약)
-    ServiceA-->>Orchestrator: Success
-    Orchestrator->>ServiceB: Try (자원 예약)
-    ServiceB-->>Orchestrator: Success
-    end
+```
+Orchestrator
+  |-- Try(A: 자원 예약) ------------------------> ServiceA
+  |<-------------------------- OK --------------|
+  |-- Try(B: 자원 예약) ------------------------> ServiceB
+  |<-------------------------- OK --------------|
+  |
+  |-- Confirm(A: 자원 확정) --------------------> ServiceA
+  |<-------------------------- OK --------------|
+  |-- Confirm(B: 자원 확정) --------------------> ServiceB
+  |<-------------------------- OK --------------|
+  |
+  +--> DONE
+```
 
-    rect rgb(200, 255, 200)
-    Note right of Orchestrator: 2. Confirm Phase (All Try Success)
-    Orchestrator->>ServiceA: Confirm (자원 확정)
-    Orchestrator->>ServiceB: Confirm (자원 확정)
-    end
-    
-    rect rgb(255, 200, 200)
-    Note right of Orchestrator: 3. Cancel Phase (Any Try Fail)
-    Orchestrator->>ServiceA: Cancel (자원 해제)
-    Orchestrator->>ServiceB: Cancel (자원 해제)
-    end
+### 실패 플로우 (Any Try Fail → Cancel)
+
+```
+Orchestrator
+  |-- Try(A) ----------------------------------> ServiceA
+  |<-------------------------- OK --------------|
+  |-- Try(B) ----------------------------------> ServiceB
+  |<------------------------ FAIL --------------|
+  |
+  |-- Cancel(A: 예약 해제/보상) ----------------> ServiceA
+  |<-------------------------- OK --------------|
+  |-- Cancel(B: 부분 예약이 있었다면 해제) -----> ServiceB
+  |<-------------------------- OK --------------|
+  |
+  +--> ROLLBACK (COMPENSATED)
 ```
 
 ## 예제 시나리오: 항공권 예약 및 결제
