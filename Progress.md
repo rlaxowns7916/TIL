@@ -7,4 +7,5 @@
 | 2026-02-02 | Distributed Locking Strategies | [NEW] | [DEPRECATED] | - | https://github.com/rlaxowns7916/TIL/pull/2 | 한글화 작업으로 대체됨 |
 | 2026-02-02 | Docker Build Audit | [FIX] | [REVIEW] | Sent | https://github.com/rlaxowns7916/TIL/pull/1 | BuildKit & Multi-stage optimizations |
 | 2026-02-08 | Distributed Transaction (TCC/Saga) | [REWORK] | [PUSHED] | Pending | https://github.com/rlaxowns7916/TIL/tree/rework/dist-tx-20260203 | Added TCC Pattern & Updated Saga |
-| 2026-02-08 | K8s Core Concepts | [FEAT] | [PUSHED] | Pending | https://github.com/rlaxowns7916/TIL/tree/feat/k8s-core-concepts-20260203 | Pod, Node, Cluster Architecture |
+| 2026-02-08 | K8s Core Concepts | [FEAT] | [ABORTED] | - | - | Low Priority - Aborted |
+| 2026-02-08 | MCP Architecture | [FEAT] | [PUSHED] | Pending | https://github.com/rlaxowns7916/TIL/tree/feat/mcp-architecture-20260208 | High Priority - MCP Summary & Plan |
