@@ -12,9 +12,9 @@ TCC는 하나의 비즈니스 작업을 3단계로 명시적으로 나누어 처
 
 ### 1. Try (시도/예약)
 - **목적:** 비즈니스 검증 및 자원 예약
-- **동작:** 실제 변경을 가하지 않고, 필요한 자원을 "가예약" 상태로 잡습니다.
-- **예시:** 결제 금액만큼 잔액 동결(Freeze), 재고 차감 대기(Pending) 상태로 변경.
-- **특징:** 트랜잭션의 일관성 체크가 이 단계에서 모두 이루어져야 합니다.
+- **동작:** "최종 반영"(확정 커밋)이 아니라, **예약 상태로 상태 전이**시킵니다. 즉 **DB 상태 변경은 발생**하지만, 의미적으로는 *확정이 아닌 홀드(hold)* 입니다.
+- **예시:** 결제 금액만큼 잔액을 **사용가능(available) → 동결(frozen)** 로 이동, 재고를 Pending/Reserved로 전환.
+- **특징:** 일관성 체크(잔액/재고 충분 여부)는 이 단계에서 완료되어야 하며, 이후 Confirm은 재시도에 강해야 합니다.
 
 ### 2. Confirm (확정)
 - **목적:** 실제 비즈니스 로직 수행 및 예약된 자원 소모
@@ -81,12 +81,14 @@ Orchestrator
   - 예약을 취소하고 다시 판매 가능 상태로 변경.
 
 #### Payment Service
-- **Try:** `UPDATE accounts SET balance = balance - 100, frozen = frozen + 100 WHERE id = ?`
-  - 잔액에서 금액을 차감하지 않고 "동결" 필드로 이동.
-- **Confirm:** `UPDATE accounts SET frozen = frozen - 100 WHERE id = ?`
-  - 동결된 금액을 실제로 차감(소멸).
-- **Cancel:** `UPDATE accounts SET balance = balance + 100, frozen = frozen - 100 WHERE id = ?`
-  - 동결된 금액을 다시 잔액으로 복구.
+- **Try(예약):** `UPDATE accounts SET balance = balance - 100, frozen = frozen + 100 WHERE id = ?`
+  - **"잔액을 먼저 빼는 게 맞나?" → 맞습니다(예약 관점).**
+  - 여기서 `balance`는 "총액"이라기보다 **사용가능 잔액(available)**로 해석하는 것이 자연스럽고,
+    Try는 사용가능 잔액을 줄이고 frozen을 늘려 **이중 지출을 막는 예약**을 수행합니다.
+- **Confirm(확정):** `UPDATE accounts SET frozen = frozen - 100 WHERE id = ?`
+  - 동결된 금액을 실제로 차감(정산/소멸)하여 확정합니다.
+- **Cancel(해제):** `UPDATE accounts SET balance = balance + 100, frozen = frozen - 100 WHERE id = ?`
+  - 동결된 금액을 사용가능 잔액으로 되돌려 예약을 해제합니다.
 
 ## 구현 코드 예시 (Java/Spring style)
 
@@ -174,7 +176,7 @@ Orchestrator
 (잠금 대신 '예약 상태'로 업무적으로 격리하고, Cancel/재시도를 설계로 흡수)
 ```
 
-## TCC vs SAGA 비교
+## (부록) TCC vs SAGA 비교
 
 | 특성 | TCC (Try-Confirm-Cancel) | SAGA (Choreography/Orchestration) |
 |-----|-------------------------|-----------------------------------|
