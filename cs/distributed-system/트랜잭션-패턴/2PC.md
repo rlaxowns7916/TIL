@@ -454,6 +454,35 @@ async function handleCommitMessage(transactionId: string) {
 }
 ```
 
+## Recovery / Termination Protocol (종료/복구 프로토콜)
+
+2PC 문맥에서 흔히 말하는 **Recovery Protocol(복구 프로토콜)** 또는 **Termination Protocol(종료 프로토콜)**은,
+참여자(Participant)가 **PREPARED** 상태로 멈춰 있는 동안 코디네이터(Coordinator) 장애/네트워크 분할이 발생했을 때
+"**최종 결정(Commit/Abort)을 어떻게 알아내고, 어떻게 마무리할 것인가**"를 규정하는 절차입니다.
+
+### 핵심 아이디어
+- **PREPARED 상태는 로컬 자원(락/예약)을 잡은 채**로, 최종 결정을 기다리는 상태입니다.
+- 참여자는 장애 복구 후에도 로그를 통해 PREPARED를 재구성할 수 있고, 이후 **결정 질의(Decision Query)**를 수행합니다.
+
+### 전형적인 종료/복구 흐름
+1. 참여자 재시작 → 로그에서 트랜잭션 상태를 복원
+2. 상태가 **PREPARED**라면:
+   - (우선) 코디네이터에 `transactionId`로 **최종 결정 질의**
+   - 코디네이터가 응답하면 그 결정에 따라 `COMMIT PREPARED` 또는 `ROLLBACK PREPARED`
+3. 코디네이터에 도달 불가하면:
+   - 다른 참여자에게 질의(구현에 따라 선택)하거나
+   - **대기(Blocking)**: 코디네이터 복구/네트워크 복구를 기다림
+
+> 본 문서의 `로그(Log) 기반 복구` 예시 코드에서 `queryCoordinator()`가 바로 이 종료/복구 프로토콜의 핵심 동작입니다.
+
+### 휴리스틱(Heuristic) 종료
+현실에서는 무한 대기가 불가능한 경우가 있어 운영자가 강제 종료를 내리기도 합니다.
+- 예: PostgreSQL `COMMIT PREPARED` / `ROLLBACK PREPARED`
+- 예: XA 환경에서 **Heuristic Commit/Rollback** 발생 가능
+
+**중요:** 휴리스틱 종료는 일관성을 깨뜨릴 수 있으므로,
+사전에 "수동 개입 절차", "감사 로그", "재조정(리컨실리에이션)" 프로세스를 함께 설계해야 합니다.
+
 ## 공식 출처 및 참고 문헌
 
 1. **PostgreSQL 공식 문서**:
