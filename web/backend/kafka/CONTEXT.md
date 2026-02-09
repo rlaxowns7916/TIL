@@ -6,7 +6,8 @@
 
 ## 📚 Authoritative Sources (공식 출처)
 - [Apache Kafka Documentation](https://kafka.apache.org/documentation/)
-- [Apache Kafka KIPs](https://cwiki.apache.org/confluence/display/KAFKA/Kafka+Improvement+Proposals)
+- [Confluent Blog & Engineering](https://www.confluent.io/blog/)
+- [KIP (Kafka Improvement Proposals)](https://cwiki.apache.org/confluence/display/KAFKA/Kafka+Improvement+Proposals)
 - [Apache Kafka GitHub](https://github.com/apache/kafka)
 
 ## 🛠️ Subject-Specific Conventions (폴더 전용 규칙)
@@ -15,7 +16,16 @@
 - **Auto-Update**: 작업 완료 시 해당 주제의 진행 상황과 성숙도를 이 파일에 최신화한다.
 
 ## 📈 Technical Maturity (학습 성숙도)
-- [x] 기초 개념 파악
-- [x] 주요 기능 및 문법 연구
-- [ ] 실무 적용 및 최적화 전략
-- [x] 고급 주제 및 내부 메커니즘 분석
+- [x] **Core Concepts**
+  - [x] Topic, Partition, Broker, Record
+  - [x] Producer & Consumer Basics
+- [x] **Reliability & Consistency**
+  - [x] Replication Protocol (ISR, HighWaterMark)
+  - [x] Exactly-Once Semantics (EOS) - *Idempotent Producer & Transaction*
+- [ ] **Ecosystem**
+  - [ ] Kafka Connect
+  - [ ] Kafka Streams
+  - [ ] Schema Registry
+
+## 📝 Recent Updates
+- **2026-02-09**: `EOS.md` - Exactly-Once Semantics의 구성 요소(Idempotency, Transaction)와 동작 원리를 운영 관점에서 재정리.
