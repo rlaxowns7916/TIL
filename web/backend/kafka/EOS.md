@@ -1,90 +1,108 @@
-# EOS (Exception Once Semantics)
-- Kafka에서 Exactly-Once를 보장하기 위한 방법
-- Broker로 Record를 정확하게 한번 전달 하는 것을 목표로 한다.
+# Kafka Exactly-Once Semantics(EOS) 정리
 
-### Idempotent
-- Exactly-Once-Delivery(정확하게 1번) 를 지원한다. (default: false, Kafka 3.0.0 부터는 true)
-    - **true로 변경 시, acks=all로 변경된다.**
-    - enable.idempotence=true로 설정한다.
-- 제한적으로나마 중복 메세지 전송이나 메세지 순서변경과 같은 일을 방지하기 위해서 있는 Producer이다.
-    - Partition 마다 생성된다.
-    - Network오류로 인해서 Message의 중복발송이나, 순서가 변경되는 것을 방지 할 수 있다.
-- 성능에는 크게 영향을 미치지 않는다. (MessageHeader 부만 추가)
-- 여러번 전송하더라도, KafkaCluster에서는 단 한번만 저장된다.
-- 데이터를 Broker로 전달 할 때, PID(Producer 고유 ID)와 SequenceNumber를 전달한다.
-    - PID는 동일한 Session에서만 유효하다.
-        - Broker가 Producer와 최초로 연결 될 때, Broker가 고유한 값을 채번하여 Producer에게 전달한다.
-        - 즉, Producer가 새롭게시작된다면 의미없다.
-    - SequenceNumber는 Producer에서 고유하게 관리한다.
-      - **SequenceNumber는 PID-Partition마다 관리한다.**
-- **Sequence는 순서가 역전되거나 꼬이는 현상이 있으면 OutOfOrderSequenceException이 발생한다.**
-    - 이전 Sequence의 Record가 도착하지 않았다면, 이후의 것들이 정상적으로 도착하였어도 Exception을 던져서 Retry를 유도한다.
-- Producer의 Data가 정확하게 한번 Broker에 저장되도록 동작한다.
-- 이미 저장되어있는 것을 또 저장하려고해도 acks를 보내준다.
+> 용어 주의
+> - **Exactly-Once Semantics(EOS)**: “중복 없이 한 번만 처리된 것처럼 보이는” *처리 관점*의 의미(엔드-투-엔드 보장에는 설계가 필요)
+> - **Idempotent Producer**: 프로듀서 → 브로커 쓰기 구간에서 중복 저장을 최대한 방지(동일 PID/시퀀스 기반)
+> - **Transactions**: 여러 레코드(여러 파티션/토픽 가능)와 컨슈머 오프셋 커밋을 하나의 원자 단위로 묶어 **read_committed** 컨슈머에게 “커밋된 것만” 보이게 함
 
-## Transaction
-- IdempotentProducer의 확장
-- Broker의 경우 대부분 default 설정을 그대로 사용한다.
-- **Producer에서 TransactionAPI를 사용해야 한다.**
-  - idempotent 기능 (enable.idempotence)가 enable 되어있어야 한다.
-  - transaction.id값에 대한 할당이 필요하다.
-    - **이 값이 할당되어 있지 않다면, IdempotentProducer로 동작한다.**
-- **Consumer에서 isolation_level (read_commited) 을 통한 설정이 필요하다.**
-  - Transaction의 상태는 Broker가 아닌 Consumer에 의해서 이루어진다.
-    - Broker(Transaction Coordinator)는 Message 등록 시, offset을 기존과 동일하게 Consumer에 전달한다.
-    - Consumer는 IsolationLevel에 따라서 읽을지 안읽을지 결정한다.
-    - **READ_COMMITED가 설정되지 않은 ConsumerGroup은 Abort된 Transaction을 읽을 수 있다.**
-- 성능에 어느정도 영향을 미친다.
-    - Commit, Rollback에 대한 부분이 추가되기 때문이다.
-- 다수의 Data를 하나의 Transaction으로 묶어, Atomic하게 처리하는 것을 의미한다.
-    - 여러 Topic 혹은 Partition에 Write 할 때, Transaction을 단위로 "all or nothing" 을 보장한다.
-- Producer별로, 고유한 ID값을 사용해야한다.
-    - 기존 idempotentProducer의 문제였던 휘발성(instance 재 시작시 pid, sequence 초기화)를 해결한다.
-    - **transactional.id에 매핑되는 pid-sequence는 Broker의 TransactionCoordinator가 관리한다.**
-        - TransactionCoordinator -> TransactionLog를 관리하는 Broker의 Thread
-        - ID(ProducerId, SequenceNumber, TransactionId)를 할당하고, Client가 이 정보를 Message Header에 포함하여, 고유하게 식별
-    - init -> begin -> commit 순서대로 동작한다.
-    - 이전 트랜잭션을 승계 가능하다. (이전 Producer들의 진행내역)
-- 여러 파티션에 걸친 Write가 성공하면 Commit, 아니라면 Abort
-    - read_commited기 때문에 Consumer는 commit된 시점에 한번에 해당 데이터 들을 볼 수 있다.
+---
+
+## 1) Idempotent Producer (enable.idempotence)
+
+### 목적
+네트워크 재시도/타임아웃 등으로 인해 **동일 레코드가 중복 전송**되는 상황에서, 브로커 로그에 **중복 저장되는 것을 방지**한다.
+
+### 핵심 메커니즘
+- 프로듀서는 브로커에 레코드를 보낼 때 **(PID, sequence number)** 를 함께 전송한다.
+- 브로커는 파티션별로 `(PID, sequence)`를 추적하여
+  - 이미 처리한 sequence면 **중복으로 간주하고 저장하지 않되 ack는 응답**한다.
+  - sequence가 예상보다 “앞서” 도착하면 **OutOfOrderSequenceException** 등으로 실패 처리하여 재시도를 유도한다.
+
+### 제약/주의
+- 시퀀스는 **PID-파티션 단위**로 증가한다.
+- 기본적으로 프로듀서 재시작/세션 변경 시 PID가 바뀔 수 있어(환경/설정에 따라) **완전한 엔드-투-엔드 EOS**를 단독으로 보장하지는 않는다.
+- Idempotent Producer는 “브로커에 **정확히 한 번 저장**”에 초점이고, “다운스트림에서 **정확히 한 번 처리**”는 별도 설계가 필요하다.
+
+### 빠른 설정 체크리스트
+- `enable.idempotence=true`
+- `acks=all` (idempotence 활성화 시 내부적으로 강제되는 조건 중 하나)
+- `retries` 및 `max.in.flight.requests.per.connection`는 Kafka 버전/클라이언트 가이드에 맞춰 확인(순서 보장과 상충 가능)
+
+---
+
+## 2) Kafka Transactions (transactional.id)
+
+### 목적
+다음 2가지를 한 덩어리(원자)로 묶는다.
+1) 프로듀서가 보낸 레코드들
+2) 해당 레코드들을 처리한 컨슈머의 **오프셋 커밋**
+
+즉, “처리 결과(쓰기)와 오프셋 커밋이 함께 커밋/중단”되게 만들어 **중복 처리/유실**을 줄이는 기반을 제공한다.
+
+### 구성 요소
+- **Transaction Coordinator**: `transactional.id` 기준으로 트랜잭션 상태/프로듀서 PID 매핑을 관리
+- **Transaction Log(내부 토픽)**: 트랜잭션 메타데이터/상태 저장
+- **컨슈머 isolation.level=read_committed**
+  - `read_committed`: 커밋된 트랜잭션의 레코드만 읽음(Abort된 트랜잭션은 건너뜀)
+  - `read_uncommitted`: Abort된 트랜잭션 레코드까지 읽을 수 있음
+
+### 동작 흐름(개념)
+
+```
+Producer                    Coordinator/Broker                    Consumer(read_committed)
+   | initTransactions()  ->  find coordinator + PID mapping
+   | beginTransaction()
+   | send(records...)    ->  append as "transactional" records
+   | sendOffsetsToTransaction(offsets)
+   | commitTransaction() ->  mark txn COMMITTED
+                                                           ->     now visible
+
+(에러 시)
+   | abortTransaction()  ->  mark txn ABORTED
+                                                           ->     not visible
+```
+
+### 주의: “EOS”의 범위
+Kafka 트랜잭션은 강력하지만, 아래가 충족되어야 실질적인 “정확히 한 번처럼 보이는 처리”에 근접한다.
+- 출력 토픽/DB/외부 시스템까지 포함한 설계(예: **Transactional Outbox**, idempotent consumer)
+- 재처리/중복에 대한 **비즈니스 키 기반 멱등성**
+- 장애 시나리오(프로듀서 크래시, 네트워크 분리, 컨슈머 리밸런스)별 운영 전략
+
+---
+
+## 3) 간단 예시 코드(개념)
+
+> 아래 코드는 “형태”를 보여주기 위한 최소 예시이며, 실제 환경에서는 예외 처리/타임아웃/재시도 전략을 포함해야 한다.
+
 ```java
-class Example{
-    public static void main(String[] args) {
-        configs,put(ProducerConfig.TRANSACTIONAL_ID_CONFIG, UUID.randomUUID());
-        Producer<String,String> producer =new kafkaProducer<>(configs);
+// pseudo-code
+Properties props = new Properties();
+props.put("bootstrap.servers", "...");
+props.put("enable.idempotence", "true");
+props.put("transactional.id", "order-service-1");
 
-        producer.initTransactions();
+KafkaProducer<String, String> producer = new KafkaProducer<>(props);
+producer.initTransactions();
 
-        producer.beginTransaction();
-        for (int i = 0; i < 100; i++){
-            producer.send(new ProducerRecord<>("my-topic", Integer.toString(i),Integer.toString(i)));
-        }   
-    }
+try {
+  producer.beginTransaction();
+
+  producer.send(new ProducerRecord<>("orders", "k1", "v1"));
+  producer.send(new ProducerRecord<>("orders", "k2", "v2"));
+
+  // 컨슈머 처리 결과 오프셋을 트랜잭션에 포함
+  // producer.sendOffsetsToTransaction(offsets, consumerGroupId);
+
+  producer.commitTransaction();
+} catch (Exception e) {
+  producer.abortTransaction();
+  throw e;
 }
 ```
 
+---
 
-### 과정
-1. Transaction Coordinator 찾기
-   - initTransactions()를 호출하여, Broker에게 Request를 보내고 Coordinator의 위치를 찾는다.
-   - Coordinator는 Producer에게 PID를 할당한다.
-2. TransactionalID 할당
-   - Producer가 initPidRequest()를 통해서 PID를 갸ㅏ지고 온다.
-   - TransactionCoordinator는 PID할당 이력을 TransactionLog에 기록한다.
-3. BeginTransaction
-   - Producer가 새로운 Transaction의 시작을 알린다.
-   - Coordinator 관점에서는 Transaction이 시작된 것은 아니고, Producer Local 관점에서의 수행이다.
-   - Coordinator 관점에서의 Transaction 수행은 Send()를 통해서 이루어진다.
-4. AddPartitionToTxnRequest()
-   - Coordinator는 새로운 TopicPartition에 처음 기록 될 떼 TransactionLog에 기록한다.
-5. ProduceRequest
-   - Producer가 Broker에게 Message를 보낸다.
-6. AddOffsetCommitToTxnRequest
-   - 특정 ConsumerGroup의 Offset을 Transation에 포함시킨다.
-   - Commit 준비 단계이다.
-7. TxnOffsetCommitRequest
-    - AddOffsetCommitToTxnRequest로 추가된 Offset을 ConsumerGroup에 실제로 Commit 한다.
-    - Commit 단계이다.
-8. EndTxnRequest
-   - 최종적으로 commit 혹은 abort 한다.
-   - 여태까지 동작했던 Transaction을 반영할지, 버릴지 결정하는 단계이다.
+## 4) 참고자료(공식/권위 있는 소스)
+- Apache Kafka Documentation: Producer Configs / Idempotence / Transactions
+- Confluent Docs: Exactly Once Semantics(EOS) & Transactions 개념 정리
+- Kafka Improvement Proposals(KIP) 중 Transactions/EOS 관련 문서(개념/동기)
