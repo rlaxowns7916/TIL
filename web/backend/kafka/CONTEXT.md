@@ -8,6 +8,7 @@
 - [Apache Kafka Documentation](https://kafka.apache.org/documentation/)
 - [Confluent Blog & Engineering](https://www.confluent.io/blog/)
 - [KIP (Kafka Improvement Proposals)](https://cwiki.apache.org/confluence/display/KAFKA/Kafka+Improvement+Proposals)
+- [Apache Kafka GitHub](https://github.com/apache/kafka)
 
 ## 🛠️ Subject-Specific Conventions (폴더 전용 규칙)
 - **Fact-Check**: 최소 3개 이상의 공식 소스를 교차 검증한다.
