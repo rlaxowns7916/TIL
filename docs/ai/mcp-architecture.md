@@ -65,3 +65,35 @@ MCP와 Skill은 AI의 능력을 확장한다는 점에서 유사해 보이지만
 - **Analogy**
   - Tool 관점에서 **MCP는 CLI(Command Line Interface)**와 유사합니다. (실행 가능한 기능 그 자체)
   - 반면, Skill은 그 기능을 효과적으로 사용하기 위한 **숙련된 작업자의 매뉴얼**에 가깝습니다.
+
+## 5. Tool Calling 실전 체크리스트(요약)
+
+> Tool Calling은 ‘편의 기능’이 아니라 **신뢰할 수 없는 입력(LLM)**이 외부 시스템을 건드리는 인터페이스다. 따라서 서버는 기본적으로 **공격자 모델**을 전제로 설계한다.
+
+### 5.1 데이터 흐름(개념)
+```
+User -> Host -> MCP Client -> MCP Server(tools/resources) -> External Systems
+```
+
+### 5.2 스키마/출력
+- 입력(JSON Schema)은 **엄격하게**: type/enum/range/pattern/required 적극 사용
+- 조회형 도구는 **limit/cursor** 필수(토큰 폭발/과다 노출 방지)
+- 출력은 가능하면 **구조화(status/data/warnings/error)**
+
+### 5.3 멱등성(Idempotency)
+- LLM은 같은 호출을 반복할 수 있으므로(재시도/불확실성) 가능한 도구는 멱등하게
+- 부작용 도구는 `idempotencyKey` 또는 `dryRun` 또는 prepare/commit(2단계) 고려
+
+### 5.4 에러 모델
+- 에러는 문장보다 **code + retryable**이 중요(LLM이 다음 행동을 결정)
+- 예: VALIDATION_ERROR, RATE_LIMITED, UPSTREAM_TIMEOUT, CONFLICT
+
+### 5.5 보안
+- 최소 권한 + allowlist(특히 파일/네트워크/프로세스 실행)
+- secret은 인자로 받지 말고 서버의 안전 저장소에서 읽기(로그 마스킹 포함)
+- 대량 추출/PII 유출 방지 가드(기간/범위 제한 등)
+
+### 5.6 관측/테스트
+- 로그/메트릭: tool_name, requestId, latency, result_status, error_code
+- 계약(Contract) 테스트: list_tools 스키마 스냅샷
+- LLM 이상 호출 케이스(필드 누락/타입 오류/오타/과호출) 방어 테스트
