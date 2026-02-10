@@ -14,3 +14,5 @@
 | 2026-02-08 | MCP Architecture & Custom Server | [NEW] | [OPEN] | - | https://github.com/rlaxowns7916/TIL/pull/8 | Model Context Protocol 구조 및 구현 |
 | 2026-02-09 | Transactional Outbox + CDC(Debezium) | [NEW] | [REVIEW] | - | https://github.com/rlaxowns7916/TIL/pull/9 | DB-메시징 원자성 문제를 Outbox+CDC로 해결하는 패턴 정리 |
 | 2026-02-09 | Kafka Exactly-Once Semantics(EOS) | [FIX] | [REVIEW] | - | https://github.com/rlaxowns7916/TIL/pull/9 | 용어/흐름/운영 관점 중심으로 문서 리라이트(ASCII 다이어그램 포함) |
+| 2026-02-10 | MCP Tool Calling 실전 가이드 | [NEW] | [REVIEW] | - | (TBD) | 툴 스키마/에러 모델/보안/관측/테스트 체크리스트 |
+| 2026-02-10 | Outbox+CDC 운영 체크리스트 | [NEW] | [REVIEW] | - | (TBD) | Debezium lag, 중복/순서, outbox cleanup, replay 전략 |

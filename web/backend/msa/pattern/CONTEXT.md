@@ -22,4 +22,5 @@
   - [ ] Bulkhead
 
 ## 📝 Recent Updates
+- **2026-02-10**: `Outbox-CDC-운영-체크리스트.md` - Debezium 기반 Outbox+CDC의 실패 모드/모니터링/재처리(Replay) 관점 운영 체크리스트 추가.
 - **2026-02-09**: `TransactionalOutBox.md` - Polling 방식과 CDC(Log Tailing) 방식의 비교 및 Trade-off(인프라 복잡도) 중심으로 전면 개편.
