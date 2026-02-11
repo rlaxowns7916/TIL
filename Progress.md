@@ -14,3 +14,4 @@
 | 2026-02-08 | MCP Architecture & Custom Server | [NEW] | [OPEN] | - | https://github.com/rlaxowns7916/TIL/pull/8 | Model Context Protocol 구조 및 구현 |
 | 2026-02-09 | Transactional Outbox + CDC(Debezium) | [NEW] | [REVIEW] | - | https://github.com/rlaxowns7916/TIL/pull/9 | DB-메시징 원자성 문제를 Outbox+CDC로 해결하는 패턴 정리 |
 | 2026-02-09 | Kafka Exactly-Once Semantics(EOS) | [FIX] | [REVIEW] | - | https://github.com/rlaxowns7916/TIL/pull/9 | 용어/흐름/운영 관점 중심으로 문서 리라이트(ASCII 다이어그램 포함) |
+| 2026-02-11 | Kafka Offset Commit & Processing Guarantees | [NEW] | [OPEN] | - | TBD | 오프셋 커밋 타이밍에 따른 처리 보장(at-most/at-least/EOS) 및 실무 패턴 정리 |
