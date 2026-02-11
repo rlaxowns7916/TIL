@@ -15,5 +15,5 @@
 | 2026-02-09 | Transactional Outbox + CDC(Debezium) | [NEW] | [MERGED] | Done | https://github.com/rlaxowns7916/TIL/pull/9 | DB-메시징 원자성 문제를 Outbox+CDC로 해결하는 패턴 정리 |
 | 2026-02-09 | Kafka Exactly-Once Semantics(EOS) | [FIX] | [MERGED] | Done | https://github.com/rlaxowns7916/TIL/pull/9 | 용어/흐름/운영 관점 중심으로 문서 리라이트(ASCII 다이어그램 포함) |
 | 2026-02-10 | Kafka Consumer 리밸런싱/순서 보장 + MCP 문서 보강 | [NEW] | [OPEN] | - | https://github.com/rlaxowns7916/TIL/pull/10 | Consumer Group 운영 관점 + MCP 내용 보강 |
-| 2026-02-11 | Kafka Consumer Group 리밸런싱(Rebalancing) | [NEW] | [PR 예정] | - | (TBD) | Eager vs Cooperative(Incremental), static membership, 운영 체크리스트 |
-| 2026-02-11 | 멱등성(Idempotency) 설계: Web API + 메시징 | [NEW] | [PR 예정] | - | (TBD) | Idempotency-Key, dedup store, upsert, Outbox 결합 |
+| 2026-02-11 | Kafka Consumer Group 리밸런싱(Rebalancing) | [NEW] | [OPEN] | - | https://github.com/rlaxowns7916/TIL/pull/11 | Eager vs Cooperative(Incremental), static membership, 운영 체크리스트 |
+| 2026-02-11 | 멱등성(Idempotency) 설계: Web API + 메시징 | [NEW] | [OPEN] | - | https://github.com/rlaxowns7916/TIL/pull/11 | Idempotency-Key, dedup store, upsert, Outbox 결합 |
