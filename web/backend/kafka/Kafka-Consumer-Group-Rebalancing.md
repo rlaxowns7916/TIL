@@ -2,7 +2,7 @@
 
 ## 목적
 - Consumer Group의 **리밸런싱이 언제/왜 발생**하는지, 어떤 프로토콜로 진행되는지 이해한다.
-- 리밸런싱이 **처리 지연/중복 처리/순서 보장**에 미치는 영향을 정리하고, 운영에서의 방지 전략(설정/패턴)을 제시한다.
+- 리밸런싱이 **처리 지연/중복 처리/순서 보장**에 미치는 영향을 정리하고, 운영에서의 방지 전략(설정/패턴/모니터링)을 제시한다.
 
 ---
 
@@ -73,7 +73,7 @@ C1: [consume P0,P1] -- revoke P1 only --> [consume P0] -- assign P2 --> [consume
 C2: [consume P2,P3] ------------------> [consume P2,P3] -- assign P1 --> [consume P1,P2,P3]
 ```
 
-> 실무적으로는 `CooperativeStickyAssignor`(또는 해당하는 cooperative 전략) 채택 여부가 리밸런싱 체감 품질을 크게 좌우한다.
+> 실무적으로는 `CooperativeStickyAssignor`(또는 해당 cooperative 전략) 채택 여부가 리밸런싱 체감 품질을 크게 좌우한다.
 
 ---
 
@@ -121,20 +121,52 @@ C2:
   - 처리 파이프라인 병렬화/비동기화
   - `max.poll.interval.ms`를 처리 시간에 맞춰 상향(단, 너무 키우면 장애 감지가 늦어짐)
 
-### (3) Cooperative assignor 사용 검토
+### (3) Heartbeat/Session 타임아웃 관계 이해
+- `heartbeat.interval.ms`는 “살아있다” 신호 주기
+- `session.timeout.ms` 내 heartbeat가 오지 않으면 coordinator는 consumer를 제거(리밸런싱 트리거)
+
+일반적인 관계(개념):
+- `heartbeat.interval.ms` < `session.timeout.ms`
+- 처리 시간이 길어도 heartbeat는 별도 스레드에서 동작하지만,
+  **poll이 멈추면** `max.poll.interval.ms`로 인해 제거될 수 있다.
+
+### (4) Cooperative assignor 사용 검토
 - `partition.assignment.strategy`에 cooperative 계열을 적용(환경/버전에 따라 클래스명 상이).
 
-### (4) 리밸런스 리스너로 안전한 revoke 처리
+### (5) 리밸런스 리스너로 안전한 revoke 처리
 - 리밸런싱 시점에 in-flight 작업을 정리하지 않으면 중복/유실(외부 시스템 관점)이 커질 수 있다.
 - `ConsumerRebalanceListener`에서 revoke 시점에:
   - 처리 중인 작업 중단/플러시
   - 필요한 경우 오프셋을 **동기 커밋**(지연을 줄이되 안전성 요구에 맞게)
 
+### (6) 운영 샘플(개념) 설정
+아래 값은 “정답”이 아니라, 서로의 관계를 이해하기 위한 예시다.
+
+```
+# 처리 시간이 길 수 있는 워커
+max.poll.records=100
+max.poll.interval.ms=600000   # 10m (처리 시간 상한)
+
+heartbeat.interval.ms=3000
+session.timeout.ms=30000
+
+enable.auto.commit=false      # 수동 커밋(처리/트랜잭션과 정합성 맞추기 위함)
+```
+
 ---
 
-## 6) 체크리스트 (현장형)
+## 6) 모니터링/알림 포인트
+- (핵심) **리밸런싱 빈도**: rolling deploy/scale 이벤트와 상관없이 자주 발생하면 설정/처리시간 문제 가능
+- **consumer lag**: 리밸런싱/stop-the-world로 lag이 스파이크 치는 패턴 확인
+- 로그 키워드
+  - `Revoked partitions`, `Assigned partitions`, `Rebalance in progress` 등
+
+---
+
+## 7) 체크리스트 (현장형)
 - [ ] 컨슈머 처리 로직이 **멱등**인가? (중복 처리 대비)
 - [ ] `max.poll.interval.ms`, `max.poll.records`가 처리 시간과 일치하는가?
+- [ ] `session.timeout.ms`/`heartbeat.interval.ms`의 관계를 이해하고 조정했는가?
 - [ ] 리밸런싱 리스너에서 revoke 시 안전하게 정리하는가?
 - [ ] scale-out/rolling deploy가 잦다면 `group.instance.id`(static membership) 또는 cooperative 리밸런싱을 검토했는가?
 
