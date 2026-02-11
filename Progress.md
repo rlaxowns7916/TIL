@@ -14,3 +14,5 @@
 | 2026-02-08 | MCP Architecture & Custom Server | [NEW] | [OPEN] | - | https://github.com/rlaxowns7916/TIL/pull/8 | Model Context Protocol 구조 및 구현 |
 | 2026-02-09 | Transactional Outbox + CDC(Debezium) | [NEW] | [REVIEW] | - | https://github.com/rlaxowns7916/TIL/pull/9 | DB-메시징 원자성 문제를 Outbox+CDC로 해결하는 패턴 정리 |
 | 2026-02-09 | Kafka Exactly-Once Semantics(EOS) | [FIX] | [REVIEW] | - | https://github.com/rlaxowns7916/TIL/pull/9 | 용어/흐름/운영 관점 중심으로 문서 리라이트(ASCII 다이어그램 포함) |
+| 2026-02-10 | MCP 문서 보강: Tool Calling 체크리스트 | [FIX] | [OPEN] | - | https://github.com/rlaxowns7916/TIL/pull/10 | mcp-architecture.md에 운영/보안/에러모델 체크리스트 섹션 추가 |
+| 2026-02-10 | Kafka Consumer 리밸런싱/순서 보장 실전 | [NEW] | [OPEN] | - | https://github.com/rlaxowns7916/TIL/pull/10 | 리밸런싱 원인/영향, 커밋 전략, 멱등 처리, 순서 보장 규칙 |
