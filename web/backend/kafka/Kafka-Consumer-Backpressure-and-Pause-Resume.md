@@ -119,3 +119,44 @@ Kafka consumer는 개념적으로 아래 3단계를 반복한다.
 - Apache Kafka Javadoc: `KafkaConsumer` (pause/resume, poll/commit 개념) — https://kafka.apache.org/39/javadoc/org/apache/kafka/clients/consumer/KafkaConsumer.html
 - Apache Kafka Javadoc: `ConsumerConfig` (max.poll.*, session.timeout.*, heartbeat.*) — https://kafka.apache.org/39/javadoc/org/apache/kafka/clients/consumer/ConsumerConfig.html
 - KIP-429: Incremental Cooperative Rebalance (리밸런싱 다운타임 완화 배경) — https://cwiki.apache.org/confluence/display/KAFKA/KIP-429%3A+Kafka+Consumer+Incremental+Rebalance+Protocol
+
+---
+
+## 6) 실무 권장 설정(예시)과 흔한 사고 패턴
+
+### 권장 설정(출발점)
+- `enable.auto.commit=false`
+- `max.poll.records`: 처리 스레드/큐가 감당 가능한 수준으로 제한
+- `max.poll.interval.ms`: “최악의 처리 시간”에 맞춰 조정(단, 무한대에 가깝게 키워 문제를 숨기지 않기)
+- `session.timeout.ms` / `heartbeat.interval.ms`: 기본값/권장 범위를 유지(과도한 튜닝 지양)
+
+### 흔한 사고 패턴
+1) **poll 스레드가 processing에 묶이는 구조**
+   - 결과: `max.poll.interval.ms` 위반 → 그룹 퇴출 → 리밸런싱 폭풍
+2) pause만 걸고 poll을 멈춤
+   - 결과: heartbeat/poll 정지로 동일하게 퇴출
+3) backpressure 없이 무조건 max.poll.records를 크게
+   - 결과: 메모리/지연 폭증, 재처리 범위 확대
+
+### 권장 아키텍처(ASCII)
+
+```
+             +------------------------------+
+             |          poll thread         |
+             | poll() / pause / resume      |
+             +---------------+--------------+
+                             |
+                             v
+                   +------------------+
+                   | bounded queue    |  (watermark)
+                   +--------+---------+
+                            |
+                            v
+                   +------------------+
+                   | worker pool      |  -> DB/HTTP
+                   +------------------+
+
+- queue high: pause(assigned)
+- queue low : resume(assigned)
+- poll thread는 "항상" poll을 돌려 그룹 멤버십 유지
+```
