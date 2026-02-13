@@ -18,5 +18,5 @@
 | 2026-02-10 | Kafka Consumer 리밸런싱/순서 보장 실전 | [NEW] | [OPEN] | - | https://github.com/rlaxowns7916/TIL/pull/10 | 리밸런싱 원인/영향, 커밋 전략, 멱등 처리, 순서 보장 규칙 |
 | 2026-02-11 | Kafka Consumer Group 리밸런싱(Rebalancing) | [NEW] | [OPEN] | - | https://github.com/rlaxowns7916/TIL/pull/11 | Eager vs Cooperative(Incremental), static membership, 운영 체크리스트 |
 | 2026-02-11 | 멱등성(Idempotency) 설계: Web API + 메시징 | [NEW] | [OPEN] | - | https://github.com/rlaxowns7916/TIL/pull/11 | Idempotency-Key, dedup store, upsert, Outbox 결합 |
-| 2026-02-14 | Kafka Streams vs Kinesis 비교 | [NEW] | [PR TBD] | - | (to be filled) | 실무 관점 비교(처리 모델/확장 단위/처리 보장/운영-비용) |
-| 2026-02-14 | ZooKeeper 문서 FIX: KRaft(=ZooKeeper 제거) 반영 | [FIX] | [PR TBD] | - | (to be filled) | “ZK 없이는 Kafka 불가” 등 구형 내용 정정 + ASCII 다이어그램 |
+| 2026-02-14 | Kafka Streams vs Kinesis 비교 | [NEW] | [OPEN] | - | https://github.com/rlaxowns7916/TIL/pull/15 | 실무 관점 비교(처리 모델/확장 단위/처리 보장/운영-비용) |
+| 2026-02-14 | ZooKeeper 문서 FIX: KRaft(=ZooKeeper 제거) 반영 | [FIX] | [OPEN] | - | https://github.com/rlaxowns7916/TIL/pull/15 | “ZK 없이는 Kafka 불가” 등 구형 내용 정정 + ASCII 다이어그램 |
