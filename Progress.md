@@ -17,4 +17,8 @@
 | 2026-02-10 | MCP 문서 보강: Tool Calling 체크리스트 | [FIX] | [OPEN] | - | https://github.com/rlaxowns7916/TIL/pull/10 | mcp-architecture.md에 운영/보안/에러모델 체크리스트 섹션 추가 |
 | 2026-02-10 | Kafka Consumer 리밸런싱/순서 보장 실전 | [NEW] | [OPEN] | - | https://github.com/rlaxowns7916/TIL/pull/10 | 리밸런싱 원인/영향, 커밋 전략, 멱등 처리, 순서 보장 규칙 |
 | 2026-02-11 | Kafka Consumer Group 리밸런싱(Rebalancing) | [NEW] | [OPEN] | - | https://github.com/rlaxowns7916/TIL/pull/11 | Eager vs Cooperative(Incremental), static membership, 운영 체크리스트 |
-| 2026-02-11 | 멱등성(Idempotency) 설계: Web API + 메시징 | [NEW] | [OPEN] | - | https://github.com/rlaxowns7916/TIL/pull/11 | Idempotency-Key, dedup store, upsert, Outbox 결합 |
+| 2026-02-11 | 멱등성(Idempotency) 설계: Web API + 메시징 | [NEW] | [OPEN] | - | https://github.com/rlaxowns7916/TIL/pull/11 | Idempotency-Key, dedup store, upsert, Outbox 결합 || 2026-02-11 | Kafka offset commit & processing guarantees | [NEW] | [OPEN] | - | https://github.com/rlaxowns7916/TIL/pull/12 | auto/manual commit, delivery semantics 정리 |
+| 2026-02-12 | Kafka backpressure(pause/resume) + MCP production hardening | [NEW] | [OPEN] | - | https://github.com/rlaxowns7916/TIL/pull/13 | pause/resume 기반 intake 제어 + MCP 운영 체크리스트 |
+| 2026-02-13 | Progress.md PR status sync (2026-02-13) | [FIX] | [OPEN] | - | https://github.com/rlaxowns7916/TIL/pull/14 | PR 상태 동기화 목적(현재 GitHub에서 conflict 표기) |
+| 2026-02-14 | Kafka Streams vs Kinesis + ZooKeeper(KRaft) correction | [NEW/FIX] | [OPEN] | - | https://github.com/rlaxowns7916/TIL/pull/15 | 스트리밍 프레임워크 비교 + KRaft 전환 관련 정정 |
+| 2026-02-15 | Claude Code vs oh-my-opencode 비교 정리 | [NEW] | [OPEN] | - | https://github.com/rlaxowns7916/TIL/pull/16 | 제품형 vs 하네스/오케스트레이션 관점 비교 |
