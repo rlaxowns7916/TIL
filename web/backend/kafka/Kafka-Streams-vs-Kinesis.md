@@ -84,8 +84,28 @@
   - Yes → Kafka Streams(로컬 상태 + changelog 모델) 또는 Kinesis Data Analytics(Flink) 비교
 
 
-## 6) 참고(공식)
-- Apache Kafka Documentation: Kafka Streams
-- Apache Kafka Documentation: Exactly Once Semantics(EOS) / Transactions
-- AWS Documentation: Amazon Kinesis Data Streams
-- AWS Documentation: Kinesis Client Library(KCL)
+## 6) 리플레이/순서/장애복구 관점(실무 포인트)
+- **리플레이(재처리)**
+  - Kafka: offset 기반이라 특정 시점부터 재처리가 상대적으로 단순(consumer group/seek).
+  - Kinesis: consumer checkpoint(KCL) 또는 Lambda 재시도에 의해 재처리가 발생. “어디까지 처리했는지”는 애플리케이션 책임이 더 큼.
+- **순서 보장**
+  - Kafka: partition 단위 순서 보장(동일 key → 동일 partition 설계가 핵심).
+  - Kinesis: shard 단위 순서 보장(PartitionKey → shard 매핑).
+- **상태(state) 복구**
+  - Kafka Streams: 로컬 state store(RocksDB) + changelog topic로 복구.
+  - Kinesis: 보통 외부 상태 저장소(DynamoDB/Redis/RDB) 또는 Flink state backend로 복구.
+
+
+## 7) 참고(공식)
+- Apache Kafka: Kafka Streams
+  - https://kafka.apache.org/documentation/streams/
+- Apache Kafka: Processing Guarantees / Exactly Once Semantics
+  - https://kafka.apache.org/documentation/#semantics
+- Apache Kafka: Transactions
+  - https://kafka.apache.org/documentation/#transactions
+- AWS: Amazon Kinesis Data Streams Developer Guide
+  - https://docs.aws.amazon.com/streams/latest/dev/introduction.html
+- AWS: Developing consumers with KCL
+  - https://docs.aws.amazon.com/streams/latest/dev/developing-consumers-with-kcl.html
+- AWS: Enhanced fan-out consumers
+  - https://docs.aws.amazon.com/streams/latest/dev/enhanced-consumers.html

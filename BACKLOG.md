@@ -3,10 +3,9 @@
 ## 🚀 Active Queue (최우선 순위)
 | Priority | Topic | Context | Status |
 | :--- | :--- | :--- | :--- |
-| **P0** | **Kafka Streams & Kinesis 비교** | 책 7장. Kafka 학습의 완성(PR #12, #13 후속). 실시간 처리 패턴 확립. | Done |
+| **P0** | **Kafka Streams & Kinesis 비교** | 책 7장. Kafka 학습의 완성(PR #12, #13 후속). 실시간 처리 패턴 확립. | Ready |
 | **P1** | **일관된 해싱 (Consistent Hashing)** | 책 3.5장. Kafka/Redis의 데이터 분산 핵심 원리. | Pending |
 | **P1** | **CAP & PACELC 이론** | 책 3.1~3.2장. 분산 시스템 트레이드오프 설계의 이론적 근거. | Pending |
-| **P1** | **Kafka KRaft(=ZooKeeper 제거) 운영/마이그레이션 개요** | ZooKeeper 문서 FIX와 연결. KRaft 용어/구성/마이그레이션 체크리스트. | Ready |
 
 ## 📅 Candidates (Prioritized)
 | Priority | Category | Topic | Why? |

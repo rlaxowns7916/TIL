@@ -15,8 +15,8 @@
 | 2026-02-09 | Transactional Outbox + CDC(Debezium) | [NEW] | [MERGED] | Done | https://github.com/rlaxowns7916/TIL/pull/9 | DB-메시징 원자성 문제를 Outbox+CDC로 해결하는 패턴 정리 |
 | 2026-02-09 | Kafka Exactly-Once Semantics(EOS) | [FIX] | [MERGED] | Done | https://github.com/rlaxowns7916/TIL/pull/9 | 용어/흐름/운영 관점 중심으로 문서 리라이트(ASCII 다이어그램 포함) |
 | 2026-02-10 | MCP 문서 보강: Tool Calling 체크리스트 | [FIX] | [OPEN] | - | https://github.com/rlaxowns7916/TIL/pull/10 | mcp-architecture.md에 운영/보안/에러모델 체크리스트 섹션 추가 |
-| 2026-02-10 | Kafka Consumer 리밸런싱/순서 보장 실전 | [NEW] | [OPEN] | - | https://github.com/rlaxowns7916/TIL/pull/10 | 리밸런싱 원인/영향, 커밋 전략, 멱등 처리, 순서 보장 규칙 |
+| 2026-02-10 | Kafka Consumer 리밸런싱/순서 보장 실전 | [NEW] | [MERGED] | - | https://github.com/rlaxowns7916/TIL/pull/10 | 리밸런싱 원인/영향, 커밋 전략, 멱등 처리, 순서 보장 규칙 |
 | 2026-02-11 | Kafka Consumer Group 리밸런싱(Rebalancing) | [NEW] | [OPEN] | - | https://github.com/rlaxowns7916/TIL/pull/11 | Eager vs Cooperative(Incremental), static membership, 운영 체크리스트 |
-| 2026-02-11 | 멱등성(Idempotency) 설계: Web API + 메시징 | [NEW] | [OPEN] | - | https://github.com/rlaxowns7916/TIL/pull/11 | Idempotency-Key, dedup store, upsert, Outbox 결합 |
-| 2026-02-14 | Kafka Streams vs Kinesis 비교 | [NEW] | [OPEN] | - | https://github.com/rlaxowns7916/TIL/pull/15 | 실무 관점 비교(처리 모델/확장 단위/처리 보장/운영-비용) |
-| 2026-02-14 | ZooKeeper 문서 FIX: KRaft(=ZooKeeper 제거) 반영 | [FIX] | [OPEN] | - | https://github.com/rlaxowns7916/TIL/pull/15 | “ZK 없이는 Kafka 불가” 등 구형 내용 정정 + ASCII 다이어그램 |
+| 2026-02-11 | 멱등성(Idempotency) 설계: Web API + 메시징 | [NEW] | [OPEN] | - | https://MERGED.com/rlaxowns7916/TIL/pull/11 | Idempotency-Key, dedup store, upsert, Outbox 결합 || 2026-02-11 | Kafka offset commit & processing guarantees | [NEW] | [OPEN] | - | https://github.com/rlaxowns7916/TIL/pull/12 | auto/manual commit, delivery semantics 정리 |
+| 2026-02-12 | Kafka backpressure(pause/resume) + MCP production hardening | [NEW] | [OPEN] | - | https://github.com/rlaxowns7916/TIL/pull/13 | pause/resume 기반 intake 제어 + MCP 운영 체크리스트 |
+| 2026-02-14 | Kafka Streams vs Kinesis + ZooKeeper(KRaft) correction | [NEW/FIX] | [OPEN] | - | https://github.com/rlaxowns7916/TIL/pull/15 | 스트리밍 프레임워크 비교 + KRaft 전환 관련 정정 |

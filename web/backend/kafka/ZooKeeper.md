@@ -58,5 +58,7 @@ ZooKeeper는 보통 **홀수 노드(3/5/7...)** 로 구성되는 Ensemble로 운
 
 
 ## 4) 참고(공식)
-- Apache Kafka Documentation: KRaft(혹은 ZooKeeper 제거/Metadata mode 관련 문서)
-- Apache ZooKeeper Documentation: ZAB/Quorum 관련 개요
+- Apache Kafka: KRaft(메타데이터 모드 / ZooKeeper 제거)
+  - https://kafka.apache.org/documentation/#kraft
+- Apache ZooKeeper: 공식 문서(Quorum / ZAB 개요)
+  - https://zookeeper.apache.org/documentation.html
