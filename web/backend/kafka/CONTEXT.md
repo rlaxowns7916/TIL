@@ -28,4 +28,5 @@
   - [ ] Schema Registry
 
 ## 📝 Recent Updates
+- **2026-02-10**: `Consumer-리밸런싱-순서보장-실전.md` - 리밸런싱 원인/영향과 순서 보장 범위, 커밋/멱등 처리 중심의 실전 체크리스트 추가.
 - **2026-02-09**: `EOS.md` - Exactly-Once Semantics의 구성 요소(Idempotency, Transaction)와 동작 원리를 운영 관점에서 재정리.
