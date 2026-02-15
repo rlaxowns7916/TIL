@@ -21,3 +21,4 @@
 | 2026-02-11 | Kafka offset commit & processing guarantees | [NEW] | [MERGED] | Done | https://github.com/rlaxowns7916/TIL/pull/12 | auto/manual commit, delivery semantics 정리 |
 | 2026-02-12 | Kafka backpressure(pause/resume) + MCP production hardening | [NEW] | [MERGED] | Done | https://github.com/rlaxowns7916/TIL/pull/13 | pause/resume 기반 intake 제어 + MCP 운영 체크리스트 |
 | 2026-02-14 | Kafka Streams vs Kinesis + ZooKeeper(KRaft) correction | [NEW/FIX] | [OPEN] | - | https://github.com/rlaxowns7916/TIL/pull/15 | 스트리밍 프레임워크 비교 + KRaft 전환 관련 정정 |
+| 2026-02-16 | Progress.md row break + PR status sync | [FIX] | [OPEN] | - | https://github.com/rlaxowns7916/TIL/pull/18 | Progress.md 테이블 깨짐 수정 + PR #10~#13 상태 동기화 |
