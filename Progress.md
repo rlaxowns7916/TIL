@@ -21,4 +21,4 @@
 | 2026-02-12 | Kafka backpressure(pause/resume) + MCP production hardening | [NEW] | [OPEN] | - | https://github.com/rlaxowns7916/TIL/pull/13 | pause/resume 기반 intake 제어 + MCP 운영 체크리스트 |
 | 2026-02-13 | Progress.md PR status sync (2026-02-13) | [FIX] | [OPEN] | - | https://github.com/rlaxowns7916/TIL/pull/14 | PR 상태 동기화 목적(현재 GitHub에서 conflict 표기) |
 | 2026-02-14 | Kafka Streams vs Kinesis + ZooKeeper(KRaft) correction | [NEW/FIX] | [OPEN] | - | https://github.com/rlaxowns7916/TIL/pull/15 | 스트리밍 프레임워크 비교 + KRaft 전환 관련 정정 |
-| 2026-02-15 | Claude Code vs oh-my-opencode 비교 정리 | [NEW] | [OPEN] | - | https://github.com/rlaxowns7916/TIL/pull/16 | 제품형 vs 하네스/오케스트레이션 관점 비교 |
+
