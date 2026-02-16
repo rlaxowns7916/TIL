@@ -23,5 +23,5 @@
 | 2026-02-14 | Kafka Streams vs Kinesis + ZooKeeper(KRaft) correction | [NEW/FIX] | [CLOSED] | - | https://github.com/rlaxowns7916/TIL/pull/15 | 스트리밍 프레임워크 비교 + KRaft 전환 관련 정정 |
 | 2026-02-16 | Progress.md row break + PR status sync | [FIX] | [MERGED] | Done | https://github.com/rlaxowns7916/TIL/pull/18 | Progress.md 테이블 깨짐 수정 + PR #10~#13 상태 동기화 |
 | 2026-02-16 | Redis HA: Sentinel vs Cluster (Retry V2) | [NEW] | [CLOSED] | - | https://github.com/rlaxowns7916/TIL/pull/19 | 문서/구성 재시도(PR 종료) |
-| 2026-02-17 | Redis HA: Sentinel vs Cluster (운영 관점 재정리) | [NEW] | [OPEN] | - | (TBD) | Sentinel/Cluster 선택 기준 + 장애 시나리오 + 운영 체크리스트 |
-| 2026-02-17 | Progress.md PR status sync (2026-02-17) | [FIX] | [OPEN] | - | (TBD) | Progress.md에서 PR #7/#15/#18/#19 상태 동기화 |
+| 2026-02-17 | Redis HA: Sentinel vs Cluster (운영 관점 재정리) | [NEW] | [OPEN] | - | https://github.com/rlaxowns7916/TIL/pull/20 | Sentinel/Cluster 선택 기준 + 장애 시나리오 + 운영 체크리스트 |
+| 2026-02-17 | Progress.md PR status sync (2026-02-17) | [FIX] | [OPEN] | - | https://github.com/rlaxowns7916/TIL/pull/20 | Progress.md에서 PR #7/#15/#18/#19 상태 동기화 |
