@@ -14,9 +14,11 @@
 | 2026-02-08 | MCP Architecture & Custom Server | [NEW] | [MERGED] | Done | https://github.com/rlaxowns7916/TIL/pull/8 | Model Context Protocol 구조 및 구현 |
 | 2026-02-09 | Transactional Outbox + CDC(Debezium) | [NEW] | [MERGED] | Done | https://github.com/rlaxowns7916/TIL/pull/9 | DB-메시징 원자성 문제를 Outbox+CDC로 해결하는 패턴 정리 |
 | 2026-02-09 | Kafka Exactly-Once Semantics(EOS) | [FIX] | [MERGED] | Done | https://github.com/rlaxowns7916/TIL/pull/9 | 용어/흐름/운영 관점 중심으로 문서 리라이트(ASCII 다이어그램 포함) |
-| 2026-02-10 | MCP 문서 보강: Tool Calling 체크리스트 | [FIX] | [OPEN] | - | https://github.com/rlaxowns7916/TIL/pull/10 | mcp-architecture.md에 운영/보안/에러모델 체크리스트 섹션 추가 |
-| 2026-02-10 | Kafka Consumer 리밸런싱/순서 보장 실전 | [NEW] | [MERGED] | - | https://github.com/rlaxowns7916/TIL/pull/10 | 리밸런싱 원인/영향, 커밋 전략, 멱등 처리, 순서 보장 규칙 |
-| 2026-02-11 | Kafka Consumer Group 리밸런싱(Rebalancing) | [NEW] | [OPEN] | - | https://github.com/rlaxowns7916/TIL/pull/11 | Eager vs Cooperative(Incremental), static membership, 운영 체크리스트 |
-| 2026-02-11 | 멱등성(Idempotency) 설계: Web API + 메시징 | [NEW] | [OPEN] | - | https://MERGED.com/rlaxowns7916/TIL/pull/11 | Idempotency-Key, dedup store, upsert, Outbox 결합 || 2026-02-11 | Kafka offset commit & processing guarantees | [NEW] | [OPEN] | - | https://github.com/rlaxowns7916/TIL/pull/12 | auto/manual commit, delivery semantics 정리 |
-| 2026-02-12 | Kafka backpressure(pause/resume) + MCP production hardening | [NEW] | [OPEN] | - | https://github.com/rlaxowns7916/TIL/pull/13 | pause/resume 기반 intake 제어 + MCP 운영 체크리스트 |
+| 2026-02-10 | MCP 문서 보강: Tool Calling 체크리스트 | [FIX] | [MERGED] | Done | https://github.com/rlaxowns7916/TIL/pull/10 | mcp-architecture.md에 운영/보안/에러모델 체크리스트 섹션 추가 |
+| 2026-02-10 | Kafka Consumer 리밸런싱/순서 보장 실전 | [NEW] | [MERGED] | Done | https://github.com/rlaxowns7916/TIL/pull/10 | 리밸런싱 원인/영향, 커밋 전략, 멱등 처리, 순서 보장 규칙 |
+| 2026-02-11 | Kafka Consumer Group 리밸런싱(Rebalancing) | [NEW] | [MERGED] | Done | https://github.com/rlaxowns7916/TIL/pull/11 | Eager vs Cooperative(Incremental), static membership, 운영 체크리스트 |
+| 2026-02-11 | 멱등성(Idempotency) 설계: Web API + 메시징 | [NEW] | [MERGED] | Done | https://github.com/rlaxowns7916/TIL/pull/11 | Idempotency-Key, dedup store, upsert, Outbox 결합 |
+| 2026-02-11 | Kafka offset commit & processing guarantees | [NEW] | [MERGED] | Done | https://github.com/rlaxowns7916/TIL/pull/12 | auto/manual commit, delivery semantics 정리 |
+| 2026-02-12 | Kafka backpressure(pause/resume) + MCP production hardening | [NEW] | [MERGED] | Done | https://github.com/rlaxowns7916/TIL/pull/13 | pause/resume 기반 intake 제어 + MCP 운영 체크리스트 |
 | 2026-02-14 | Kafka Streams vs Kinesis + ZooKeeper(KRaft) correction | [NEW/FIX] | [OPEN] | - | https://github.com/rlaxowns7916/TIL/pull/15 | 스트리밍 프레임워크 비교 + KRaft 전환 관련 정정 |
+| 2026-02-16 | Progress.md row break + PR status sync | [FIX] | [OPEN] | - | https://github.com/rlaxowns7916/TIL/pull/18 | Progress.md 테이블 깨짐 수정 + PR #10~#13 상태 동기화 |
