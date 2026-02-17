@@ -24,4 +24,4 @@
 | 2026-02-16 | Progress.md row break + PR status sync | [FIX] | [MERGED] | Done | https://github.com/rlaxowns7916/TIL/pull/18 | Progress.md 테이블 깨짐 수정 + PR #10~#13 상태 동기화 |
 | 2026-02-16 | Redis HA: Sentinel vs Cluster (Retry V2) | [NEW] | [CLOSED] | - | https://github.com/rlaxowns7916/TIL/pull/19 | 문서/구성 재시도(PR 종료) |
 | 2026-02-17 | Redis HA: Sentinel vs Cluster (운영 관점 재정리) | [NEW] | [OPEN] | - | https://github.com/rlaxowns7916/TIL/pull/20 | Sentinel/Cluster 선택 기준 + 장애 시나리오 + 운영 체크리스트 |
-| 2026-02-18 | Cache Stampede 대응 + Redis HA 고려사항 | [NEW] | [OPEN] | - | (TBD) | dogpile effect 방지 패턴(SWR/락/TTL jitter) + HA 장애 시 재시도/폴백 설계 |
+| 2026-02-18 | Cache Stampede 대응 + Redis HA 고려사항 | [NEW] | [OPEN] | - | https://github.com/rlaxowns7916/TIL/pull/21 | dogpile effect 방지 패턴(SWR/락/TTL jitter) + HA 장애 시 재시도/폴백 설계 |
