@@ -22,4 +22,4 @@
 | 2026-02-12 | Kafka backpressure(pause/resume) + MCP production hardening | [NEW] | [MERGED] | Done | https://github.com/rlaxowns7916/TIL/pull/13 | pause/resume 기반 intake 제어 + MCP 운영 체크리스트 |
 | 2026-02-14 | Kafka Streams vs Kinesis + ZooKeeper(KRaft) correction | [NEW/FIX] | [OPEN] | - | https://github.com/rlaxowns7916/TIL/pull/15 | 스트리밍 프레임워크 비교 + KRaft 전환 관련 정정 |
 | 2026-02-16 | Progress.md row break + PR status sync | [FIX] | [OPEN] | - | https://github.com/rlaxowns7916/TIL/pull/18 | Progress.md 테이블 깨짐 수정 + PR #10~#13 상태 동기화 |
-| 2026-02-19 | RDB 트랜잭션/락(기초 문서 보강) | [REFINE] | [OPEN] | - | (PR 링크 추가 예정) | cs/db/rdb/트랜잭션.md, cs/db/rdb/Lock.md 품질 개선(실무 관점/ASCII 다이어그램) |
+| 2026-02-19 | RDB 트랜잭션/락(기초 문서 보강) | [REFINE] | [OPEN] | - | https://github.com/rlaxowns7916/TIL/pull/23 | cs/db/rdb/트랜잭션.md, cs/db/rdb/Lock.md 품질 개선(실무 관점/ASCII 다이어그램) |
