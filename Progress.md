@@ -2,6 +2,7 @@
 
 | Date | Subject | Type | PR Link/Status | Notification | Notes |
 | :--- | :--- | :--- | :--- | :--- | :--- |
+| 2026-02-20 | QueryDSL 벌크연산 & JPA 경로표현식 | [REFINE] | [OPEN] | - | https://github.com/rlaxowns7916/TIL/pull/24 | 기존 문서(9~17 lines) → 실전 주의사항/예시/체크리스트 중심으로 확장 |
 | 2026-02-01 | Project Infrastructure | [NEW] | Initial Setup | Completed | Bare + Worktree, AGENTS.md, Progress.md |
 | 2026-02-02 | 분산 락 전략 한글화 | [REWORK] | [MERGED] | Done | https://github.com/rlaxowns7916/TIL/pull/3 | 지침에 따른 한글화 및 구조 개선 |
 | 2026-02-02 | Distributed Locking Strategies | [NEW] | [CLOSED] | - | https://github.com/rlaxowns7916/TIL/pull/2 | 한글화 작업으로 대체됨 |
