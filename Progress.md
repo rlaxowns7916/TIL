@@ -22,3 +22,5 @@
 | 2026-02-12 | Kafka backpressure(pause/resume) + MCP production hardening | [NEW] | [MERGED] | Done | https://github.com/rlaxowns7916/TIL/pull/13 | pause/resume 기반 intake 제어 + MCP 운영 체크리스트 |
 | 2026-02-14 | Kafka Streams vs Kinesis + ZooKeeper(KRaft) correction | [NEW/FIX] | [OPEN] | - | https://github.com/rlaxowns7916/TIL/pull/15 | 스트리밍 프레임워크 비교 + KRaft 전환 관련 정정 |
 | 2026-02-16 | Progress.md row break + PR status sync | [FIX] | [OPEN] | - | https://github.com/rlaxowns7916/TIL/pull/18 | Progress.md 테이블 깨짐 수정 + PR #10~#13 상태 동기화 |
+| 2026-02-21 | JPA Lock | [REFINE] | [OPEN] | - | https://github.com/rlaxowns7916/TIL/pull/25 | 비관적/낙관적 락 리라이트 + timeout/데드락/재시도 전략 + ASCII 다이어그램 |
+| 2026-02-21 | OAuth2 | [REFINE] | [OPEN] | - | https://github.com/rlaxowns7916/TIL/pull/26 | OAuth2.0/2.1 관점 리라이트 + PKCE 중심 + 비권장 플로우/보안 체크리스트 + ASCII 다이어그램 |
