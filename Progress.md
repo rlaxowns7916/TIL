@@ -30,4 +30,4 @@
 | 2026-02-20 | JPA Lock - 내용 보강 및 품질 개선 | [REFINE] | [OPEN] | - | https://github.com/rlaxowns7916/TIL/pull/25 | 낙관/비관 락, 데드락, 실무 팁 보강 |
 | 2026-02-20 | OAuth2 - 내용 보강 및 품질 개선 | [REFINE] | [OPEN] | - | https://github.com/rlaxowns7916/TIL/pull/26 | Grant/Token/보안/실무 흐름 보강 |
 | 2026-02-21 | Progress update (2026-02-21) | [FIX] | [OPEN] | - | https://github.com/rlaxowns7916/TIL/pull/27 | 2026-02-21 Refinement 반영 + Progress 최신화 |
-| 2026-02-22 | Worker Thread Pattern + Transfer-Encoding(chunked) - 내용 보강 및 품질 개선 | [REFINE] | [OPEN] | - | (PR 생성 후 링크 기입) | 멀티스레드 워커 패턴 심화 + HTTP/1.1 chunked 프레이밍/실무 주의사항 보강 |
+| 2026-02-22 | Worker Thread Pattern + Transfer-Encoding(chunked) - 내용 보강 및 품질 개선 | [REFINE] | [OPEN] | - | https://github.com/rlaxowns7916/TIL/pull/28 | 멀티스레드 워커 패턴 심화 + HTTP/1.1 chunked 프레이밍/실무 주의사항 보강 |
