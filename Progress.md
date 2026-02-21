@@ -22,3 +22,12 @@
 | 2026-02-12 | Kafka backpressure(pause/resume) + MCP production hardening | [NEW] | [MERGED] | Done | https://github.com/rlaxowns7916/TIL/pull/13 | pause/resume 기반 intake 제어 + MCP 운영 체크리스트 |
 | 2026-02-14 | Kafka Streams vs Kinesis + ZooKeeper(KRaft) correction | [NEW/FIX] | [OPEN] | - | https://github.com/rlaxowns7916/TIL/pull/15 | 스트리밍 프레임워크 비교 + KRaft 전환 관련 정정 |
 | 2026-02-16 | Progress.md row break + PR status sync | [FIX] | [OPEN] | - | https://github.com/rlaxowns7916/TIL/pull/18 | Progress.md 테이블 깨짐 수정 + PR #10~#13 상태 동기화 |
+| 2026-02-17 | Redis HA Sentinel vs Cluster + Progress sync | [NEW/FIX] | [OPEN] | - | https://github.com/rlaxowns7916/TIL/pull/20 | Redis HA 개요 + Progress 동기화 |
+| 2026-02-18 | Cache Stampede 대응 + Redis HA 고려사항 | [NEW] | [OPEN] | - | https://github.com/rlaxowns7916/TIL/pull/21 | Stampede 대응(락/확률/예열) + HA 운영 관점 |
+| 2026-02-19 | RDB 트랜잭션/락 정리 보강 | [REFINE] | [OPEN] | - | https://github.com/rlaxowns7916/TIL/pull/22 | 트랜잭션/락 개념 정리 품질 개선 |
+| 2026-02-19 | RDB 트랜잭션/락 - 내용 보강 및 품질 개선 | [REFINE] | [OPEN] | - | https://github.com/rlaxowns7916/TIL/pull/23 | 심화/예시/주의사항 보강 |
+| 2026-02-20 | QueryDSL 벌크연산 & JPA 경로표현식 - 내용 보강 및 품질 개선 | [REFINE] | [OPEN] | - | https://github.com/rlaxowns7916/TIL/pull/24 | 벌크 연산/영속성 컨텍스트/경로표현식 보강 |
+| 2026-02-20 | JPA Lock - 내용 보강 및 품질 개선 | [REFINE] | [OPEN] | - | https://github.com/rlaxowns7916/TIL/pull/25 | 낙관/비관 락, 데드락, 실무 팁 보강 |
+| 2026-02-20 | OAuth2 - 내용 보강 및 품질 개선 | [REFINE] | [OPEN] | - | https://github.com/rlaxowns7916/TIL/pull/26 | Grant/Token/보안/실무 흐름 보강 |
+| 2026-02-21 | Progress update (2026-02-21) | [FIX] | [OPEN] | - | https://github.com/rlaxowns7916/TIL/pull/27 | 2026-02-21 Refinement 반영 + Progress 최신화 |
+| 2026-02-22 | Worker Thread Pattern + Transfer-Encoding(chunked) - 내용 보강 및 품질 개선 | [REFINE] | [OPEN] | - | (PR 생성 후 링크 기입) | 멀티스레드 워커 패턴 심화 + HTTP/1.1 chunked 프레이밍/실무 주의사항 보강 |
