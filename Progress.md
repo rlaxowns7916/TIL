@@ -33,3 +33,4 @@
 | 2026-02-21 | Progress Update Fix | [FIX] | [MERGED] | Done | https://github.com/rlaxowns7916/TIL/pull/27 | Progress.md 동기화 (Merged PRs) |
 | 2026-02-22 | Worker Thread Pattern + Chunked Encoding | [REFINE] | [MERGED] | Done | https://github.com/rlaxowns7916/TIL/pull/28 | 스레드 풀 관리, HTTP Chunked 전송 주의사항 |
 | 2026-02-23 | CORS & Spring Security 기본 설정 | [REFINE] | [MERGED] | Done | https://github.com/rlaxowns7916/TIL/pull/29 | CORS Preflight, SecurityFilterChain 구성 모범 사례 |
+| 2026-02-24 | DTO/VO & JPA 스키마 자동생성 | [REFINE] | [OPEN] | Pending | https://github.com/rlaxowns7916/TIL/pull/30 | 기존 문서 2건 보강(정의/전략/체크리스트/운영 권장값) |
