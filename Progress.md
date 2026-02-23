@@ -2,7 +2,6 @@
 
 | Date | Subject | Type | PR Link/Status | Notification | Notes |
 | :--- | :--- | :--- | :--- | :--- | :--- |
-| 2026-02-20 | QueryDSL 벌크연산 & JPA 경로표현식 | [REFINE] | [OPEN] | - | https://github.com/rlaxowns7916/TIL/pull/24 | 기존 문서(9~17 lines) → 실전 주의사항/예시/체크리스트 중심으로 확장 |
 | 2026-02-01 | Project Infrastructure | [NEW] | Initial Setup | Completed | Bare + Worktree, AGENTS.md, Progress.md |
 | 2026-02-02 | 분산 락 전략 한글화 | [REWORK] | [MERGED] | Done | https://github.com/rlaxowns7916/TIL/pull/3 | 지침에 따른 한글화 및 구조 개선 |
 | 2026-02-02 | Distributed Locking Strategies | [NEW] | [CLOSED] | - | https://github.com/rlaxowns7916/TIL/pull/2 | 한글화 작업으로 대체됨 |
@@ -24,5 +23,13 @@
 | 2026-02-14 | Kafka Streams vs Kinesis + ZooKeeper(KRaft) correction | [NEW/FIX] | [CLOSED] | - | https://github.com/rlaxowns7916/TIL/pull/15 | 스트리밍 프레임워크 비교 + KRaft 전환 관련 정정 |
 | 2026-02-16 | Progress.md row break + PR status sync | [FIX] | [MERGED] | Done | https://github.com/rlaxowns7916/TIL/pull/18 | Progress.md 테이블 깨짐 수정 + PR #10~#13 상태 동기화 |
 | 2026-02-16 | Redis HA: Sentinel vs Cluster (Retry V2) | [NEW] | [CLOSED] | - | https://github.com/rlaxowns7916/TIL/pull/19 | 문서/구성 재시도(PR 종료) |
-| 2026-02-17 | Redis HA: Sentinel vs Cluster (운영 관점 재정리) | [NEW] | [OPEN] | - | https://github.com/rlaxowns7916/TIL/pull/20 | Sentinel/Cluster 선택 기준 + 장애 시나리오 + 운영 체크리스트 |
-| 2026-02-17 | Progress.md PR status sync (2026-02-17) | [FIX] | [OPEN] | - | https://github.com/rlaxowns7916/TIL/pull/20 | Progress.md에서 PR #7/#15/#18/#19 상태 동기화 |
+| 2026-02-17 | Redis HA: Sentinel vs Cluster (운영 관점) | [NEW/FIX] | [MERGED] | Done | https://github.com/rlaxowns7916/TIL/pull/20 | Sentinel/Cluster 선택 기준 + 장애 시나리오 + 운영 체크리스트 |
+| 2026-02-18 | Cache Stampede 대응 + Redis HA 고려사항 | [NEW] | [MERGED] | Done | https://github.com/rlaxowns7916/TIL/pull/21 | PER, Probabilistic Early Expiration 등 스탬피드 전략 |
+| 2026-02-19 | RDB 트랜잭션/락 정리 보강 | [REFINE] | [MERGED] | Done | https://github.com/rlaxowns7916/TIL/pull/22 | 2PL, MVCC, Gap Lock 등 핵심 개념 정리 |
+| 2026-02-19 | RDB 트랜잭션/락 (품질 개선) | [REFINE] | [MERGED] | Done | https://github.com/rlaxowns7916/TIL/pull/23 | 실무 예제 및 데드락 방지 패턴 추가 |
+| 2026-02-20 | QueryDSL 벌크연산 & JPA 경로표현식 | [REFINE] | [MERGED] | Done | https://github.com/rlaxowns7916/TIL/pull/24 | 영속성 컨텍스트 불일치 주의사항, 명시적 조인 권장 |
+| 2026-02-21 | JPA Lock (낙관/비관적 락) | [REFINE] | [MERGED] | Done | https://github.com/rlaxowns7916/TIL/pull/25 | @Version, PESSIMISTIC_WRITE 활용 가이드 |
+| 2026-02-21 | OAuth2 (Spring Security) | [REFINE] | [MERGED] | Done | https://github.com/rlaxowns7916/TIL/pull/26 | OAuth2 흐름, TokenStore, SecurityConfig 구성 |
+| 2026-02-21 | Progress Update Fix | [FIX] | [MERGED] | Done | https://github.com/rlaxowns7916/TIL/pull/27 | Progress.md 동기화 (Merged PRs) |
+| 2026-02-22 | Worker Thread Pattern + Chunked Encoding | [REFINE] | [MERGED] | Done | https://github.com/rlaxowns7916/TIL/pull/28 | 스레드 풀 관리, HTTP Chunked 전송 주의사항 |
+| 2026-02-23 | CORS & Spring Security 기본 설정 | [REFINE] | [MERGED] | Done | https://github.com/rlaxowns7916/TIL/pull/29 | CORS Preflight, SecurityFilterChain 구성 모범 사례 |
